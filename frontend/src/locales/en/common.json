@@ -1,0 +1,323 @@
+{
+  "nav": {
+    "home": "Home",
+    "autoSales": "Auto Sales",
+    "autoRepair": "Auto Repair",
+    "autoBodyShop": "Auto Body Shop",
+    "carWash": "Car Wash",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "Welcome to KAY Auto Service",
+    "subtitle": "Your trusted partner for all automotive needs",
+    "services": "Our Services",
+    "viewMore": "Explore",
+    "autoSales": {
+      "title": "Auto Sales",
+      "description": "Browse our extensive collection of quality vehicles. Find your perfect car with competitive pricing and flexible financing options."
+    },
+    "autoRepair": {
+      "title": "Auto Repair",
+      "description": "Professional auto repair services with experienced mechanics. Get quotes, schedule appointments, and keep your vehicle running smoothly."
+    },
+    "carWash": {
+      "title": "Car Wash",
+      "description": "Complete car wash and detailing services. Choose from various packages and add-ons to keep your vehicle looking pristine."
+    }
+  },
+  "autoSales": {
+    "title": "Auto Sales / Gallery",
+    "filters": {
+      "brand": "Brand",
+      "model": "Model",
+      "year": "Year",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "filter": "Filter"
+    },
+    "noResults": "No vehicles found",
+    "loading": "Loading vehicles...",
+    "details": {
+      "reservation": "Request Reservation",
+      "testDrive": "Request Test Drive",
+      "year": "Year",
+      "specs": {
+        "fuelType": "Fuel Type",
+        "transmission": "Transmission",
+        "mileage": "Mileage",
+        "color": "Color"
+      },
+      "fuelPetrol": "Gasoline",
+      "fuelDiesel": "Diesel",
+      "fuelElectric": "Electric",
+      "fuelHybrid": "Hybrid",
+      "fuelLpg": "LPG",
+      "transmissionAutomatic": "Automatic",
+      "transmissionManual": "Manual",
+      "description": "Description",
+      "clickToZoom": "Click to zoom",
+      "colors": {
+        "Beyaz": "White",
+        "Siyah": "Black",
+        "Gri": "Gray",
+        "Gümüş": "Silver",
+        "Kırmızı": "Red",
+        "Mavi": "Blue",
+        "Yeşil": "Green",
+        "Sarı": "Yellow",
+        "Turuncu": "Orange",
+        "Mor": "Purple",
+        "Kahverengi": "Brown",
+        "Bej": "Beige",
+        "Altın": "Gold",
+        "Bordo": "Burgundy",
+        "Lacivert": "Navy Blue",
+        "Turkuaz": "Turquoise",
+        "Pembe": "Pink",
+        "Bronz": "Bronze",
+        "Bakır": "Copper",
+        "Koyu Mavi": "Dark Blue",
+        "Açık Mavi": "Light Blue",
+        "Koyu Gri": "Dark Gray",
+        "Açık Gri": "Light Gray",
+        "Koyu Yeşil": "Dark Green",
+        "Açık Yeşil": "Light Green",
+        "Champagne": "Champagne",
+        "Navy Blue": "Navy Blue",
+        "Jet Black": "Jet Black",
+        "Pearl White": "Pearl White",
+        "Metallic Silver": "Metallic Silver",
+        "Charcoal": "Charcoal",
+        "Midnight Blue": "Midnight Blue"
+      }
+    },
+    "forms": {
+      "reservation": {
+        "title": "Request Reservation",
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "message": "Message (optional)",
+        "submit": "Submit",
+        "cancel": "Cancel"
+      },
+      "testDrive": {
+        "title": "Request Test Drive",
+        "name": "Full Name",
+        "email": "Email",
+        "phone": "Phone",
+        "preferredDate": "Preferred Date",
+        "preferredTime": "Preferred Time",
+        "message": "Message (optional)",
+        "submit": "Submit",
+        "cancel": "Cancel"
+      }
+    }
+  },
+  "autoRepair": {
+    "title": "Auto Repair Services",
+    "subtitle": "Professional auto repair services with experienced mechanics. Get a quote for your vehicle.",
+    "loading": "Loading services...",
+    "getQuote": "Get a Quote",
+    "hero": {
+      "title": "Professional Auto Repair Services",
+      "description": "We provide the best service for your vehicle with our experienced technicians and modern equipment. Contact us for engine repair, brake service, air conditioning service and more."
+    },
+    "features": {
+      "experienced": {
+        "title": "Experienced Technicians",
+        "description": "You can safely entrust your vehicle with years of experience."
+      },
+      "modern": {
+        "title": "Modern Equipment",
+        "description": "Fast and accurate diagnosis with state-of-the-art devices."
+      },
+      "quality": {
+        "title": "Quality Service",
+        "description": "Original spare parts and guaranteed workmanship."
+      },
+      "fast": {
+        "title": "Fast Service",
+        "description": "Time savings with quickly completed operations."
+      }
+    },
+    "servicesInfo": {
+      "title": "Our Services",
+      "description": "We offer engine repair, brake service, air conditioning service, electrical system repair, tire replacement and many more services. Click the get a quote button for detailed price information."
+    },
+    "categories": {
+      "engine": "Engine Repair",
+      "brake": "Brake Service",
+      "ac": "Air Conditioning Service",
+      "electrical": "Electrical System",
+      "tire": "Tire Replacement",
+      "maintenance": "Maintenance Service"
+    },
+    "quoteForm": {
+      "title": "Get a Quote",
+      "vehicleInfo": "Vehicle Information",
+      "contactInfo": "Contact Information",
+      "selectServices": "Select Services",
+      "brand": "Brand",
+      "model": "Model",
+      "year": "Year",
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "submit": "Submit Quote Request",
+      "cancel": "Cancel"
+    }
+  },
+  "carWash": {
+    "title": "Car Wash Services",
+    "subtitle": "Complete car wash and detailing services. Choose from various packages and add-ons.",
+    "loading": "Loading packages...",
+    "packages": "Packages",
+    "addons": "Available Add-ons",
+    "bookAppointment": "Book Appointment",
+    "minutes": "minutes",
+    "hero": {
+      "title": "Professional Car Wash Services",
+      "description": "We are at your service with our professional equipment and experienced team to clean your vehicle in the best way. Keep your vehicle shiny with our detailed wash packages and extra services."
+    },
+    "features": {
+      "professional": {
+        "title": "Professional Equipment",
+        "description": "Cleaning without damaging your vehicle with state-of-the-art washing equipment."
+      },
+      "quality": {
+        "title": "Quality Products",
+        "description": "We use special cleaning products suitable for vehicle paint."
+      },
+      "detailing": {
+        "title": "Detailed Cleaning",
+        "description": "Comprehensive cleaning service with attention to every detail."
+      },
+      "fast": {
+        "title": "Fast Service",
+        "description": "Fast service without waiting with appointment system."
+      }
+    },
+    "servicesInfo": {
+      "title": "Our Services",
+      "description": "We offer basic wash, detailed wash, interior cleaning, waxing and many more services. Click the book appointment button for our packages and extra services."
+    },
+    "categories": {
+      "basic": "Basic Wash",
+      "detailed": "Detailed Wash",
+      "interior": "Interior Cleaning",
+      "waxing": "Waxing",
+      "polishing": "Polishing",
+      "engine": "Engine Cleaning"
+    },
+    "appointmentForm": {
+      "title": "Book Car Wash Appointment",
+      "selectPackage": "Select Package",
+      "selectedPackage": "Selected Package",
+      "price": "Price",
+      "appointmentDetails": "Appointment Details",
+      "vehicleInfo": "Vehicle Information",
+      "selectBrand": "Select Brand",
+      "selectModel": "Select Model",
+      "contactInfo": "Contact Information",
+      "addons": "Add-ons (Optional)",
+      "total": "Total",
+      "notes": "Additional notes (optional)",
+      "submit": "Submit Appointment",
+      "cancel": "Cancel"
+    }
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success!",
+    "noImage": "No Image",
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "previous": "Previous"
+  },
+  "autoBodyShop": {
+    "title": "Auto Body Shop Services",
+    "subtitle": "We restore your vehicle to its original appearance with professional body and paint services.",
+    "hero": {
+      "title": "Professional Auto Body Shop and Paint Services",
+      "description": "We restore your damaged vehicle to its original state with our experienced craftsmen and modern equipment. Contact us for body repair, paint work, scratch removal and more."
+    },
+    "features": {
+      "experienced": {
+        "title": "Experienced Craftsmen",
+        "description": "You can safely entrust your vehicle with years of experience."
+      },
+      "modern": {
+        "title": "Modern Equipment",
+        "description": "Professional service with state-of-the-art paint and body equipment."
+      },
+      "quality": {
+        "title": "Quality Paint",
+        "description": "Original color matching and quality paint materials."
+      },
+      "fast": {
+        "title": "Fast Service",
+        "description": "Time savings with quickly completed operations."
+      }
+    },
+    "servicesInfo": {
+      "title": "Our Services",
+      "description": "We offer body repair, paint work, scratch removal, damage repair, bumper repair and many more services. Contact us for detailed price information."
+    },
+    "categories": {
+      "bodyRepair": "Body Repair",
+      "painting": "Paint Work",
+      "scratchRemoval": "Scratch Removal",
+      "damageRepair": "Damage Repair",
+      "bumperRepair": "Bumper Repair",
+      "colorMatching": "Color Matching"
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Contact us for your questions, suggestions or appointment requests.",
+    "locations": {
+      "title": "Our Locations",
+      "1": {
+        "name": "Main Branch",
+        "address": "Atatürk Boulevard No:123, Çankaya, Ankara",
+        "phone": "+90 312 123 45 67",
+        "hours": "Monday - Saturday: 09:00 - 18:00"
+      },
+      "2": {
+        "name": "North Branch",
+        "address": "İnönü Street No:456, Keçiören, Ankara",
+        "phone": "+90 312 234 56 78",
+        "hours": "Monday - Saturday: 09:00 - 18:00"
+      },
+      "3": {
+        "name": "South Branch",
+        "address": "Cumhuriyet Neighborhood No:789, Etimesgut, Ankara",
+        "phone": "+90 312 345 67 89",
+        "hours": "Monday - Saturday: 09:00 - 18:00"
+      }
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "name": "Full Name",
+      "email": "Email",
+      "phone": "Phone",
+      "subject": "Subject",
+      "message": "Your Message",
+      "submit": "Send",
+      "success": "Your message has been sent successfully!",
+      "error": "An error occurred while sending the message."
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 KAY Auto Service. All rights reserved."
+  }
+}
+

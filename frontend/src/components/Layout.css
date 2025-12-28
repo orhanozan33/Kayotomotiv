@@ -1,0 +1,313 @@
+.layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  background: #1a1a1a;
+  color: white;
+  padding: 1rem 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0.13rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  text-decoration: none;
+  color: white;
+  display: flex;
+  align-items: center;
+  gap: 0.02rem;
+  padding: 0;
+  margin: 0;
+  flex-wrap: nowrap;
+  height: auto;
+  min-height: 50px;
+}
+
+.logo img {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.logo-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.logo-image {
+  height: auto;
+  max-height: 50px;
+  width: 139px !important;
+  object-fit: fill;
+  object-position: center;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  background: transparent;
+  mix-blend-mode: normal;
+  display: block;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  vertical-align: middle;
+  user-select: none;
+  transform: translateX(-3%);
+  border-radius: 15px;
+}
+
+.logo-image.draggable {
+  cursor: grab;
+}
+
+.logo-image.draggable:active {
+  cursor: grabbing;
+}
+
+.logo-wrapper.edit-mode {
+  border: 2px dashed #4CAF50;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+.resize-handle {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  width: 20px;
+  height: 20px;
+  background: #4CAF50;
+  border: 2px solid white;
+  border-radius: 50%;
+  cursor: nwse-resize;
+  z-index: 1000;
+}
+
+.drag-hint {
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #4CAF50;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.resize-hint {
+  position: absolute;
+  bottom: -25px;
+  right: -10px;
+  background: #4CAF50;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Ensure logo background is transparent */
+.logo-image[src="/kayauto-logo.png.png"] {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.logo h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  white-space: nowrap;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  transform: translateY(30%);
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+}
+
+.nav a {
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s;
+}
+
+.nav a:hover {
+  color: #4CAF50;
+}
+
+.main-content {
+  flex: 1;
+  padding: 0;
+}
+
+.footer {
+  background: #1a1a1a;
+  color: white;
+  padding: 2rem 0;
+  margin-top: auto;
+}
+
+.footer .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  position: relative;
+}
+
+.footer-left {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.certificate-image {
+  height: 60px;
+  width: auto;
+  object-fit: contain;
+  transition: opacity 0.3s ease;
+}
+
+.footer .copyright {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.social-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s, opacity 0.2s;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+}
+
+.social-link:hover {
+  transform: scale(1.15);
+  opacity: 0.9;
+}
+
+.social-link svg {
+  width: 24px;
+  height: 24px;
+}
+
+.phone-link {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.phone-link svg {
+  fill: white;
+}
+
+.facebook-link {
+  background: #1877F2;
+}
+
+.facebook-link svg {
+  fill: white;
+}
+
+.instagram-link {
+  background: linear-gradient(45deg, #833AB4 0%, #FD1D1D 50%, #FCB045 100%);
+}
+
+.x-link {
+  background: #000000;
+}
+
+.x-link svg {
+  fill: white;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+@media (max-width: 768px) {
+  .header .container {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .logo-image {
+    height: auto;
+    max-height: 40px;
+    width: 126px !important;
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+    object-position: center;
+    border-radius: 12px;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .footer .container {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .footer .container {
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+  }
+
+  .footer-left {
+    order: 1;
+  }
+
+  .footer .copyright {
+    position: static;
+    transform: none;
+    order: 2;
+    text-align: center;
+    margin: 0;
+  }
+
+  .social-links {
+    order: 3;
+  }
+
+  .certificate-image {
+    height: 50px;
+  }
+}
+
+

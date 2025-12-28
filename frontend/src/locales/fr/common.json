@@ -1,0 +1,253 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "autoSales": "Vente de Véhicules",
+    "autoRepair": "Réparation Auto",
+    "autoBodyShop": "Carrosserie",
+    "carWash": "Lavage Auto",
+    "contact": "Contact"
+  },
+  "home": {
+    "title": "Bienvenue chez KAY Auto Service",
+    "subtitle": "Votre partenaire de confiance pour tous vos besoins automobiles",
+    "services": "Nos Services",
+    "viewMore": "Explorer",
+    "autoSales": {
+      "title": "Vente de Véhicules",
+      "description": "Parcourez notre vaste collection de véhicules de qualité. Trouvez la voiture parfaite avec des prix compétitifs et des options de financement flexibles."
+    },
+    "autoRepair": {
+      "title": "Réparation Auto",
+      "description": "Services de réparation automobile professionnels avec des mécaniciens expérimentés. Obtenez des devis, planifiez des rendez-vous et gardez votre véhicule en bon état."
+    },
+    "carWash": {
+      "title": "Lavage Auto",
+      "description": "Services complets de lavage et de détailing. Choisissez parmi différents forfaits et options pour garder votre véhicule impeccable."
+    }
+  },
+  "autoSales": {
+    "title": "Vente de Véhicules / Galerie",
+    "filters": {
+      "brand": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "minPrice": "Prix Min",
+      "maxPrice": "Prix Max",
+      "filter": "Filtrer"
+    },
+    "noResults": "Aucun véhicule trouvé",
+    "loading": "Chargement des véhicules...",
+    "details": {
+      "reservation": "Demander une Réservation",
+      "testDrive": "Demander un Essai",
+      "year": "Année",
+      "specs": {
+        "fuelType": "Type de Carburant",
+        "transmission": "Transmission",
+        "mileage": "Kilométrage",
+        "color": "Couleur"
+      },
+      "fuelPetrol": "Essence",
+      "fuelDiesel": "Diesel",
+      "fuelElectric": "Électrique",
+      "fuelHybrid": "Hybride",
+      "fuelLpg": "GPL",
+      "transmissionAutomatic": "Automatique",
+      "transmissionManual": "Manuelle",
+      "description": "Description",
+      "clickToZoom": "Cliquez pour zoomer",
+      "colors": {
+        "Beyaz": "Blanc",
+        "Siyah": "Noir",
+        "Gri": "Gris",
+        "Gümüş": "Argent",
+        "Kırmızı": "Rouge",
+        "Mavi": "Bleu",
+        "Yeşil": "Vert",
+        "Sarı": "Jaune",
+        "Turuncu": "Orange",
+        "Mor": "Violet",
+        "Kahverengi": "Marron",
+        "Bej": "Beige",
+        "Altın": "Or",
+        "Bordo": "Bordeaux",
+        "Lacivert": "Bleu Marine",
+        "Turkuaz": "Turquoise",
+        "Pembe": "Rose",
+        "Bronz": "Bronze",
+        "Bakır": "Cuivre",
+        "Koyu Mavi": "Bleu Foncé",
+        "Açık Mavi": "Bleu Clair",
+        "Koyu Gri": "Gris Foncé",
+        "Açık Gri": "Gris Clair",
+        "Koyu Yeşil": "Vert Foncé",
+        "Açık Yeşil": "Vert Clair",
+        "Champagne": "Champagne",
+        "Navy Blue": "Bleu Marine",
+        "Jet Black": "Noir Jet",
+        "Pearl White": "Blanc Nacré",
+        "Metallic Silver": "Argent Métallisé",
+        "Charcoal": "Charbon",
+        "Midnight Blue": "Bleu Minuit"
+      }
+    },
+    "forms": {
+      "reservation": {
+        "title": "Demander une Réservation",
+        "name": "Nom Complet",
+        "email": "Email",
+        "phone": "Téléphone",
+        "message": "Message (optionnel)",
+        "submit": "Soumettre",
+        "cancel": "Annuler"
+      },
+      "testDrive": {
+        "title": "Demander un Essai",
+        "name": "Nom Complet",
+        "email": "Email",
+        "phone": "Téléphone",
+        "preferredDate": "Date Préférée",
+        "preferredTime": "Heure Préférée",
+        "message": "Message (optionnel)",
+        "submit": "Soumettre",
+        "cancel": "Annuler"
+      }
+    }
+  },
+  "autoRepair": {
+    "title": "Services de Réparation Auto",
+    "subtitle": "Services de réparation automobile professionnels avec des mécaniciens expérimentés. Obtenez un devis pour votre véhicule.",
+    "loading": "Chargement des services...",
+    "getQuote": "Obtenir un Devis",
+    "quoteForm": {
+      "title": "Obtenir un Devis",
+      "vehicleInfo": "Informations sur le Véhicule",
+      "contactInfo": "Informations de Contact",
+      "selectServices": "Sélectionner les Services",
+      "brand": "Marque",
+      "model": "Modèle",
+      "year": "Année",
+      "name": "Nom Complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "submit": "Soumettre la Demande de Devis",
+      "cancel": "Annuler"
+    }
+  },
+  "carWash": {
+    "title": "Services de Lavage Auto",
+    "subtitle": "Services complets de lavage et de détailing. Choisissez parmi différents forfaits et options.",
+    "loading": "Chargement des forfaits...",
+    "packages": "Forfaits",
+    "addons": "Options Disponibles",
+    "bookAppointment": "Réserver un Rendez-vous",
+    "appointmentForm": {
+      "title": "Réserver un Rendez-vous de Lavage",
+      "selectedPackage": "Forfait Sélectionné",
+      "price": "Prix",
+      "appointmentDetails": "Détails du Rendez-vous",
+      "vehicleInfo": "Informations du Véhicule",
+      "selectBrand": "Sélectionner la Marque",
+      "selectModel": "Sélectionner le Modèle",
+      "contactInfo": "Informations de Contact",
+      "addons": "Options (Optionnel)",
+      "total": "Total",
+      "notes": "Notes supplémentaires (optionnel)",
+      "submit": "Soumettre le Rendez-vous",
+      "cancel": "Annuler"
+    }
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "success": "Succès!",
+    "noImage": "Pas d'Image",
+    "submit": "Soumettre",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "close": "Fermer",
+    "back": "Retour",
+    "next": "Suivant",
+    "previous": "Précédent"
+  },
+  "autoBodyShop": {
+    "title": "Services de Carrosserie",
+    "subtitle": "Nous restaurons votre véhicule à son apparence d'origine avec des services professionnels de carrosserie et de peinture.",
+    "hero": {
+      "title": "Services Professionnels de Carrosserie et Peinture",
+      "description": "Nous restaurons votre véhicule endommagé à son état d'origine avec nos artisans expérimentés et notre équipement moderne. Contactez-nous pour la réparation de carrosserie, les travaux de peinture, l'enlèvement de rayures et plus encore."
+    },
+    "features": {
+      "experienced": {
+        "title": "Artisans Expérimentés",
+        "description": "Vous pouvez confier en toute sécurité votre véhicule avec des années d'expérience."
+      },
+      "modern": {
+        "title": "Équipement Moderne",
+        "description": "Service professionnel avec un équipement de peinture et de carrosserie de pointe."
+      },
+      "quality": {
+        "title": "Peinture de Qualité",
+        "description": "Correspondance de couleur originale et matériaux de peinture de qualité."
+      },
+      "fast": {
+        "title": "Service Rapide",
+        "description": "Gain de temps avec des opérations rapidement terminées."
+      }
+    },
+    "servicesInfo": {
+      "title": "Nos Services",
+      "description": "Nous offrons la réparation de carrosserie, les travaux de peinture, l'enlèvement de rayures, la réparation de dommages, la réparation de pare-chocs et bien d'autres services. Contactez-nous pour des informations détaillées sur les prix."
+    },
+    "categories": {
+      "bodyRepair": "Réparation de Carrosserie",
+      "painting": "Travaux de Peinture",
+      "scratchRemoval": "Enlèvement de Rayures",
+      "damageRepair": "Réparation de Dommages",
+      "bumperRepair": "Réparation de Pare-chocs",
+      "colorMatching": "Correspondance de Couleur"
+    }
+  },
+  "contact": {
+    "title": "Contact",
+    "subtitle": "Contactez-nous pour vos questions, suggestions ou demandes de rendez-vous.",
+    "locations": {
+      "title": "Nos Agences",
+      "1": {
+        "name": "Agence Centrale",
+        "address": "Boulevard Atatürk No:123, Çankaya, Ankara",
+        "phone": "+90 312 123 45 67",
+        "hours": "Lundi - Samedi: 09:00 - 18:00"
+      },
+      "2": {
+        "name": "Agence Nord",
+        "address": "Rue İnönü No:456, Keçiören, Ankara",
+        "phone": "+90 312 234 56 78",
+        "hours": "Lundi - Samedi: 09:00 - 18:00"
+      },
+      "3": {
+        "name": "Agence Sud",
+        "address": "Quartier Cumhuriyet No:789, Etimesgut, Ankara",
+        "phone": "+90 312 345 67 89",
+        "hours": "Lundi - Samedi: 09:00 - 18:00"
+      }
+    },
+    "form": {
+      "title": "Envoyez-nous un Message",
+      "name": "Nom Complet",
+      "email": "Email",
+      "phone": "Téléphone",
+      "subject": "Sujet",
+      "message": "Votre Message",
+      "submit": "Envoyer",
+      "success": "Votre message a été envoyé avec succès!",
+      "error": "Une erreur s'est produite lors de l'envoi du message."
+    }
+  },
+  "footer": {
+    "copyright": "© 2026 KAY Auto Service. Tous droits réservés."
+  }
+}
+

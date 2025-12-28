@@ -1,0 +1,62 @@
+.car-brands-slider {
+  width: 100%;
+  background: white;
+  border-bottom: 1px solid #e0e0e0;
+  overflow: hidden;
+  padding: 0.35rem 0;
+  position: relative;
+  margin-bottom: 0;
+}
+
+.brands-track {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  animation: scroll 40s linear infinite;
+  white-space: nowrap;
+}
+
+.brands-track:hover {
+  animation-play-state: paused;
+}
+
+.brand-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: color 0.3s ease, transform 0.3s ease;
+  height: 28px;
+  padding: 0 1rem;
+}
+
+.brand-item:hover {
+  color: #4CAF50;
+  transform: scale(1.08);
+}
+
+.brand-name {
+  white-space: nowrap;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #333;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+}
+
+@keyframes scroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 768px) {
+  .car-brands-slider {
+    display: none;
+  }
+}
+

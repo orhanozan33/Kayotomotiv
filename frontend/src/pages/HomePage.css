@@ -1,0 +1,204 @@
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.services-showcase {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  gap: 0;
+}
+
+.service-panel {
+  flex: 1;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  overflow: hidden;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-sizing: border-box;
+}
+
+.service-panel:hover {
+  flex: 1.2;
+  transform: scale(1.02);
+  z-index: 10;
+}
+
+.service-panel-left {
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+    url('https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=800&h=1200&fit=crop') center/cover;
+  position: relative;
+}
+
+.service-panel-center {
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6)),
+    url('https://images.unsplash.com/photo-1486262715619-67b85e0b08d3?w=800&h=1200&fit=crop') center/cover;
+  color: white;
+}
+
+.service-panel-right {
+  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5)),
+    url('/car-wash.jpg') center/cover;
+}
+
+.service-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5), transparent);
+  padding: 3rem 2rem 2rem;
+  color: white;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+}
+
+.service-panel:hover .service-overlay {
+  transform: translateY(-10px);
+}
+
+.service-overlay h2,
+.service-content h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.service-content h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+.service-overlay p,
+.service-content p {
+  font-size: 0.88rem;
+  line-height: 1.6;
+  margin-bottom: 2rem;
+  opacity: 0.95;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.service-content p {
+  font-size: 0.88rem;
+  max-width: 400px;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.service-btn {
+  background: #10b981;
+  color: white;
+  border: none;
+  padding: 0.8rem 2rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border-radius: 4px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  margin-top: 0.5rem;
+}
+
+.service-btn:hover {
+  background: #059669;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+}
+
+.service-content {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.5), transparent);
+  padding: 3rem 2rem 2rem;
+  color: white;
+  text-align: center;
+  transform: translateY(0);
+  transition: transform 0.3s ease;
+  z-index: 2;
+}
+
+.service-panel:hover .service-content {
+  transform: translateY(-10px);
+}
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .services-showcase {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .service-panel {
+    min-height: 50vh;
+    flex: 1;
+  }
+
+  .service-panel:hover {
+    flex: 1;
+  }
+
+  .service-overlay h2,
+  .service-content h1 {
+    font-size: 2rem;
+  }
+
+  .service-content h1 {
+    font-size: 2.5rem;
+  }
+
+  .service-overlay p,
+  .service-content p {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .service-overlay h2,
+  .service-content h1 {
+    font-size: 1.5rem;
+  }
+
+  .service-content h1 {
+    font-size: 2rem;
+  }
+
+  .service-overlay p,
+  .service-content p {
+    font-size: 0.9rem;
+  }
+
+  .service-btn {
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+  }
+
+  .service-overlay {
+    padding: 2rem 1.5rem 1.5rem;
+  }
+
+  .service-content {
+    padding: 1.5rem;
+  }
+}
