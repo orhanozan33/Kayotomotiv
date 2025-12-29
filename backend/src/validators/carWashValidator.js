@@ -15,6 +15,7 @@ const emailSchema = Joi.string()
 const phoneSchema = Joi.string()
   .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
   .allow(null)
+  .optional()
   .messages({
     'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
   });
@@ -31,9 +32,9 @@ export const createCarWashAppointmentSchema = Joi.object({
     }),
   customer_email: emailSchema,
   customer_phone: phoneSchema,
-  vehicle_brand: Joi.string().max(100).allow(null),
-  vehicle_model: Joi.string().max(100).allow(null),
-  license_plate: Joi.string().max(20).allow(null),
+  vehicle_brand: Joi.string().max(100).optional().allow(null),
+  vehicle_model: Joi.string().max(100).optional().allow(null),
+  license_plate: Joi.string().max(20).optional().allow(null),
   appointment_date: Joi.date()
     .iso()
     .required()
@@ -62,7 +63,7 @@ export const createCarWashPackageSchema = Joi.object({
     .messages({
       'any.required': 'Paket adı gereklidir'
     }),
-  description: Joi.string().max(5000).allow(null),
+  description: Joi.string().max(5000).optional().allow(null),
   base_price: Joi.number()
     .positive()
     .required()
@@ -70,7 +71,7 @@ export const createCarWashPackageSchema = Joi.object({
       'any.required': 'Fiyat gereklidir',
       'number.positive': 'Fiyat pozitif bir sayı olmalıdır'
     }),
-  duration_minutes: Joi.number().integer().min(1).allow(null),
+  duration_minutes: Joi.number().integer().min(1).optional().allow(null),
   display_order: Joi.number().integer().min(0).default(0),
   is_active: Joi.boolean().default(true)
 });
@@ -82,7 +83,7 @@ export const createCarWashAddonSchema = Joi.object({
     .messages({
       'any.required': 'Eklenti adı gereklidir'
     }),
-  description: Joi.string().max(5000).allow(null),
+  description: Joi.string().max(5000).optional().allow(null),
   price: Joi.number()
     .positive()
     .required()

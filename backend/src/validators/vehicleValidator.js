@@ -37,24 +37,30 @@ export const createVehicleSchema = Joi.object({
   mileage: Joi.number()
     .integer()
     .min(0)
+    .optional()
     .allow(null),
   color: Joi.string()
     .max(50)
+    .optional()
     .allow(null),
   fuel_type: Joi.string()
     .valid('petrol', 'diesel', 'electric', 'hybrid', 'lpg')
+    .optional()
     .allow(null),
   transmission: Joi.string()
     .valid('manual', 'automatic')
+    .optional()
     .allow(null),
   status: Joi.string()
     .valid('available', 'sold', 'reserved', 'pending')
     .default('available'),
   description: Joi.string()
     .max(5000)
+    .optional()
     .allow(null),
   images: Joi.array()
     .items(Joi.string())
+    .optional()
     .allow(null)
 });
 
@@ -63,11 +69,11 @@ export const updateVehicleSchema = Joi.object({
   model: Joi.string().max(100).optional(),
   year: Joi.number().integer().min(1900).max(new Date().getFullYear() + 1).optional(),
   price: Joi.number().positive().optional(),
-  mileage: Joi.number().integer().min(0).allow(null).optional(),
-  color: Joi.string().max(50).allow(null).optional(),
-  fuel_type: Joi.string().valid('petrol', 'diesel', 'electric', 'hybrid', 'lpg').allow(null).optional(),
-  transmission: Joi.string().valid('manual', 'automatic').allow(null).optional(),
+  mileage: Joi.number().integer().min(0).optional().allow(null),
+  color: Joi.string().max(50).optional().allow(null),
+  fuel_type: Joi.string().valid('petrol', 'diesel', 'electric', 'hybrid', 'lpg').optional().allow(null),
+  transmission: Joi.string().valid('manual', 'automatic').optional().allow(null),
   status: Joi.string().valid('available', 'sold', 'reserved', 'pending').optional(),
-  description: Joi.string().max(5000).allow(null).optional(),
-  images: Joi.array().items(Joi.string()).allow(null).optional()
+  description: Joi.string().max(5000).optional().allow(null),
+  images: Joi.array().items(Joi.string()).optional().allow(null)
 });
