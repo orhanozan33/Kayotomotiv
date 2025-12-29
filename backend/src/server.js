@@ -64,6 +64,7 @@ async function checkAndRunMigrations() {
     
     console.log('⚠️  Database tables not found, running migrations...');
     const migrationsDir = path.join(__dirname, '../migrations');
+    console.log(`Migration directory: ${migrationsDir}`);
     const files = fs.readdirSync(migrationsDir)
       .filter(file => file.endsWith('.sql'))
       .sort();
