@@ -134,7 +134,7 @@ export function validateEnvironmentVariables() {
   const required = [
     'JWT_SECRET',
     'DB_PASSWORD',
-    'BACKEND_PASSWORD'
+    'BACKEND_PASSWORD_HASH'
   ];
 
   const missing = required.filter(key => !process.env[key]);
