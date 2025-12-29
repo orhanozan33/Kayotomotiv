@@ -128,6 +128,9 @@ async function checkAndRunMigrations() {
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+// Trust proxy - Zeabur gibi platformlarda reverse proxy kullanıldığı için gerekli
+app.set('trust proxy', true);
+
 // CORS middleware (before Helmet) - Güvenli hale getirildi
 const allowedOrigins = process.env.FRONTEND_URL 
   ? process.env.FRONTEND_URL.split(',').map(url => url.trim())
