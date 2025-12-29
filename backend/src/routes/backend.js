@@ -2,7 +2,7 @@ import express from 'express';
 import * as backendController from '../controllers/backendController.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { backendPasswordLimiter, sqlExecutionLimiter } from '../middleware/rateLimiter.js';
-import { validate, validateMultiple } from '../middleware/validate.js';
+import { validate, validateMultiple } from '../middleware/validate.js'; // validateMultiple for query params validation
 import Joi from 'joi';
 
 const router = express.Router();
