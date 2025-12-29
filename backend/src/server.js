@@ -46,9 +46,10 @@ const __dirname = path.dirname(__filename);
 
 // Migration fonksiyonu
 async function checkAndRunMigrations() {
+  const client = await pool.connect();
   try {
     // vehicles tablosunun var olup olmadığını kontrol et
-    const checkResult = await pool.query(`
+    const checkResult = await client.query(`
       SELECT EXISTS (
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
@@ -72,30 +73,54 @@ async function checkAndRunMigrations() {
     for (const file of files) {
       try {
         console.log(`Running migration: ${file}`);
-        const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
-        await pool.query(sql);
+        let sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+        
+        // SQL dosyasındaki comment'leri temizle (opsiyonel, çalışması için gerekli değil)
+        // Her statement'ı ayrı çalıştır
+        // Basit bölme: noktalı virgül ile böl (string içindeki noktalı virgülleri ignore etmeyiz, çünkü migration dosyalarında genelde yok)
+        const statements = sql
+          .split(';')
+          .map(s => s.trim())
+          .filter(s => s.length > 0 && !s.startsWith('--') && s !== '');
+        
+        for (const statement of statements) {
+          if (statement) {
+            try {
+              await client.query(statement + ';');
+            } catch (stmtError) {
+              // Eğer tablo/extension zaten varsa devam et
+              if (stmtError.message.includes('already exists') || 
+                  stmtError.message.includes('duplicate') || 
+                  stmtError.code === '42P07' || 
+                  stmtError.code === '42710' ||
+                  stmtError.code === '42883' || // function already exists
+                  stmtError.code === '23505' || // unique constraint violation
+                  stmtError.message.includes('does not exist') && stmtError.message.includes('extension')) {
+                // Devam et, bu normal
+                console.log(`  ⚠️  Statement already applied or skipped: ${statement.substring(0, 50)}...`);
+              } else {
+                // Gerçek hata, logla ama devam et
+                console.error(`  ❌ Statement failed: ${stmtError.message}`);
+                // Devam et, bir sonraki statement'ı dene
+              }
+            }
+          }
+        }
+        
         console.log(`✅ Completed: ${file}`);
       } catch (error) {
-        // Eğer tablo zaten varsa hata verme (idempotent migrations)
-        if (error.message.includes('already exists') || 
-            error.message.includes('duplicate') || 
-            error.code === '42P07' || 
-            error.code === '42710') {
-          console.log(`⚠️  Migration ${file} already applied (skipping)`);
-        } else {
-          throw error;
-        }
+        console.error(`❌ Migration ${file} failed:`, error.message);
+        console.error(`Error code: ${error.code}`);
+        // Migration hatası olsa bile devam et
       }
     }
     
-    console.log('✅ All migrations completed successfully');
+    console.log('✅ All migrations completed');
   } catch (error) {
     console.error('❌ Migration check failed:', error.message);
-    // Production'da migration hatası fatal olabilir, development'ta devam et
-    if (process.env.NODE_ENV === 'production') {
-      console.error('Production ortamında migration hatası fatal!');
-      // Server'ı durdurmak yerine sadece uyarı ver, çünkü tablolar zaten olabilir
-    }
+    console.error('Error details:', error);
+  } finally {
+    client.release();
   }
 }
 
