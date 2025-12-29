@@ -49,10 +49,10 @@ export const createCarWashAppointmentSchema = Joi.object({
       'any.required': 'Randevu saati gereklidir',
       'string.pattern.base': 'Geçerli bir saat formatı giriniz (HH:MM)'
     }),
-  addon_ids: Joi.array()
-    .items(uuidSchema)
-    .optional()
-    .allow(null),
+  addon_ids: Joi.alternatives().try(
+    Joi.array().items(uuidSchema),
+    Joi.allow(null)
+  ).optional(),
   notes: Joi.string().max(5000).optional().allow(null)
 });
 

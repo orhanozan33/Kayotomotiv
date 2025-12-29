@@ -58,10 +58,10 @@ export const createVehicleSchema = Joi.object({
     .max(5000)
     .optional()
     .allow(null),
-  images: Joi.array()
-    .items(Joi.string())
-    .optional()
-    .allow(null)
+  images: Joi.alternatives().try(
+    Joi.array().items(Joi.string()),
+    Joi.allow(null)
+  ).optional()
 });
 
 export const updateVehicleSchema = Joi.object({
