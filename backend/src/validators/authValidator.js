@@ -19,13 +19,19 @@ export const registerSchema = Joi.object({
     }),
   first_name: Joi.string()
     .max(100)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   last_name: Joi.string()
     .max(100)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .messages({
       'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
     }),
@@ -52,13 +58,19 @@ export const loginSchema = Joi.object({
 export const updateProfileSchema = Joi.object({
   first_name: Joi.string()
     .max(100)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   last_name: Joi.string()
     .max(100)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .messages({
       'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
     })

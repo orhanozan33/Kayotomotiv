@@ -20,14 +20,18 @@ export const createContactMessageSchema = Joi.object({
     }),
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .trim()
     .messages({
       'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
     }),
   subject: Joi.string()
     .max(500)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .trim(),
   message: Joi.string()
     .max(10000)

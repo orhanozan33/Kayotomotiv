@@ -14,7 +14,9 @@ const emailSchema = Joi.string()
 
 const phoneSchema = Joi.string()
   .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-  .allow(null, '')
+  .optional()
+  .allow(null)
+  .allow('')
   .messages({
     'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
   });
@@ -34,13 +36,18 @@ export const createReservationSchema = Joi.object({
   customer_phone: phoneSchema,
   message: Joi.string()
     .max(5000)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   preferred_date: Joi.date()
     .iso()
-    .allow(null, ''),
+    .optional()
+    .allow(null),
   preferred_time: Joi.string()
     .pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .messages({
       'string.pattern.base': 'Geçerli bir saat formatı giriniz (HH:MM)'
     })
@@ -53,14 +60,16 @@ export const createTestDriveSchema = Joi.object({
   }),
   customer_email: emailSchema,
   customer_phone: phoneSchema,
-  preferred_date: Joi.date().iso().allow(null, ''),
+  preferred_date: Joi.date().iso().optional().allow(null),
   preferred_time: Joi.string()
     .pattern(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .messages({
       'string.pattern.base': 'Geçerli bir saat formatı giriniz (HH:MM)'
     }),
-  message: Joi.string().max(5000).allow(null, '')
+  message: Joi.string().max(5000).optional().allow(null).allow('')
 });
 
 export const updateStatusSchema = Joi.object({

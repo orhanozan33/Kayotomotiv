@@ -18,14 +18,18 @@ const passwordSchema = Joi.string()
 
 const phoneSchema = Joi.string()
   .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-  .allow(null, '')
+  .optional()
+  .allow(null)
+  .allow('')
   .messages({
     'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
   });
 
 const nameSchema = Joi.string()
   .max(100)
-  .allow(null, '');
+  .optional()
+  .allow(null)
+  .allow('');
 
 export const createUserSchema = Joi.object({
   email: emailSchema,

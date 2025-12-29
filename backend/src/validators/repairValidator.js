@@ -14,7 +14,9 @@ const emailSchema = Joi.string()
 
 const phoneSchema = Joi.string()
   .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-  .allow(null, '')
+  .optional()
+  .allow(null)
+  .allow('')
   .messages({
     'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
   });
@@ -42,7 +44,9 @@ export const createRepairQuoteSchema = Joi.object({
     }),
   license_plate: Joi.string()
     .max(20)
-    .allow(null, ''),
+    .optional()
+    .allow(null)
+    .allow(''),
   services: Joi.array()
     .items(Joi.object({
       service_id: uuidSchema,
@@ -55,8 +59,8 @@ export const createRepairQuoteSchema = Joi.object({
       'any.required': 'En az bir hizmet seçilmelidir',
       'array.min': 'En az bir hizmet seçilmelidir'
     }),
-  date: Joi.date().iso().allow(null, ''),
-  notes: Joi.string().max(5000).allow(null, '')
+  date: Joi.date().iso().optional().allow(null),
+  notes: Joi.string().max(5000).optional().allow(null).allow('')
 });
 
 export const updateRepairQuoteStatusSchema = Joi.object({
@@ -66,7 +70,7 @@ export const updateRepairQuoteStatusSchema = Joi.object({
     .messages({
       'any.required': 'Durum gereklidir'
     }),
-  notes: Joi.string().max(5000).allow(null, '').optional(),
-  total_price: Joi.number().positive().allow(null, '').optional()
+  notes: Joi.string().max(5000).optional().allow(null).allow(''),
+  total_price: Joi.number().positive().optional().allow(null)
 });
 

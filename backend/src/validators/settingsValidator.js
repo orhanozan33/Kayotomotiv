@@ -37,13 +37,15 @@ export const contactLocationSchema = Joi.object({
   name: Joi.string().max(200).required().messages({
     'any.required': 'Şube adı gereklidir'
   }),
-  address: Joi.string().max(500).allow(null, ''),
+  address: Joi.string().max(500).optional().allow(null).allow(''),
   phone: Joi.string()
     .pattern(/^[+]?[(]?[0-9]{1,4}[)]?[-\s.]?[(]?[0-9]{1,4}[)]?[-\s.]?[0-9]{1,9}$/)
-    .allow(null, '')
+    .optional()
+    .allow(null)
+    .allow('')
     .messages({
       'string.pattern.base': 'Geçerli bir telefon numarası giriniz'
     }),
-  hours: Joi.string().max(500).allow(null, '')
+  hours: Joi.string().max(500).optional().allow(null).allow('')
 });
 
