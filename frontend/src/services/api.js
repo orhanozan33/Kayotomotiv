@@ -4,9 +4,18 @@ import axios from 'axios'
 let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
 
 // Eğer VITE_API_URL ayarlanmışsa ve /api ile bitmiyorsa, /api ekle
-if (import.meta.env.VITE_API_URL && !API_BASE_URL.endsWith('/api')) {
-  // Eğer / ile bitiyorsa, sadece api ekle, yoksa /api ekle
-  API_BASE_URL = API_BASE_URL.replace(/\/$/, '') + '/api'
+if (import.meta.env.VITE_API_URL) {
+  // Trailing slash'i kaldır
+  API_BASE_URL = API_BASE_URL.replace(/\/$/, '')
+  // /api ile bitmiyorsa ekle
+  if (!API_BASE_URL.endsWith('/api')) {
+    API_BASE_URL = API_BASE_URL + '/api'
+  }
+}
+
+// Debug: API base URL'yi console'a yazdır (development'ta)
+if (import.meta.env.DEV) {
+  console.log('API Base URL:', API_BASE_URL)
 }
 
 const api = axios.create({
