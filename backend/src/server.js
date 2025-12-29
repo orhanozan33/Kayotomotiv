@@ -129,9 +129,9 @@ const app = express();
 const PORT = process.env.PORT || 3001;
 
 // Trust proxy - Zeabur gibi platformlarda reverse proxy kullanıldığı için gerekli
-// Her zaman aktif et (production ve development için gerekli)
-app.set('trust proxy', true);
-console.log('✅ Trust proxy enabled for rate limiting');
+// Sadece ilk proxy'ye güven (1), bu daha güvenli
+app.set('trust proxy', 1);
+console.log('✅ Trust proxy enabled (trusting 1 proxy) for rate limiting');
 
 // CORS middleware (before Helmet) - Güvenli hale getirildi
 const allowedOrigins = process.env.FRONTEND_URL 

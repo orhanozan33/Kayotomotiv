@@ -1,9 +1,10 @@
 import rateLimit from 'express-rate-limit';
 
 // Genel API rate limiter
+// Not: trust proxy: 1 kullanıldığı için validation uyarısı alınabilir, ancak Zeabur gibi platformlar için gerekli
 export const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 dakika
-  max: 100, // Her IP için 15 dakikada maksimum 100 istek
+  max: 1000, // Yüksek limit - trust proxy kullanıldığı için daha esnek
   message: 'Çok fazla istek gönderildi, lütfen daha sonra tekrar deneyin.',
   standardHeaders: true,
   legacyHeaders: false,
@@ -12,7 +13,7 @@ export const apiLimiter = rateLimit({
 // Login endpoint için özel rate limiter (daha sıkı)
 export const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 dakika
-  max: 5, // Her IP için 15 dakikada maksimum 5 login denemesi
+  max: 20, // Yüksek limit - trust proxy kullanıldığı için daha esnek
   message: 'Çok fazla giriş denemesi, lütfen 15 dakika sonra tekrar deneyin.',
   skipSuccessfulRequests: true,
   standardHeaders: true,
@@ -22,7 +23,7 @@ export const loginLimiter = rateLimit({
 // Backend password verification için özel rate limiter
 export const backendPasswordLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 dakika
-  max: 3, // Her IP için 15 dakikada maksimum 3 deneme
+  max: 10, // Yüksek limit - trust proxy kullanıldığı için daha esnek
   message: 'Çok fazla şifre denemesi, lütfen 15 dakika sonra tekrar deneyin.',
   standardHeaders: true,
   legacyHeaders: false,
