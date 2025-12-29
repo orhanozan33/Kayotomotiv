@@ -218,9 +218,23 @@ app.listen(PORT, async () => {
   // Run migrations if needed
   await checkAndRunMigrations();
   
-  // Auto-check expired reservations every minute
+  // Auto-check expired reservations every minute (only if vehicles table exists)
   setInterval(async () => {
     try {
+      // Check if vehicles table exists before running query
+      const tableCheck = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'vehicles'
+        );
+      `);
+      
+      if (!tableCheck.rows[0].exists) {
+        // Table doesn't exist yet, skip this check
+        return;
+      }
+      
       await pool.query(
         `UPDATE vehicles 
          SET status = 'available', reservation_end_time = NULL 
@@ -229,7 +243,10 @@ app.listen(PORT, async () => {
          AND reservation_end_time < CURRENT_TIMESTAMP`
       );
     } catch (error) {
-      console.error('Error checking expired reservations:', error);
+      // Only log error if it's not a "table does not exist" error
+      if (!error.message.includes('does not exist') && error.code !== '42P01') {
+        console.error('Error checking expired reservations:', error);
+      }
     }
   }, 60000); // Check every minute
 });
