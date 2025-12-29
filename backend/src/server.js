@@ -195,6 +195,26 @@ app.get('/', (req, res) => {
   });
 });
 
+// API root endpoint
+app.get('/api', (req, res) => {
+  res.json({ 
+    message: 'Kayotomotiv API',
+    status: 'running',
+    version: '1.0.0',
+    endpoints: {
+      auth: '/api/auth',
+      vehicles: '/api/vehicles',
+      reservations: '/api/reservations',
+      repair: '/api/repair',
+      carWash: '/api/car-wash',
+      pages: '/api/pages',
+      customers: '/api/customers',
+      settings: '/api/settings'
+    },
+    timestamp: new Date().toISOString()
+  });
+});
+
 // API Routes
 app.use('/api/auth', loginLimiter, authRoutes);
 app.use('/api/vehicles', vehicleRoutes);
