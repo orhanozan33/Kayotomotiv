@@ -51,7 +51,7 @@ export const createCarWashAppointmentSchema = Joi.object({
     }),
   addon_ids: Joi.alternatives().try(
     Joi.array().items(uuidSchema),
-    Joi.allow(null)
+    Joi.valid(null)
   ).optional(),
   notes: Joi.string().max(5000).optional().allow(null)
 });
