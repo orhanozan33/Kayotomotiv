@@ -232,6 +232,30 @@ app.use('/api/backend', backendRoutes);
 // Vehicle image from external source (public endpoint)
 app.get('/api/vehicle-image/external', vehicleImageController.getVehicleImageFromExternal);
 
+// Serve frontend static files (production build)
+// Only serve if frontend build directory exists
+const frontendBuildPath = path.join(__dirname, '../../frontend/dist');
+try {
+  if (fs.existsSync(frontendBuildPath)) {
+    app.use(express.static(frontendBuildPath));
+    
+    // SPA fallback - tüm bilinmeyen route'ları index.html'e yönlendir (API route'ları hariç)
+    app.get('*', (req, res, next) => {
+      // API route'larını atla
+      if (req.path.startsWith('/api')) {
+        return next();
+      }
+      res.sendFile(path.join(frontendBuildPath, 'index.html'));
+    });
+    
+    console.log('✅ Frontend static files serving enabled');
+  } else {
+    console.log('⚠️  Frontend build directory not found, skipping static file serving');
+  }
+} catch (error) {
+  console.error('⚠️  Error setting up frontend static serving:', error.message);
+}
+
 // Error handling
 app.use(notFoundHandler);
 app.use(errorHandler);
