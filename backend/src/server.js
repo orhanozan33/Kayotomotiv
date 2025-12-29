@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import pool from './config/database.js';
 import { validateEnvironmentVariables } from './utils/security.js';
@@ -42,6 +43,61 @@ try {
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// Migration fonksiyonu
+async function checkAndRunMigrations() {
+  try {
+    // vehicles tablosunun var olup olmadığını kontrol et
+    const checkResult = await pool.query(`
+      SELECT EXISTS (
+        SELECT FROM information_schema.tables 
+        WHERE table_schema = 'public' 
+        AND table_name = 'vehicles'
+      );
+    `);
+    
+    if (checkResult.rows[0].exists) {
+      console.log('✅ Database tables already exist, skipping migrations');
+      return;
+    }
+    
+    console.log('⚠️  Database tables not found, running migrations...');
+    const migrationsDir = path.join(__dirname, '../migrations');
+    const files = fs.readdirSync(migrationsDir)
+      .filter(file => file.endsWith('.sql'))
+      .sort();
+    
+    console.log(`Found ${files.length} migration files`);
+    
+    for (const file of files) {
+      try {
+        console.log(`Running migration: ${file}`);
+        const sql = fs.readFileSync(path.join(migrationsDir, file), 'utf8');
+        await pool.query(sql);
+        console.log(`✅ Completed: ${file}`);
+      } catch (error) {
+        // Eğer tablo zaten varsa hata verme (idempotent migrations)
+        if (error.message.includes('already exists') || 
+            error.message.includes('duplicate') || 
+            error.code === '42P07' || 
+            error.code === '42710') {
+          console.log(`⚠️  Migration ${file} already applied (skipping)`);
+        } else {
+          throw error;
+        }
+      }
+    }
+    
+    console.log('✅ All migrations completed successfully');
+  } catch (error) {
+    console.error('❌ Migration check failed:', error.message);
+    // Production'da migration hatası fatal olabilir, development'ta devam et
+    if (process.env.NODE_ENV === 'production') {
+      console.error('Production ortamında migration hatası fatal!');
+      // Server'ı durdurmak yerine sadece uyarı ver, çünkü tablolar zaten olabilir
+    }
+  }
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -130,9 +186,12 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Start server
-app.listen(PORT, () => {
+app.listen(PORT, async () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+  
+  // Run migrations if needed
+  await checkAndRunMigrations();
   
   // Auto-check expired reservations every minute
   setInterval(async () => {
