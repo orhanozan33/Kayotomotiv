@@ -234,7 +234,7 @@ app.get('/api/vehicle-image/external', vehicleImageController.getVehicleImageFro
 
 // Serve frontend static files (production build)
 // Only serve if frontend build directory exists
-const frontendBuildPath = path.join(__dirname, '../../frontend/dist');
+const frontendBuildPath = path.join(__dirname, '../public');
 try {
   if (fs.existsSync(frontendBuildPath)) {
     app.use(express.static(frontendBuildPath));
