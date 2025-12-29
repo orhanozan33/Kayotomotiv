@@ -90,4 +90,9 @@ export const contactAPI = {
   createMessage: (messageData) => api.post('/contact', messageData)
 }
 
+// Settings API
+export const settingsAPI = {
+  getSocialMediaLinks: () => api.get('/settings/social-media')
+}
+
 

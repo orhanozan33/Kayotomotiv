@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { useState, useEffect, useCallback } from 'react'
 import LanguageSwitcher from './LanguageSwitcher'
 import CarBrandsSlider from './CarBrandsSlider'
+import { settingsAPI } from '../services/api'
 import './Layout.css'
 
 function Layout({ children }) {
@@ -44,13 +45,13 @@ function Layout({ children }) {
   useEffect(() => {
     const fetchSocialLinks = async () => {
       try {
-        const response = await fetch('http://localhost:3001/api/settings/social-media')
-        const data = await response.json()
-        if (data.links) {
-          setSocialLinks(data.links)
+        const response = await settingsAPI.getSocialMediaLinks()
+        if (response.data && response.data.links) {
+          setSocialLinks(response.data.links)
         }
       } catch (error) {
         console.error('Error fetching social media links:', error)
+        // Hata durumunda sessizce devam et, varsayılan boş değerler kullanılacak
       }
     }
     fetchSocialLinks()
