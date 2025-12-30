@@ -1,5 +1,5 @@
 // Monorepo build consolidation script
-// Bu script frontend ve backoffice dist klasörlerini root'ta birleştirir
+// Bu script root'ta dist klasörü oluşturur (Vercel için gerekli)
 
 const fs = require('fs');
 const path = require('path');
@@ -11,10 +11,13 @@ const backofficeDist = path.join(__dirname, 'backoffice', 'dist');
 // Root dist klasörünü oluştur
 if (!fs.existsSync(rootDist)) {
   fs.mkdirSync(rootDist, { recursive: true });
+  console.log('✅ Root dist klasörü oluşturuldu');
 }
 
 // .vercel-output dosyası oluştur (Vercel için)
-fs.writeFileSync(path.join(rootDist, '.vercel-output'), 'ok');
+const vercelOutput = path.join(rootDist, '.vercel-output');
+fs.writeFileSync(vercelOutput, 'ok');
+console.log('✅ .vercel-output dosyası oluşturuldu');
 
 // Frontend ve backoffice dist'lerinin var olduğunu kontrol et
 if (fs.existsSync(frontendDist)) {
@@ -29,5 +32,11 @@ if (fs.existsSync(backofficeDist)) {
   console.log('⚠️  Backoffice dist bulunamadı');
 }
 
-console.log('✅ Build consolidation tamamlandı');
+// Root dist'e bir index.html placeholder ekle (Vercel için)
+const indexPlaceholder = path.join(rootDist, 'index.html');
+if (!fs.existsSync(indexPlaceholder)) {
+  fs.writeFileSync(indexPlaceholder, '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=/"></head><body>Redirecting...</body></html>');
+  console.log('✅ Root index.html placeholder oluşturuldu');
+}
 
+console.log('✅ Build consolidation tamamlandı');
