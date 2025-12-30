@@ -5,11 +5,12 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run clean && npm run build:frontend && npm run build:backoffice && npm run ensure-dist",
-    "clean": "node -e \"const fs=require('fs');const path=require('path');const dist=path.join(__dirname,'dist');if(fs.existsSync(dist)){fs.rmSync(dist,{recursive:true,force:true});}fs.mkdirSync(dist,{recursive:true});\"",
-    "build:frontend": "cd frontend && npm install && npm run build",
-    "build:backoffice": "cd backoffice && npm install && npm run build",
-    "ensure-dist": "node -e \"const fs=require('fs');const path=require('path');const dist=path.join(__dirname,'dist');if(!fs.existsSync(dist)){fs.mkdirSync(dist,{recursive:true});}const index=path.join(dist,'index.html');if(!fs.existsSync(index)){fs.writeFileSync(index,'<!DOCTYPE html><html><head><title>Loading</title></head><body><h1>Loading...</h1></body></html>');}console.log('Dist folder verified:',dist);\"",
+    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run verify-dist",
+    "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});fs.mkdirSync(d,{recursive:true});console.log('Dist cleaned');\"",
+    "install:all": "cd frontend && npm install && cd ../backoffice && npm install && cd ..",
+    "build:frontend": "cd frontend && npm run build && cd ..",
+    "build:backoffice": "cd backoffice && npm run build && cd ..",
+    "verify-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(!fs.existsSync(d)){fs.mkdirSync(d,{recursive:true});}const i=path.join(d,'index.html');if(!fs.existsSync(i)){fs.writeFileSync(i,'<!DOCTYPE html><html><head><title>App</title></head><body><h1>Loading...</h1></body></html>');}console.log('Dist verified at:',d);console.log('Files:',fs.readdirSync(d));\"",
     "vercel-build": "npm run build:all"
   }
 }

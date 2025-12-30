@@ -3,13 +3,14 @@ import react from '@vitejs/plugin-react'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 
 export default defineConfig({
   plugins: [react()],
   build: {
-    outDir: path.resolve(__dirname, '../dist'),
-    emptyOutDir: true
+    outDir: path.resolve(__dirname, '..', 'dist'),
+    emptyOutDir: false
   },
   server: {
     port: 3000,
