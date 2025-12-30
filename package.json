@@ -5,10 +5,9 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run build:frontend && npm run build:backoffice && npm run build:consolidate",
+    "build:all": "npm run build:frontend && npm run build:backoffice",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backoffice": "cd backoffice && npm install && npm run build",
-    "build:consolidate": "node build-consolidate.js",
     "vercel-build": "npm run build:all"
   }
 }
