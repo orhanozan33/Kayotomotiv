@@ -16,15 +16,11 @@
     },
     {
       "source": "/admin/(.*)",
-      "destination": "/backoffice/dist/$1"
-    },
-    {
-      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|webp))",
-      "destination": "/frontend/dist/$1"
+      "destination": "/admin/$1"
     },
     {
       "source": "/(.*)",
-      "destination": "/frontend/dist/index.html"
+      "destination": "/index.html"
     }
   ]
 }
