@@ -32,7 +32,25 @@ function LoginPage({ onLogin }) {
       localStorage.setItem('user', JSON.stringify(user))
       onLogin(true)
     } catch (err) {
-      setError(err.response?.data?.error || t('login.error'))
+      // Handle error - convert object to string if needed
+      let errorMessage = t('login.error')
+      
+      if (err.response?.data) {
+        const errorData = err.response.data
+        // If error is an object, extract message or stringify
+        if (typeof errorData.error === 'object' && errorData.error !== null) {
+          errorMessage = errorData.error.message || errorData.error.code || JSON.stringify(errorData.error)
+        } else if (typeof errorData.error === 'string') {
+          errorMessage = errorData.error
+        } else if (errorData.message) {
+          errorMessage = errorData.message
+        }
+      } else if (err.message) {
+        errorMessage = err.message
+      }
+      
+      setError(errorMessage)
+      console.error('Login error:', err)
     } finally {
       setLoading(false)
     }

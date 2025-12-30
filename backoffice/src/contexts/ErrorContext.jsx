@@ -9,7 +9,12 @@ export function ErrorProvider({ children }) {
   const [success, setSuccess] = useState(null)
 
   const showError = (message) => {
-    setError(message)
+    // Ensure message is always a string, not an object
+    if (typeof message === 'object' && message !== null) {
+      setError(message.message || message.error || JSON.stringify(message))
+    } else {
+      setError(String(message || 'An error occurred'))
+    }
   }
 
   const hideError = () => {
