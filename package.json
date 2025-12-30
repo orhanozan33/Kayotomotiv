@@ -5,7 +5,8 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run verify-dist",
+    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run copy-api && npm run verify-dist",
+    "copy-api": "node -e \"const fs=require('fs'),path=require('path');const src=path.join(__dirname,'backend/api/index.js');const dest=path.join(__dirname,'api/index.js');if(!fs.existsSync('api'))fs.mkdirSync('api',{recursive:true});let content=fs.readFileSync(src,'utf8');content=content.replace(\"from '../src/server.js'\",\"from '../backend/src/server.js'\");fs.writeFileSync(dest,content);console.log('✅ API copied to root');\"",
     "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');try{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});}catch(e){console.error('Clean error:',e.message);}fs.mkdirSync(d,{recursive:true});console.log('✅ Dist created:',d);process.exit(0);\"",
     "install:all": "cd frontend && npm install && cd ../backoffice && npm install && cd ..",
     "build:frontend": "cd frontend && npm run build && cd ..",
