@@ -5,12 +5,12 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run verify-dist",
-    "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');try{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});}catch(e){}fs.mkdirSync(d,{recursive:true});console.log('✅ Dist cleaned at:',d);\"",
+    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run create-dist-index",
+    "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');try{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});}catch(e){}fs.mkdirSync(d,{recursive:true});console.log('Dist created at:',d);\"",
     "install:all": "cd frontend && npm install && cd ../backoffice && npm install && cd ..",
     "build:frontend": "cd frontend && npm run build && cd ..",
     "build:backoffice": "cd backoffice && npm run build && cd ..",
-    "verify-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(!fs.existsSync(d)){console.log('❌ Dist not found, creating...');fs.mkdirSync(d,{recursive:true});}const files=fs.readdirSync(d);console.log('✅ Dist verified at:',d);console.log('✅ Files in dist:',files.join(', '));const i=path.join(d,'index.html');if(!fs.existsSync(i)){console.log('⚠️  index.html not found, creating placeholder...');fs.writeFileSync(i,'<!DOCTYPE html><html><head><title>App</title></head><body><h1>Loading...</h1></body></html>');}console.log('✅ Build verification complete');\"",
+    "create-dist-index": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(!fs.existsSync(d)){fs.mkdirSync(d,{recursive:true});}const i=path.join(d,'index.html');if(!fs.existsSync(i)){fs.writeFileSync(i,'<!DOCTYPE html><html><head><title>App</title></head><body><h1>Loading...</h1></body></html>');}const files=fs.readdirSync(d);console.log('Dist folder exists at:',d);console.log('Files:',files.join(', '));\"",
     "vercel-build": "npm run build:all"
   }
 }
