@@ -14,6 +14,11 @@ if (!API_BASE_URL) {
   API_BASE_URL = 'http://localhost:3001/api'
 }
 
+// Debug: API base URL'yi console'a yazdır
+console.log('🔧 Backoffice API Base URL:', API_BASE_URL)
+console.log('🔧 Window location origin:', window.location.origin)
+console.log('🔧 Production mode:', import.meta.env.PROD)
+
 const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 30000, // 30 seconds timeout
