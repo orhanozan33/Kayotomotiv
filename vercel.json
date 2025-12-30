@@ -4,6 +4,11 @@
   "outputDirectory": ".",
   "installCommand": "npm install",
   "framework": null,
+  "functions": {
+    "backend/api/index.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
@@ -14,30 +19,12 @@
       "destination": "/backoffice/dist/$1"
     },
     {
-      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
+      "source": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot|webp))",
       "destination": "/frontend/dist/$1"
     },
     {
       "source": "/(.*)",
       "destination": "/frontend/dist/index.html"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "/backend/api/index.js"
-    },
-    {
-      "src": "/admin/(.*)",
-      "dest": "/backoffice/dist/$1"
-    },
-    {
-      "src": "/(.*\\.(js|css|ico|png|jpg|jpeg|gif|svg|woff|woff2|ttf|eot))",
-      "dest": "/frontend/dist/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/frontend/dist/index.html"
     }
   ]
 }
