@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Kayoto Automotive Platform - Monorepo",
   "private": true,
+  "engines": {
+    "node": "18.x"
+  },
   "scripts": {
     "build": "npm run build:all",
     "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run copy-api && npm run verify-dist",
