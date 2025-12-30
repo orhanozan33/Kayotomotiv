@@ -1,111 +1,100 @@
-# Vercel Environment Variables Import Kullanımı
+# Vercel Environment Variables Import
 
-## 📋 Hazır Dosyalar
+## 📁 Dosyalar
 
-1. **vercel-env-import.env** - .env formatında (manuel kopyala-yapıştır için)
-2. **vercel-env-import.json** - JSON formatında
-3. **vercel-env-import.ps1** - Otomatik import script'i
+1. **`vercel-env-import.json`** - JSON formatında environment variables
+2. **`vercel-env-import.env`** - .env formatında environment variables
+3. **`vercel-env-otomatik-import.ps1`** - Otomatik import script'i
 
 ---
 
-## 🚀 YÖNTEM 1: Otomatik Import (ÖNERİLEN ✅)
+## 🚀 Otomatik Import (Önerilen)
 
 ### PowerShell Script ile:
 
 ```powershell
-cd "C:\Users\orhan\OneDrive\Masaüstü\oto tamir"
-powershell -ExecutionPolicy Bypass -File "vercel-env-import.ps1"
+powershell -ExecutionPolicy Bypass -File vercel-env-otomatik-import.ps1
 ```
 
 Bu script:
-- ✅ Tüm environment variables'ı otomatik ekler
-- ✅ Production, Preview, Development için hepsini ayarlar
-- ✅ Zaten varsa günceller
+- ✅ Vercel projesini bulur
+- ✅ Tüm environment variables'ları ekler
+- ✅ Mevcut olanları günceller
+- ✅ Production, Preview, Development için ekler
 
 ---
 
-## 🚀 YÖNTEM 2: Manuel Import (Vercel Dashboard)
+## 📋 Manuel Import
 
-### ADIM 1: Environment Variables Bölümünü Açın
+### Vercel Dashboard'dan:
 
-1. **Vercel Dashboard:**
+1. **Proje Settings'e git:**
    ```
-   https://vercel.com/orhanozan33-1123s-projects/kayoto/settings/environment-variables
+   https://vercel.com/orhanozan33/kayoto/settings/environment-variables
    ```
 
-2. **"Add New"** butonuna tıklayın
+2. **Her bir environment variable'ı ekle:**
 
-### ADIM 2: Her Değişkeni Tek Tek Ekleyin
+   ```
+   DB_HOST=db.xlioxvlohlgpswhpjawa.supabase.co
+   DB_PORT=5432
+   DB_NAME=postgres
+   DB_USER=postgres
+   DB_PASSWORD=orhanozan33
+   JWT_SECRET=ba4890d271a19ad517a4b2b7f0909f2e8112889eec86562d5c045965ebc8398b
+   BACKEND_PASSWORD_HASH=$2a$10$2BqRLz7wMX5DdoxyIg9eJeS/Ft4Fmc7.ka9ukMhSnbFrT7OGMXH4m
+   FRONTEND_URL=https://kayoto.vercel.app,https://kayoto.vercel.app/admin
+   ```
 
-**vercel-env-import.env** dosyasını açın ve her satırı kopyalayıp ekleyin:
-
-1. **DB_HOST**
-   - Key: `DB_HOST`
-   - Value: `db.xlioxvlohlgpswhpjawa.supabase.co`
-   - Environment: Production, Preview, Development (hepsini seçin)
-
-2. **DB_PORT**
-   - Key: `DB_PORT`
-   - Value: `5432`
-   - Environment: Production, Preview, Development
-
-3. **DB_NAME**
-   - Key: `DB_NAME`
-   - Value: `postgres`
-   - Environment: Production, Preview, Development
-
-4. **DB_USER**
-   - Key: `DB_USER`
-   - Value: `postgres`
-   - Environment: Production, Preview, Development
-
-5. **DB_PASSWORD**
-   - Key: `DB_PASSWORD`
-   - Value: `orhanozan33`
-   - Environment: Production, Preview, Development
-
-6. **JWT_SECRET**
-   - Key: `JWT_SECRET`
-   - Value: `ba4890d271a19ad517a4b2b7f0909f2e8112889eec86562d5c045965ebc8398b`
-   - Environment: Production, Preview, Development
-
-7. **BACKEND_PASSWORD_HASH**
-   - Key: `BACKEND_PASSWORD_HASH`
-   - Value: `$2a$10$2BqRLz7wMX5DdoxyIg9eJeS/Ft4Fmc7.ka9ukMhSnbFrT7OGMXH4m`
-   - Environment: Production, Preview, Development
-
-8. **FRONTEND_URL**
-   - Key: `FRONTEND_URL`
-   - Value: `https://kayoto.vercel.app`
-   - Environment: Production, Preview, Development
+3. **Her birini şu environment'lara ekle:**
+   - ✅ Production
+   - ✅ Preview
+   - ✅ Development
 
 ---
 
-## 🚀 YÖNTEM 3: Vercel CLI ile (Alternatif)
+## 📝 Environment Variables Listesi
 
-```powershell
-cd "C:\Users\orhan\OneDrive\Masaüstü\oto tamir"
-vercel env add DB_HOST production
-# Value: db.xlioxvlohlgpswhpjawa.supabase.co
-
-vercel env add DB_PORT production
-# Value: 5432
-
-# ... (her değişken için tekrarlayın)
-```
-
----
-
-## ✅ Önerilen Yöntem
-
-**Otomatik Script kullanın:**
-```powershell
-powershell -ExecutionPolicy Bypass -File "vercel-env-import.ps1"
-```
-
-Bu en hızlı ve en güvenli yöntem!
+| Key | Value |
+|-----|-------|
+| `DB_HOST` | `db.xlioxvlohlgpswhpjawa.supabase.co` |
+| `DB_PORT` | `5432` |
+| `DB_NAME` | `postgres` |
+| `DB_USER` | `postgres` |
+| `DB_PASSWORD` | `orhanozan33` |
+| `JWT_SECRET` | `ba4890d271a19ad517a4b2b7f0909f2e8112889eec86562d5c045965ebc8398b` |
+| `BACKEND_PASSWORD_HASH` | `$2a$10$2BqRLz7wMX5DdoxyIg9eJeS/Ft4Fmc7.ka9ukMhSnbFrT7OGMXH4m` |
+| `FRONTEND_URL` | `https://kayoto.vercel.app,https://kayoto.vercel.app/admin` |
 
 ---
 
-**Hazır olduğunuzda script'i çalıştırın!** 🚀
+## ✅ Kontrol
 
+Environment variables eklendikten sonra:
+
+1. **Vercel Dashboard'da kontrol et:**
+   ```
+   https://vercel.com/orhanozan33/kayoto/settings/environment-variables
+   ```
+
+2. **Deployment'ı yeniden başlat:**
+   - Deployments > Son deployment > Redeploy
+
+---
+
+## 🔧 Sorun Giderme
+
+### Script çalışmıyorsa:
+
+1. **Vercel token kontrol et:**
+   - `vercel-env-otomatik-import.ps1` dosyasında `$VERCEL_TOKEN` değerini kontrol et
+
+2. **Proje adı kontrol et:**
+   - `$PROJECT_NAME = "kayoto"` doğru mu?
+
+3. **Manuel ekle:**
+   - Vercel Dashboard'dan manuel olarak ekle
+
+---
+
+**Hazır! 🎉**
