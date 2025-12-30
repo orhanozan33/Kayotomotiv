@@ -10,7 +10,8 @@ export default defineConfig({
   plugins: [react()],
   build: {
     outDir: path.resolve(__dirname, '..', 'dist', 'admin'),
-    emptyOutDir: false
+    emptyOutDir: false,
+    chunkSizeWarningLimit: 1000
   },
   server: {
     port: 3002,
