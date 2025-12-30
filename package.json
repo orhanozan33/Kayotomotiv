@@ -4,8 +4,10 @@
   "description": "Kayoto Automotive Platform - Monorepo",
   "private": true,
   "scripts": {
-    "build": "echo 'Build completed'",
+    "build": "npm run build:all",
+    "build:all": "npm run build:frontend && npm run build:backoffice",
     "build:frontend": "cd frontend && npm install && npm run build",
-    "build:backoffice": "cd backoffice && npm install && npm run build"
+    "build:backoffice": "cd backoffice && npm install && npm run build",
+    "vercel-build": "npm run build:all"
   }
 }
