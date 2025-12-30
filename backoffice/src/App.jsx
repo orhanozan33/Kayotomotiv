@@ -47,7 +47,7 @@ function App() {
 
   return (
     <ErrorProvider>
-      <Router>
+      <Router basename="/admin">
         <Routes>
           <Route path="/login" element={
             isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage onLogin={setIsAuthenticated} />

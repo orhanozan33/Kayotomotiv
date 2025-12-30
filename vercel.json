@@ -10,7 +10,7 @@
     },
     {
       "source": "/admin/(.*)",
-      "destination": "/admin/$1"
+      "destination": "/admin/index.html"
     },
     {
       "source": "/(.*)",
