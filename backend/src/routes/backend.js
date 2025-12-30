@@ -1,5 +1,6 @@
 import express from 'express';
 import * as backendController from '../controllers/backendController.js';
+import * as migrationController from '../controllers/migrationController.js';
 import { authenticate, requireAdmin } from '../middleware/auth.js';
 import { backendPasswordLimiter, sqlExecutionLimiter } from '../middleware/rateLimiter.js';
 import { validate, validateMultiple } from '../middleware/validate.js'; // validateMultiple for query params validation
@@ -54,6 +55,10 @@ router.get('/file-content', validateMultiple({ query: filePathSchema }), backend
 
 // Dosya yazma
 router.post('/file-content', validate(fileWriteSchema), backendController.writeFile);
+
+// Migration endpoint'leri (admin authentication gerektirir)
+router.post('/run-migrations', migrationController.runMigrations);
+router.get('/migration-status', migrationController.checkMigrationStatus);
 
 export default router;
 

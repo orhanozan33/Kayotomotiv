@@ -1,7 +1,18 @@
 import axios from 'axios'
 
-// API base URL'yi ayarla - eğer VITE_API_URL varsa kullan, yoksa default
-let API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+// API base URL'yi ayarla - eğer VITE_API_URL varsa kullan, yoksa production'da backend URL'i kullan
+let API_BASE_URL = import.meta.env.VITE_API_URL
+
+// Production'da ve VITE_API_URL yoksa, otomatik olarak backend URL'ini kullan
+if (!API_BASE_URL && import.meta.env.PROD) {
+  // Monorepo: Aynı domain'de /api endpoint'i kullan
+  API_BASE_URL = window.location.origin + '/api'
+}
+
+// Development için default
+if (!API_BASE_URL) {
+  API_BASE_URL = 'http://localhost:3001/api'
+}
 
 // Production'da ve localhost değilse, mutlaka /api ekle
 const isProduction = import.meta.env.PROD

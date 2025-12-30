@@ -24,18 +24,28 @@ import receiptsRoutes from './routes/receipts.js';
 import contactRoutes from './routes/contact.js';
 import backendRoutes from './routes/backend.js';
 import * as vehicleImageController from './controllers/vehicleImageController.js';
+import * as migrationController from './controllers/migrationController.js';
 
 dotenv.config();
 
 // Environment variable kontrolü (başlangıçta)
+// Vercel serverless environment'ta process.exit() kullanmayın - function crash olur
 try {
   validateEnvironmentVariables();
   console.log('✅ Environment variables doğrulandı');
 } catch (error) {
   console.error('❌ Environment variable hatası:', error.message);
-  if (process.env.NODE_ENV === 'production') {
+  // Vercel serverless environment'ta process.exit() kullanma
+  // Sadece uyar, ilk istekte hata alınacak
+  if (process.env.VERCEL || process.env.VERCEL_ENV) {
+    console.warn('⚠️  Vercel serverless environment: Environment variable\'lar eksik olabilir');
+    console.warn('⚠️  İlk istekte hata alınabilir - environment variables\'ları kontrol edin');
+  } else if (process.env.NODE_ENV === 'production') {
     console.error('Production ortamında tüm environment variable\'lar gerekli!');
-    process.exit(1);
+    // Sadece non-serverless production'da exit
+    if (!process.env.VERCEL && !process.env.VERCEL_ENV) {
+      process.exit(1);
+    }
   } else {
     console.warn('⚠️  Development modu: Bazı environment variable\'lar eksik');
   }
@@ -143,6 +153,12 @@ app.use(cors({
     // Same-origin requests (mobile apps, Postman, etc.)
     if (!origin) return callback(null, true);
     
+    // Vercel URL'lerine otomatik izin ver (hem production hem alias URL'leri)
+    if (origin.includes('.vercel.app') || origin.includes('localhost')) {
+      return callback(null, true);
+    }
+    
+    // FRONTEND_URL'deki URL'lere izin ver
     if (allowedOrigins.length === 0 || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -229,6 +245,8 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/receipts', receiptsRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/backend', backendRoutes);
+// Public migration endpoint - sadece ilk kurulum için (users tablosu yoksa)
+app.post('/api/setup/run-migrations', migrationController.runMigrationsPublic);
 // Vehicle image from external source (public endpoint)
 app.get('/api/vehicle-image/external', vehicleImageController.getVehicleImageFromExternal);
 
@@ -260,46 +278,58 @@ try {
 app.use(notFoundHandler);
 app.use(errorHandler);
 
-// Start server
-app.listen(PORT, async () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  
-  // Run migrations if needed
-  await checkAndRunMigrations();
-  
-  // Auto-check expired reservations every minute (only if vehicles table exists)
-  setInterval(async () => {
-    try {
-      // Check if vehicles table exists before running query
-      const tableCheck = await pool.query(`
-        SELECT EXISTS (
-          SELECT FROM information_schema.tables 
-          WHERE table_schema = 'public' 
-          AND table_name = 'vehicles'
+// Start server only if not in Vercel serverless environment
+// Vercel serverless functions don't need app.listen()
+if (process.env.VERCEL !== '1' && !process.env.VERCEL_ENV) {
+  app.listen(PORT, async () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
+    
+    // Run migrations if needed
+    await checkAndRunMigrations();
+    
+    // Auto-check expired reservations every minute (only if vehicles table exists)
+    setInterval(async () => {
+      try {
+        // Check if vehicles table exists before running query
+        const tableCheck = await pool.query(`
+          SELECT EXISTS (
+            SELECT FROM information_schema.tables 
+            WHERE table_schema = 'public' 
+            AND table_name = 'vehicles'
+          );
+        `);
+        
+        if (!tableCheck.rows[0].exists) {
+          // Table doesn't exist yet, skip this check
+          return;
+        }
+        
+        await pool.query(
+          `UPDATE vehicles 
+           SET status = 'available', reservation_end_time = NULL 
+           WHERE status = 'reserved' 
+           AND reservation_end_time IS NOT NULL 
+           AND reservation_end_time < CURRENT_TIMESTAMP`
         );
-      `);
-      
-      if (!tableCheck.rows[0].exists) {
-        // Table doesn't exist yet, skip this check
-        return;
+      } catch (error) {
+        // Only log error if it's not a "table does not exist" error
+        if (!error.message.includes('does not exist') && error.code !== '42P01') {
+          console.error('Error checking expired reservations:', error);
+        }
       }
-      
-      await pool.query(
-        `UPDATE vehicles 
-         SET status = 'available', reservation_end_time = NULL 
-         WHERE status = 'reserved' 
-         AND reservation_end_time IS NOT NULL 
-         AND reservation_end_time < CURRENT_TIMESTAMP`
-      );
-    } catch (error) {
-      // Only log error if it's not a "table does not exist" error
-      if (!error.message.includes('does not exist') && error.code !== '42P01') {
-        console.error('Error checking expired reservations:', error);
-      }
-    }
-  }, 60000); // Check every minute
-});
+    }, 60000); // Check every minute
+  });
+} else {
+  // Vercel serverless environment - migrations already run in Supabase
+  // Migration'lar Supabase'de çalıştırıldı, serverless'ta çalıştırmaya gerek yok
+  // Sadece veritabanı bağlantısını test et
+  pool.query('SELECT 1').then(() => {
+    console.log('✅ Database connection successful');
+  }).catch(err => {
+    console.error('❌ Database connection failed:', err.message);
+  });
+}
 
 export default app;
 

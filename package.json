@@ -1,0 +1,11 @@
+{
+  "name": "kayoto",
+  "version": "1.0.0",
+  "description": "Kayoto Automotive Platform - Monorepo",
+  "private": true,
+  "scripts": {
+    "build": "echo 'Build completed'",
+    "build:frontend": "cd frontend && npm install && npm run build",
+    "build:backoffice": "cd backoffice && npm install && npm run build"
+  }
+}

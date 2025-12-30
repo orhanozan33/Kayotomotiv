@@ -1,6 +1,18 @@
 import axios from 'axios'
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api'
+// API base URL - production'da otomatik backend URL'i kullan
+let API_BASE_URL = import.meta.env.VITE_API_URL
+
+// Production'da ve VITE_API_URL yoksa, otomatik olarak backend URL'ini kullan
+if (!API_BASE_URL && import.meta.env.PROD) {
+  // Monorepo: Aynı domain'de /api endpoint'i kullan
+  API_BASE_URL = window.location.origin + '/api'
+}
+
+// Development için default
+if (!API_BASE_URL) {
+  API_BASE_URL = 'http://localhost:3001/api'
+}
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -204,6 +216,8 @@ export const backendAPI = {
   executeSQL: (sql) => api.post('/backend/execute-sql', { sql }),
   getFiles: (directory) => api.get('/backend/files', { params: { directory } }),
   readFile: (filePath) => api.get('/backend/file-content', { params: { filePath } }),
-  writeFile: (filePath, content) => api.post('/backend/file-content', { filePath, content })
+  writeFile: (filePath, content) => api.post('/backend/file-content', { filePath, content }),
+  runMigrations: () => api.post('/backend/run-migrations'),
+  getMigrationStatus: () => api.get('/backend/migration-status')
 }
 

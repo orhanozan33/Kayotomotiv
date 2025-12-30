@@ -39,6 +39,24 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
+  // Table does not exist error (42P01)
+  if (err.code === '42P01' || (err.message && err.message.includes('does not exist'))) {
+    return res.status(500).json({
+      error: 'Database schema not initialized',
+      message: 'Please run database migrations first',
+      ...(isProduction ? {} : { details: err.message })
+    });
+  }
+
+  // Connection errors
+  if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.message?.includes('connection')) {
+    return res.status(500).json({
+      error: 'Database connection failed',
+      message: 'Unable to connect to database',
+      ...(isProduction ? {} : { details: err.message })
+    });
+  }
+
   // JWT errors
   if (err.name === 'JsonWebTokenError') {
     return res.status(401).json({
@@ -53,14 +71,25 @@ export const errorHandler = (err, req, res, next) => {
     });
   }
 
-  // Default error
+  // Default error - Production'da da bazı hataları detaylı göster
   const statusCode = err.statusCode || 500;
-  const message = isProduction 
+  
+  // Önemli hataları production'da da detaylı göster
+  const showDetails = !isProduction || 
+    err.message?.includes('Database') || 
+    err.message?.includes('JWT_SECRET') ||
+    err.message?.includes('connection') ||
+    err.code === '42P01' ||
+    err.code === 'ECONNREFUSED' ||
+    err.code === 'ENOTFOUND';
+  
+  const message = isProduction && !showDetails
     ? (statusCode === 500 ? 'Internal server error' : err.message)
     : err.message;
 
   res.status(statusCode).json({
     error: message,
+    ...(showDetails ? { code: err.code, details: err.message } : {}),
     ...(isProduction ? {} : { stack: err.stack })
   });
 };

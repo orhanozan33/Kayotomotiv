@@ -23,6 +23,11 @@ function BackendPage() {
   const [fileContent, setFileContent] = useState('')
   const [fileLoading, setFileLoading] = useState(false)
   const [saving, setSaving] = useState(false)
+  
+  // Migration states
+  const [migrationStatus, setMigrationStatus] = useState(null)
+  const [migrationLoading, setMigrationLoading] = useState(false)
+  const [migrationResult, setMigrationResult] = useState(null)
 
   useEffect(() => {
     // Sayfa yüklendiğinde localStorage'dan authentication durumunu kontrol et
@@ -30,6 +35,7 @@ function BackendPage() {
     if (backendAuth === 'true') {
       setIsAuthenticated(true)
       loadFiles()
+      loadMigrationStatus()
     }
   }, [])
 
@@ -136,6 +142,38 @@ function BackendPage() {
     }
   }
 
+  const loadMigrationStatus = async () => {
+    try {
+      const response = await backendAPI.getMigrationStatus()
+      setMigrationStatus(response.data)
+    } catch (error) {
+      console.error('Migration status yüklenemedi:', error)
+    }
+  }
+
+  const handleRunMigrations = async () => {
+    if (!confirm('Tüm migration\'ları çalıştırmak istediğinizden emin misiniz?')) {
+      return
+    }
+    
+    setMigrationLoading(true)
+    setMigrationResult(null)
+    try {
+      const response = await backendAPI.runMigrations()
+      setMigrationResult(response.data)
+      showSuccess('Migration\'lar başarıyla çalıştırıldı!')
+      loadMigrationStatus()
+    } catch (error) {
+      setMigrationResult({
+        error: true,
+        message: error.response?.data?.error || 'Migration hatası oluştu'
+      })
+      showError('Migration\'lar çalıştırılamadı')
+    } finally {
+      setMigrationLoading(false)
+    }
+  }
+
   if (!isAuthenticated) {
     return (
       <div className="backend-page">
@@ -176,6 +214,56 @@ function BackendPage() {
       </div>
 
       <div className="backend-content">
+        {/* Migration Section */}
+        <div className="backend-section">
+          <h2>🗄️ Veritabanı Migration'ları</h2>
+          <div className="migration-section">
+            {migrationStatus && (
+              <div className="migration-info">
+                <p><strong>Tablo Sayısı:</strong> {migrationStatus.tableCount}</p>
+                <p><strong>Migration Dosyası:</strong> {migrationStatus.migrationFileCount}</p>
+              </div>
+            )}
+            <button 
+              onClick={handleRunMigrations} 
+              disabled={migrationLoading}
+              className="migration-btn"
+            >
+              {migrationLoading ? 'Migration\'lar çalıştırılıyor...' : '🚀 Tüm Migration\'ları Çalıştır'}
+            </button>
+            {migrationResult && (
+              <div className={`migration-result ${migrationResult.error ? 'error' : 'success'}`}>
+                {migrationResult.error ? (
+                  <div>
+                    <h3>❌ Hata:</h3>
+                    <p>{migrationResult.message}</p>
+                  </div>
+                ) : (
+                  <div>
+                    <h3>✅ Başarılı!</h3>
+                    <p><strong>Toplam:</strong> {migrationResult.total} migration</p>
+                    <p><strong>Başarılı:</strong> {migrationResult.successful} migration</p>
+                    {migrationResult.results && (
+                      <div className="migration-details">
+                        <h4>Detaylar:</h4>
+                        <ul>
+                          {migrationResult.results.map((result, idx) => (
+                            <li key={idx}>
+                              {result.file}: {result.status === 'success' ? '✅' : result.status === 'partial' ? '⚠️' : '❌'}
+                              {result.successCount > 0 && ` (${result.successCount} başarılı)`}
+                              {result.errorCount > 0 && ` (${result.errorCount} hata)`}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* SQL Editor */}
         <div className="backend-section">
           <h2>{t('backend.sqlEditor') || 'SQL Editörü'}</h2>

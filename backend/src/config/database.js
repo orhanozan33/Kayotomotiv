@@ -6,8 +6,10 @@ dotenv.config();
 const { Pool } = pg;
 
 // Veritabanı şifresi zorunlu olmalı
+// Vercel serverless environment'ta environment variables yüklenene kadar bekle
 if (!process.env.DB_PASSWORD && process.env.NODE_ENV === 'production') {
-  throw new Error('DB_PASSWORD environment variable production ortamında zorunludur');
+  console.warn('⚠️  DB_PASSWORD environment variable eksik - veritabanı bağlantısı başarısız olabilir');
+  // Throw etme, sadece uyar - bağlantı denemesi sırasında hata alınacak
 }
 
 const pool = new Pool({
@@ -19,6 +21,10 @@ const pool = new Pool({
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
+  // Supabase SSL gerektirir
+  ssl: process.env.NODE_ENV === 'production' ? {
+    rejectUnauthorized: false
+  } : false,
 });
 
 // Test connection
@@ -28,7 +34,8 @@ pool.on('connect', () => {
 
 pool.on('error', (err) => {
   console.error('❌ Unexpected error on idle client', err);
-  process.exit(-1);
+  // Vercel serverless'ta process.exit() kullanma - function crash olur
+  // Sadece logla, bağlantı yeniden denenecek
 });
 
 export default pool;
