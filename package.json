@@ -4,7 +4,7 @@
   "description": "Kayoto Automotive Platform - Monorepo",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   },
   "scripts": {
     "build": "npm run build:all",
