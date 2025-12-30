@@ -5,12 +5,12 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run create-dist-index",
-    "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');try{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});}catch(e){}fs.mkdirSync(d,{recursive:true});console.log('Dist created at:',d);\"",
+    "build:all": "npm run clean-dist && npm run install:all && npm run build:frontend && npm run build:backoffice && npm run verify-dist",
+    "clean-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');try{if(fs.existsSync(d))fs.rmSync(d,{recursive:true,force:true});}catch(e){console.error('Clean error:',e.message);}fs.mkdirSync(d,{recursive:true});console.log('✅ Dist created:',d);process.exit(0);\"",
     "install:all": "cd frontend && npm install && cd ../backoffice && npm install && cd ..",
     "build:frontend": "cd frontend && npm run build && cd ..",
     "build:backoffice": "cd backoffice && npm run build && cd ..",
-    "create-dist-index": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(!fs.existsSync(d)){fs.mkdirSync(d,{recursive:true});}const i=path.join(d,'index.html');if(!fs.existsSync(i)){fs.writeFileSync(i,'<!DOCTYPE html><html><head><title>App</title></head><body><h1>Loading...</h1></body></html>');}const files=fs.readdirSync(d);console.log('Dist folder exists at:',d);console.log('Files:',files.join(', '));\"",
+    "verify-dist": "node -e \"const fs=require('fs'),path=require('path');const d=path.join(process.cwd(),'dist');if(!fs.existsSync(d)){console.error('❌ Dist not found!');process.exit(1);}const files=fs.readdirSync(d);console.log('✅ Dist verified:',d);console.log('✅ Files:',files.join(', '));if(files.length===0){console.error('❌ Dist is empty!');process.exit(1);}const i=path.join(d,'index.html');if(!fs.existsSync(i)){fs.writeFileSync(i,'<!DOCTYPE html><html><head><title>App</title></head><body><h1>Loading...</h1></body></html>');console.log('✅ index.html created');}console.log('✅ Build complete');process.exit(0);\"",
     "vercel-build": "npm run build:all"
   }
 }
