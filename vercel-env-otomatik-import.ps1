@@ -21,16 +21,16 @@ try {
     $project = $projectsResponse.projects | Where-Object { $_.name -eq $PROJECT_NAME }
     
     if (-not $project) {
-        Write-Host "❌ Proje bulunamadı: $PROJECT_NAME" -ForegroundColor Red
-        Write-Host "   Önce Vercel Dashboard'dan projeyi oluşturun:" -ForegroundColor Yellow
+        Write-Host "ERROR: Proje bulunamadi: $PROJECT_NAME" -ForegroundColor Red
+        Write-Host "   Once Vercel Dashboard'dan projeyi olusturun:" -ForegroundColor Yellow
         Write-Host "   https://vercel.com/new?import=github&repo=orhanozan33/Kayotomotiv" -ForegroundColor Cyan
         exit 1
     }
     
     $PROJECT_ID = $project.id
-    Write-Host "✅ Proje bulundu: $PROJECT_ID" -ForegroundColor Green
+    Write-Host "OK: Proje bulundu: $PROJECT_ID" -ForegroundColor Green
 } catch {
-    Write-Host "❌ Proje bulunamadı: $($_.Exception.Message)" -ForegroundColor Red
+    Write-Host "ERROR: Proje bulunamadi: $($_.Exception.Message)" -ForegroundColor Red
     exit 1
 }
 
@@ -77,16 +77,16 @@ foreach ($envVar in $envVars) {
             } `
             -Body $envBody
         
-        Write-Host "   ✅ $($envVar.key) eklendi" -ForegroundColor Green
+        Write-Host "   OK: $($envVar.key) eklendi" -ForegroundColor Green
         $successCount++
     } catch {
         $errorMessage = $_.Exception.Message
         if ($errorMessage -match "already exists" -or $errorMessage -match "duplicate") {
-            Write-Host "   ⚠️  $($envVar.key) zaten mevcut (güncelleniyor...)" -ForegroundColor Yellow
+            Write-Host "   WARNING: $($envVar.key) zaten mevcut (guncelleniyor...)" -ForegroundColor Yellow
             
-            # Mevcut env var'ı sil ve yeniden ekle
+            # Mevcut env var'i sil ve yeniden ekle
             try {
-                # Önce mevcut env var'ları listele
+                # Once mevcut env var'lari listele
                 $existingEnvs = Invoke-RestMethod -Uri "https://api.vercel.com/v9/projects/$PROJECT_ID/env" `
                     -Method GET `
                     -Headers @{
@@ -95,7 +95,7 @@ foreach ($envVar in $envVars) {
                 
                 $existingEnv = $existingEnvs.envs | Where-Object { $_.key -eq $envVar.key }
                 if ($existingEnv) {
-                    # Mevcut env var'ı sil
+                    # Mevcut env var'i sil
                     Invoke-RestMethod -Uri "https://api.vercel.com/v9/projects/$PROJECT_ID/env/$($existingEnv.id)" `
                         -Method DELETE `
                         -Headers @{
@@ -118,15 +118,15 @@ foreach ($envVar in $envVars) {
                         } `
                         -Body $envBody | Out-Null
                     
-                    Write-Host "   ✅ $($envVar.key) güncellendi" -ForegroundColor Green
+                    Write-Host "   OK: $($envVar.key) guncellendi" -ForegroundColor Green
                     $successCount++
                 }
             } catch {
-                Write-Host "   ❌ $($envVar.key) güncellenemedi: $($_.Exception.Message)" -ForegroundColor Red
+                Write-Host "   ERROR: $($envVar.key) guncellenemedi: $($_.Exception.Message)" -ForegroundColor Red
                 $failCount++
             }
         } else {
-            Write-Host "   ❌ $($envVar.key) eklenemedi: $errorMessage" -ForegroundColor Red
+            Write-Host "   ERROR: $($envVar.key) eklenemedi: $errorMessage" -ForegroundColor Red
             $failCount++
         }
     }
@@ -134,22 +134,21 @@ foreach ($envVar in $envVars) {
 
 Write-Host ""
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "SONUÇ" -ForegroundColor Cyan
+Write-Host "SONUC" -ForegroundColor Cyan
 Write-Host "========================================" -ForegroundColor Cyan
-Write-Host "✅ Başarılı: $successCount" -ForegroundColor Green
-Write-Host "❌ Başarısız: $failCount" -ForegroundColor $(if ($failCount -gt 0) { "Red" } else { "Green" })
+Write-Host "OK: Basarili: $successCount" -ForegroundColor Green
+Write-Host "ERROR: Basarisiz: $failCount" -ForegroundColor $(if ($failCount -gt 0) { "Red" } else { "Green" })
 Write-Host ""
 
 if ($successCount -eq $envVars.Count) {
-    Write-Host "🎉 Tüm environment variables başarıyla eklendi!" -ForegroundColor Green
+    Write-Host "Tum environment variables basariyla eklendi!" -ForegroundColor Green
     Write-Host ""
-    Write-Host "📋 Kontrol için:" -ForegroundColor Yellow
+    Write-Host "Kontrol icin:" -ForegroundColor Yellow
     Write-Host "   https://vercel.com/orhanozan33/$PROJECT_NAME/settings/environment-variables" -ForegroundColor Cyan
 } else {
-    Write-Host "⚠️  Bazı environment variables eklenemedi." -ForegroundColor Yellow
+    Write-Host "WARNING: Bazi environment variables eklenemedi." -ForegroundColor Yellow
     Write-Host "   Manuel olarak Vercel Dashboard'dan ekleyin:" -ForegroundColor Yellow
     Write-Host "   https://vercel.com/orhanozan33/$PROJECT_NAME/settings/environment-variables" -ForegroundColor Cyan
 }
 
 Write-Host ""
-
