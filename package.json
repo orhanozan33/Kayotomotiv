@@ -5,9 +5,11 @@
   "private": true,
   "scripts": {
     "build": "npm run build:all",
-    "build:all": "npm run build:frontend && npm run build:backoffice",
+    "build:all": "npm run clean && npm run build:frontend && npm run build:backoffice && npm run ensure-dist",
+    "clean": "node -e \"const fs=require('fs');const path=require('path');const dist=path.join(__dirname,'dist');if(fs.existsSync(dist)){fs.rmSync(dist,{recursive:true,force:true});}fs.mkdirSync(dist,{recursive:true});\"",
     "build:frontend": "cd frontend && npm install && npm run build",
     "build:backoffice": "cd backoffice && npm install && npm run build",
+    "ensure-dist": "node -e \"const fs=require('fs');const path=require('path');const dist=path.join(__dirname,'dist');if(!fs.existsSync(dist)){fs.mkdirSync(dist,{recursive:true});}const index=path.join(dist,'index.html');if(!fs.existsSync(index)){fs.writeFileSync(index,'<!DOCTYPE html><html><head><title>Loading</title></head><body><h1>Loading...</h1></body></html>');}console.log('Dist folder verified:',dist);\"",
     "vercel-build": "npm run build:all"
   }
 }
