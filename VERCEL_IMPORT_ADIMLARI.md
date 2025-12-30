@@ -1,108 +1,95 @@
-# Vercel Import - Adım Adım Yapılacaklar
+# Vercel'de Yeni Proje Oluşturma - Adım Adım
 
-## 📋 Şu Anda Görünen Sayfada Yapılacaklar
+## 🚀 Hızlı Başlangıç
 
-### ✅ 1. Framework Preset (Çerçeve Ön Ayarı)
-- **Mevcut:** `▲ Other` ✅
-- **Değiştirmeyin** - Bu doğru!
+### 1. Vercel Dashboard'a Git
+https://vercel.com/new
 
----
+### 2. GitHub Repo'yu Seç
+- **Repository**: `orhanozan33/Kayotomotiv`
+- **Import** butonuna tıkla
 
-### ✅ 2. Root Directory (Kök Dizin)
-- **Mevcut:** `./` ✅
-- **Değiştirmeyin** - Bu doğru!
+### 3. Proje Ayarları
 
----
+**Framework Preset:** `Other`
 
-### ⚠️ 3. Build Command (Derleme Komutu) - DEĞİŞTİRİN!
+**Root Directory:** `.` (boş bırak)
 
-**Şu anki:** `npm run vercel-build` or `npm run build`
-
-**Değiştirin:**
+**Build Command:**
 ```
 npm run build:all
 ```
 
-veya **boş bırakın** (Vercel otomatik algılayacak)
-
----
-
-### ⚠️ 4. Output Directory (Çıktı Dizini) - DEĞİŞTİRİN!
-
-**Şu anki:** `public` if it exists, or `.`
-
-**Değiştirin:**
+**Output Directory:**
 ```
-.
+dist
 ```
 
-(Sadece nokta - root dizin)
+**Install Command:**
+```
+npm install
+```
+
+### 4. Environment Variables Ekle
+
+**Settings > Environment Variables** bölümüne git ve şunları ekle:
+
+```
+DB_HOST=db.xlioxvlohlgpswhpjawa.supabase.co
+DB_PORT=5432
+DB_NAME=postgres
+DB_USER=postgres
+DB_PASSWORD=orhanozan33
+JWT_SECRET=ba4890d271a19ad517a4b2b7f0909f2e8112889eec86562d5c045965ebc8398b
+BACKEND_PASSWORD_HASH=$2a$10$2BqRLz7wMX5DdoxyIg9eJeS/Ft4Fmc7.ka9ukMhSnbFrT7OGMXH4m
+FRONTEND_URL=https://kayoto.vercel.app,https://kayoto.vercel.app/admin
+```
+
+**Her birini şu environment'lara ekle:**
+- ✅ Production
+- ✅ Preview
+- ✅ Development
+
+### 5. Deploy Et
+
+**Deploy** butonuna tıkla!
 
 ---
 
-### ✅ 5. Install Command (Komutu Yükle)
-- **Mevcut:** `yarn install, pnpm install, npm install, or bun install` ✅
-- **Değiştirmeyin** - Bu doğru!
+## 📋 Kontrol Listesi
+
+- [ ] GitHub repo bağlandı
+- [ ] Build command: `npm run build:all`
+- [ ] Output directory: `dist`
+- [ ] Environment variables eklendi (8 adet)
+- [ ] Deployment başladı
 
 ---
 
-### ⚠️ 6. Environment Variables (Çevresel Değişkenler) - AÇIN VE EKLEYİN!
+## 🔗 Linkler
 
-**"Çevresel Değişkenler" bölümünü açın** (chevron'a tıklayın)
-
-**Şu değişkenleri ekleyin:**
-
-1. **DB_HOST**
-   - Value: `db.xlioxvlohlgpswhpjawa.supabase.co`
-   - Environment: Production, Preview, Development (hepsini seçin)
-
-2. **DB_PORT**
-   - Value: `5432`
-   - Environment: Production, Preview, Development
-
-3. **DB_NAME**
-   - Value: `postgres`
-   - Environment: Production, Preview, Development
-
-4. **DB_USER**
-   - Value: `postgres`
-   - Environment: Production, Preview, Development
-
-5. **DB_PASSWORD**
-   - Value: `orhanozan33`
-   - Environment: Production, Preview, Development
-
-6. **JWT_SECRET**
-   - Value: `ba4890d271a19ad517a4b2b7f0909f2e8112889eec86562d5c045965ebc8398b`
-   - Environment: Production, Preview, Development
-
-7. **BACKEND_PASSWORD_HASH**
-   - Value: `$2a$10$2BqRLz7wMX5DdoxyIg9eJeS/Ft4Fmc7.ka9ukMhSnbFrT7OGMXH4m`
-   - Environment: Production, Preview, Development
-
-8. **FRONTEND_URL**
-   - Value: `https://kayoto.vercel.app` (veya deployment sonrası gerçek URL)
-   - Environment: Production, Preview, Development
+- **Vercel Import:** https://vercel.com/new?import=github&repo=orhanozan33/Kayotomotiv
+- **GitHub Repo:** https://github.com/orhanozan33/Kayotomotiv
 
 ---
 
-### ✅ 7. Deploy Butonu
+## ⚠️ Önemli Notlar
 
-Tüm ayarları yaptıktan sonra:
-- **"Deploy"** butonuna tıklayın
-- Deployment tamamlanmasını bekleyin (2-3 dakika)
-
----
-
-## 📝 Özet - Yapılacaklar Listesi
-
-- [ ] Build Command'ı `npm run build:all` yapın (veya boş bırakın)
-- [ ] Output Directory'yi `.` yapın
-- [ ] Environment Variables bölümünü açın
-- [ ] 8 adet environment variable ekleyin
-- [ ] Deploy butonuna tıklayın
+1. **Proje Adı:** `kayoto` (küçük harf)
+2. **Build Command:** `npm run build:all` (mutlaka bu olmalı)
+3. **Output Directory:** `dist` (mutlaka bu olmalı)
+4. **Environment Variables:** Tüm 8 değişkeni ekle
 
 ---
 
-**Hazır olduğunuzda Deploy butonuna tıklayın!** 🚀
+## ✅ Deployment Sonrası
 
+Deployment tamamlandıktan sonra:
+
+1. **Backend API:** `https://kayoto.vercel.app/api`
+2. **Admin Panel:** `https://kayoto.vercel.app/admin`
+3. **Frontend:** `https://kayoto.vercel.app`
+
+---
+
+**Sorun olursa Vercel Dashboard > Deployments > Logs'a bakın!**
