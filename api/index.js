@@ -2,11 +2,11 @@
 import app from '../backend/src/server.js';
 
 // Vercel serverless function handler
-export default async (req, res) => {
+export default async function handler(req, res) {
   try {
     console.log('📥 Backend API Request:', req.method, req.url);
     // Handle the request with Express app
-    await app(req, res);
+    return app(req, res);
   } catch (error) {
     console.error('❌ Backend API Error:', error);
     if (!res.headersSent) {
@@ -16,5 +16,4 @@ export default async (req, res) => {
       });
     }
   }
-};
-
+}
