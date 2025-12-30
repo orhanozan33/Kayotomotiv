@@ -44,9 +44,10 @@ function AutoSalesPage() {
     try {
       setLoading(true)
       const response = await vehiclesAPI.getAll(filters)
-      setVehicles(response.data.vehicles)
+      setVehicles(response.data?.vehicles || [])
     } catch (error) {
       console.error('Error loading vehicles:', error)
+      setVehicles([])
     } finally {
       setLoading(false)
     }
@@ -130,7 +131,7 @@ function AutoSalesPage() {
 
         {loading ? (
           <div className="loading">{t('autoSales.loading')}</div>
-        ) : vehicles.length === 0 ? (
+        ) : !vehicles || vehicles.length === 0 ? (
           <div className="no-results">{t('autoSales.noResults')}</div>
         ) : (
           <div className="vehicles-grid">

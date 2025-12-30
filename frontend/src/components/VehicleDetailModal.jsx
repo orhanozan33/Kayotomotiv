@@ -115,10 +115,12 @@ function VehicleDetailModal({ vehicleId, onClose }) {
     )
   }
 
-  const validImages = vehicle.images?.filter(img => {
-    const url = getImageUrl(img.image_url)
-    return url !== null
-  }) || []
+  const validImages = (vehicle?.images && Array.isArray(vehicle.images)) 
+    ? vehicle.images.filter(img => {
+        const url = getImageUrl(img?.image_url)
+        return url !== null
+      })
+    : []
 
   const mainImageUrl = validImages[selectedImageIndex] ? getImageUrl(validImages[selectedImageIndex].image_url) : null
 
