@@ -9,8 +9,13 @@ const __dirname = path.dirname(__filename);
 const uploadDir = process.env.UPLOAD_DIR || path.join(__dirname, '../../uploads');
 
 // Create upload directory if it doesn't exist
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Vercel serverless environment'ta dosya sistemi read-only olduğu için klasör oluşturmayı atla
+if (process.env.NODE_ENV !== 'production' && !fs.existsSync(uploadDir)) {
+  try {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  } catch (error) {
+    console.warn('⚠️  Upload directory could not be created:', error.message);
+  }
 }
 
 const storage = multer.diskStorage({
