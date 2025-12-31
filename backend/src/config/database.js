@@ -5,23 +5,32 @@ dotenv.config();
 
 const { Pool } = pg;
 
+// Supabase Database Configuration
+// Proje ID: rxbtkjihvqjmamdwmsev
+// Production: Vercel environment variables kullanılır
+// Development: Default değerler (Supabase)
+
 // Veritabanı şifresi zorunlu olmalı
 // Vercel serverless environment'ta environment variables yüklenene kadar bekle
 if (!process.env.DB_PASSWORD && process.env.NODE_ENV === 'production') {
   console.warn('⚠️  DB_PASSWORD environment variable eksik - veritabanı bağlantısı başarısız olabilir');
+  console.warn('⚠️  Vercel Dashboard\'dan DB_PASSWORD ekleyin: https://vercel.com/orhanozan33/kayotomotiv/settings/environment-variables');
   // Throw etme, sadece uyar - bağlantı denemesi sırasında hata alınacak
 }
 
 const pool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: process.env.DB_NAME || 'ototamir',
+  // Supabase Database Connection
+  // Production: Vercel environment variables kullanılır
+  // Development: Default değerler (Supabase)
+  host: process.env.DB_HOST || 'db.rxbtkjihvqjmamdwmsev.supabase.co',
+  port: parseInt(process.env.DB_PORT) || 6543, // Session Pooler port (IPv4 için)
+  database: process.env.DB_NAME || 'postgres',
   user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : '333333'),
+  password: process.env.DB_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'orhanozan33'),
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
-  // Supabase SSL gerektirir
+  // Supabase SSL gerektirir (production'da mutlaka aktif)
   ssl: process.env.NODE_ENV === 'production' ? {
     rejectUnauthorized: false
   } : false,
@@ -30,10 +39,11 @@ const pool = new Pool({
 // Test connection
 pool.on('connect', () => {
   console.log('✅ Database connected successfully');
-  console.log('✅ DB_HOST:', process.env.DB_HOST);
-  console.log('✅ DB_PORT:', process.env.DB_PORT);
-  console.log('✅ DB_NAME:', process.env.DB_NAME);
-  console.log('✅ DB_USER:', process.env.DB_USER);
+  console.log('✅ DB_HOST:', process.env.DB_HOST || 'db.rxbtkjihvqjmamdwmsev.supabase.co (default)');
+  console.log('✅ DB_PORT:', process.env.DB_PORT || '6543 (default - Session Pooler)');
+  console.log('✅ DB_NAME:', process.env.DB_NAME || 'postgres (default)');
+  console.log('✅ DB_USER:', process.env.DB_USER || 'postgres (default)');
+  console.log('✅ Supabase Proje ID: rxbtkjihvqjmamdwmsev');
 });
 
 pool.on('error', (err) => {
