@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
           v.year,
           v.updated_at,
           v.created_at
-        FROM vehicles v
+        FROM auto_sales v
         WHERE v.status = 'reserved'
       `;
       
@@ -163,7 +163,7 @@ export async function GET(request: NextRequest) {
           v.year,
           v.updated_at,
           v.created_at
-        FROM vehicles v
+        FROM auto_sales v
         WHERE v.status = 'reserved'
       `;
       

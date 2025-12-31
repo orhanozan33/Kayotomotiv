@@ -31,7 +31,7 @@ interface VehicleFilters {
 export const dbApi = {
   // Vehicles
   getVehicles: async (filters: VehicleFilters = {}) => {
-    let query = 'SELECT * FROM vehicles WHERE 1=1';
+    let query = 'SELECT * FROM auto_sales WHERE 1=1';
     const params: any[] = [];
     let paramIndex = 1;
 
@@ -87,7 +87,7 @@ export const dbApi = {
   },
 
   getVehicleById: async (id: string) => {
-    const result = await pool.query('SELECT * FROM vehicles WHERE id = $1', [id]);
+    const result = await pool.query('SELECT * FROM auto_sales WHERE id = $1', [id]);
     return result.rows[0] || null;
   },
 
