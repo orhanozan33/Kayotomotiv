@@ -50,11 +50,13 @@ const hasSslModeInUrl = connectionString?.includes('sslmode=require');
 const hasPgBouncer = connectionString?.includes('pgbouncer=true');
 
 // Determine if SSL should be enabled
-// For Supabase (non-localhost), always enable SSL
-const isLocalhost = !connectionString && (dbHost === 'localhost' || dbHost === '127.0.0.1');
+// For Supabase (contains .supabase.co), always enable SSL
+const isLocalhost = !connectionString && dbHost && (dbHost === 'localhost' || dbHost === '127.0.0.1');
+const isSupabase = connectionString?.includes('.supabase.') || (!connectionString && dbHost && dbHost.includes('.supabase.'));
+// For Supabase, always enable SSL. For localhost, disable. Otherwise use DB_SSL setting.
 const sslEnabled = isLocalhost 
   ? false 
-  : (hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
+  : (isSupabase || hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
