@@ -1,0 +1,12 @@
+{
+  "DB_HOST": "db.rxbtkjihvqjmamdwmsev.supabase.co",
+  "DB_PORT": "6543",
+  "DB_NAME": "postgres",
+  "DB_USER": "postgres",
+  "DB_PASSWORD": "PASTE_SUPABASE_DB_PASSWORD",
+  "JWT_SECRET": "PASTE_LONG_RANDOM_SECRET_32CHARS_MIN",
+  "BACKEND_PASSWORD_HASH": "PASTE_BCRYPT_HASH_OF_BACKEND_PASSWORD",
+  "FRONTEND_URL": "https://<your-domain>.vercel.app,https://<your-domain>.vercel.app/admin",
+  "NODE_ENV": "production",
+  "SUPABASE_URL": "https://rxbtkjihvqjmamdwmsev.supabase.co"
+}

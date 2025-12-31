@@ -1,0 +1,256 @@
+.autoBodyShopPage {
+  padding: 2rem 0;
+  min-height: 100vh;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 3rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.headerContent {
+  flex: 1;
+  min-width: 300px;
+}
+
+.autoBodyShopPage h1 {
+  font-size: 2.5rem;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.intro {
+  font-size: 1.25rem;
+  color: #666;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.heroSection {
+  background: linear-gradient(135deg, #fff5f0 0%, #ffe0d6 100%);
+  border-radius: 16px;
+  padding: 3rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.heroContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+}
+
+.heroText h2 {
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.heroText p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.8;
+  margin: 0;
+}
+
+.heroImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heroImg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  position: relative;
+  border: 4px solid #ffffff;
+  box-shadow:
+    0 0 0 8px #ff6b35,
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 0 60px rgba(255, 107, 53, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  transform: perspective(1000px) rotateY(-2deg) rotateX(2deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.heroImg:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+  box-shadow:
+    0 0 0 8px #ff5722,
+    0 30px 60px rgba(0, 0, 0, 0.3),
+    0 0 80px rgba(255, 107, 53, 0.4),
+    inset 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+.featuresSection {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.featureCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.featureCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.featureIcon {
+  margin: 0 auto 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.featureCard h3 {
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem 0;
+  color: #333;
+}
+
+.featureCard p {
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.servicesInfoSection {
+  background: white;
+  border-radius: 16px;
+  padding: 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  margin-bottom: 3rem;
+}
+
+.servicesInfoContent h2 {
+  font-size: 2rem;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.servicesInfoContent p {
+  font-size: 1.1rem;
+  color: #666;
+  line-height: 1.8;
+  margin: 0 0 1.5rem 0;
+}
+
+.serviceCategories {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.serviceCategoryTag {
+  background: #fff5f0;
+  color: #d84315;
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border: 2px solid #ff6b35;
+}
+
+.servicesInfoImage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.servicesInfoImg {
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+  position: relative;
+  border: 4px solid #ffffff;
+  box-shadow:
+    0 0 0 8px #ff6b35,
+    0 20px 40px rgba(0, 0, 0, 0.2),
+    0 0 60px rgba(255, 107, 53, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  transform: perspective(1000px) rotateY(2deg) rotateX(2deg);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.servicesInfoImg:hover {
+  transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.02);
+  box-shadow:
+    0 0 0 8px #ff5722,
+    0 30px 60px rgba(0, 0, 0, 0.3),
+    0 0 80px rgba(255, 107, 53, 0.4),
+    inset 0 0 30px rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .pageHeader {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .heroContent {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .servicesInfoSection {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .featuresSection {
+    grid-template-columns: 1fr;
+  }
+
+  .autoBodyShopPage h1 {
+    font-size: 2rem;
+  }
+
+  .heroText h2,
+  .servicesInfoContent h2 {
+    font-size: 1.5rem;
+  }
+
+  .heroImg,
+  .servicesInfoImg {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg);
+    box-shadow:
+      0 0 0 6px #ff6b35,
+      0 15px 30px rgba(0, 0, 0, 0.2),
+      0 0 40px rgba(255, 107, 53, 0.25),
+      inset 0 0 15px rgba(255, 255, 255, 0.1);
+  }
+
+  .heroImg:hover,
+  .servicesInfoImg:hover {
+    transform: perspective(1000px) rotateY(0deg) rotateX(0deg) scale(1.01);
+  }
+}
+

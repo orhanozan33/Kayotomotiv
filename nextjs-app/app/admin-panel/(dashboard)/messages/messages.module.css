@@ -1,0 +1,317 @@
+.messagesPage {
+  padding: 2rem;
+}
+
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.pageHeader h1 {
+  margin: 0;
+  font-size: 2rem;
+  color: #333;
+}
+
+.filters {
+  display: flex;
+  gap: 1rem;
+}
+
+.filterSelect {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+}
+
+.filterSelect:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.messagesTable {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
+  overflow-y: visible;
+}
+
+.messagesTable table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+.messagesTable thead {
+  background: #f5f5f5;
+}
+
+.messagesTable th {
+  padding: 1rem;
+  text-align: left;
+  font-weight: 600;
+  color: #333;
+  border-bottom: 2px solid #ddd;
+  white-space: nowrap;
+}
+
+.messagesTable td {
+  padding: 1rem;
+  border-bottom: 1px solid #eee;
+  vertical-align: top;
+}
+
+.messagesTable tbody tr:hover {
+  background: #f9f9f9;
+}
+
+.messagesTable tbody tr.unreadRow {
+  background: #e3f2fd;
+  font-weight: 500;
+}
+
+.statusBadge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.badgeUnread {
+  background: #ff9800;
+  color: white;
+}
+
+.badgeRead {
+  background: #2196f3;
+  color: white;
+}
+
+.badgeReplied {
+  background: #4caf50;
+  color: white;
+}
+
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.btnView,
+.btnDelete {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btnView {
+  background: #2196f3;
+  color: white;
+}
+
+.btnView:hover {
+  background: #1976d2;
+}
+
+.btnDelete {
+  background: #f44336;
+  color: white;
+}
+
+.btnDelete:hover {
+  background: #d32f2f;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: white;
+  border-radius: 12px;
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 2px solid #eee;
+}
+
+.modalHeader h2 {
+  margin: 0;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.closeBtn {
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #666;
+  cursor: pointer;
+  line-height: 1;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.3s;
+}
+
+.closeBtn:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.modalBody {
+  padding: 1.5rem;
+}
+
+.detailRow {
+  display: flex;
+  margin-bottom: 1rem;
+  align-items: flex-start;
+}
+
+.detailRow.fullWidth {
+  flex-direction: column;
+}
+
+.detailRow label {
+  font-weight: 600;
+  color: #666;
+  min-width: 120px;
+  margin-right: 1rem;
+}
+
+.detailRow.fullWidth label {
+  margin-bottom: 0.5rem;
+}
+
+.detailRow span {
+  color: #333;
+  flex: 1;
+}
+
+.messageContent {
+  background: #f9f9f9;
+  padding: 1rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  line-height: 1.6;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  padding: 1.5rem;
+  border-top: 2px solid #eee;
+}
+
+.statusSelect {
+  padding: 0.5rem 1rem;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background: white;
+  cursor: pointer;
+  margin-right: auto;
+}
+
+.statusSelect:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.btnSecondary {
+  padding: 0.75rem 1.5rem;
+  background: #666;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.btnSecondary:hover {
+  background: #555;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.25rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .messagesPage {
+    padding: 1rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .messagesTable {
+    overflow-x: auto;
+  }
+
+  .messagesTable table {
+    min-width: 800px;
+  }
+
+  .detailRow {
+    flex-direction: column;
+  }
+
+  .detailRow label {
+    margin-bottom: 0.25rem;
+  }
+
+  .modalFooter {
+    flex-direction: column;
+  }
+
+  .statusSelect {
+    margin-right: 0;
+    width: 100%;
+  }
+}
+

@@ -1,0 +1,279 @@
+.dashboardPage {
+  max-width: 1200px;
+}
+
+.dashboardPage h1 {
+  margin: 0 0 2rem 0;
+  font-size: 2.5rem;
+}
+
+.notificationBanner {
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+  color: white;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  animation: notificationPulse 2s infinite;
+}
+
+.notificationIcon {
+  font-size: 1.5rem;
+  animation: bellRing 1s infinite;
+}
+
+.notificationContent {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.notificationContent strong {
+  font-size: 1.1rem;
+}
+
+.notificationContent span {
+  font-size: 0.9rem;
+  opacity: 0.95;
+}
+
+@keyframes notificationPulse {
+  0%,
+  100% {
+    box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+  }
+  50% {
+    box-shadow: 0 4px 20px rgba(255, 107, 107, 0.5);
+  }
+}
+
+@keyframes bellRing {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  10%,
+  30% {
+    transform: rotate(-10deg);
+  }
+  20%,
+  40% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(0deg);
+  }
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.statCard {
+  background: white;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.statCard h3 {
+  margin: 0 0 1rem 0;
+  color: #666;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.statNumber {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #4CAF50;
+  margin: 0;
+}
+
+.revenueSection {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 2px solid #e0e0e0;
+  scroll-margin-top: 0;
+}
+
+.revenueSection:target {
+  scroll-margin-top: 0;
+}
+
+.revenueSection h2 {
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+  color: #333;
+}
+
+.revenueGrid {
+  margin-top: 1rem;
+}
+
+.revenueCard {
+  background: #f5f5f5;
+  color: #333;
+  border: 1px solid #e0e0e0;
+}
+
+.revenueCard h3 {
+  color: #666;
+}
+
+.revenueAmount {
+  color: #2d5016;
+  font-size: 2rem;
+  font-weight: 700;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
+}
+
+.revenueControls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.periodSelector {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.periodSelector button {
+  padding: 0.75rem 1.5rem;
+  border: 2px solid #ddd;
+  background: white;
+  color: #666;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  outline: none;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.periodSelector button:hover {
+  border-color: #4CAF50;
+  color: #4CAF50;
+}
+
+.periodSelector button.active {
+  background: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.dateRangeSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.dateRangeSelector label {
+  font-weight: 500;
+  color: #333;
+  white-space: nowrap;
+}
+
+.dateRangeSelector input[type='date'] {
+  padding: 0.5rem;
+  border: 2px solid #ddd;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.dateRangeSelector input[type='date']:focus {
+  outline: none;
+  border-color: #4CAF50;
+}
+
+.dateRangeSelector span {
+  color: #666;
+  font-weight: 500;
+}
+
+.revenueGridSeparated {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.revenueCategory {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.revenueCategory h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.revenueCategory .statCard {
+  margin: 0;
+}
+
+.revenueCategory .revenueCard {
+  background: linear-gradient(135deg, #f5f5f5 0%, #ffffff 100%);
+  border: 2px solid #e0e0e0;
+  text-align: center;
+}
+
+.revenueCategory:first-child .revenueCard {
+  border-color: #ff9800;
+  background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+}
+
+.revenueCategory:nth-child(2) .revenueCard {
+  border-color: #2196F3;
+  background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+}
+
+.revenueCategory .totalRevenue {
+  border-color: #4CAF50;
+  background: linear-gradient(135deg, #e8f5e9 0%, #ffffff 100%);
+  border-width: 3px;
+}
+
+.loading {
+  text-align: center;
+  padding: 3rem;
+  font-size: 1.25rem;
+  color: #666;
+}
+
+@media (max-width: 768px) {
+  .revenueControls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .periodSelector {
+    justify-content: center;
+  }
+
+  .dateRangeSelector {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .revenueGridSeparated {
+    grid-template-columns: 1fr;
+  }
+}
+
