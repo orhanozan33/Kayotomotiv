@@ -41,6 +41,8 @@ export default function I18nProvider({ children }: { children: React.ReactNode }
     }
   }, []);
 
+  // Don't wait for isReady - i18n is initialized synchronously
+  // Children will render immediately and i18n will be available
   return <>{children}</>;
 }
 
