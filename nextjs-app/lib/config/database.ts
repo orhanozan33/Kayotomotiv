@@ -20,11 +20,12 @@ const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL ||
 
 // IMPORTANT: DB connection details must come ONLY from environment variables.
 // No hard-coded defaults are allowed.
-const dbHost = process.env.DB_HOST;
-const dbPort = process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined;
-const dbName = process.env.DB_NAME;
-const dbUser = process.env.DB_USER;
-const dbPassword = process.env.DB_PASSWORD;
+// Trim whitespace from environment variables (handles Windows line endings)
+const dbHost = process.env.DB_HOST?.trim();
+const dbPort = process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined;
+const dbName = process.env.DB_NAME?.trim();
+const dbUser = process.env.DB_USER?.trim();
+const dbPassword = process.env.DB_PASSWORD?.trim();
 
 const missingDb: string[] = [];
 if (!connectionString) {

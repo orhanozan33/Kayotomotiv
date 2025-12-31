@@ -34,12 +34,13 @@ function getEnvConfig(): EnvConfig {
   const nodeEnv = (process.env.NODE_ENV || 'development') as EnvConfig['nodeEnv'];
 
   // Database
-  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  const dbHost = process.env.DB_HOST;
-  const dbPort = process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined;
-  const dbName = process.env.DB_NAME;
-  const dbUser = process.env.DB_USER;
-  const dbPassword = process.env.DB_PASSWORD;
+  // Trim whitespace from environment variables (handles Windows line endings)
+  const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+  const dbHost = process.env.DB_HOST?.trim();
+  const dbPort = process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined;
+  const dbName = process.env.DB_NAME?.trim();
+  const dbUser = process.env.DB_USER?.trim();
+  const dbPassword = process.env.DB_PASSWORD?.trim();
 
   // Validate database config
   if (!databaseUrl && (!dbHost || !dbPort || !dbName || !dbUser || !dbPassword)) {
@@ -100,15 +101,15 @@ try {
   }
   // In development, create a minimal config with defaults
   console.warn('⚠️  Continuing in development mode with minimal config');
-  const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
   envConfig = {
     database: {
       url: databaseUrl,
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
-      name: process.env.DB_NAME,
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
+      host: process.env.DB_HOST?.trim(),
+      port: process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined,
+      name: process.env.DB_NAME?.trim(),
+      user: process.env.DB_USER?.trim(),
+      password: process.env.DB_PASSWORD?.trim(),
       ssl: process.env.DB_SSL !== 'false',
     },
     jwt: {
