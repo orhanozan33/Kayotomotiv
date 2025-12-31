@@ -7,6 +7,7 @@ const { Pool } = pg;
 
 // Supabase Database Configuration
 // Proje ID: rxbtkjihvqjmamdwmsev
+// NOT: Local database KULLANILMIYOR - Sadece Supabase kullanılıyor!
 // Production: Vercel environment variables kullanılır
 // Development: Default değerler (Supabase)
 
@@ -30,10 +31,11 @@ const pool = new Pool({
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 10000,
-  // Supabase SSL gerektirir (production'da mutlaka aktif)
-  ssl: process.env.NODE_ENV === 'production' ? {
+  // Supabase SSL gerektirir (hem production hem development'ta aktif)
+  // Supabase cloud database olduğu için SSL her zaman gereklidir
+  ssl: {
     rejectUnauthorized: false
-  } : false,
+  },
 });
 
 // Test connection
