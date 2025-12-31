@@ -8,9 +8,10 @@ const { Pool } = pg;
 // NOT: Local database KULLANILMIYOR - Sadece Supabase kullanılıyor!
 
 // Direkt Supabase Bağlantı Bilgileri (Environment variables kullanılmıyor)
+// NOT: Session Pooler kullanılıyor (IPv4 uyumlu)
 const SUPABASE_CONFIG = {
   host: 'db.rxbtkjihvqjmamdwmsev.supabase.co',
-  port: 5432, // Direct Connection (5432) - Session Pooler (6543) alternatif
+  port: 6543, // Session Pooler (6543) - IPv4 uyumlu
   database: 'postgres',
   user: 'postgres',
   password: 'orhanozan33',
