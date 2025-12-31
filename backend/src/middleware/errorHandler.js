@@ -50,28 +50,21 @@ export const errorHandler = (err, req, res, next) => {
 
   // Connection errors
   if (err.code === 'ECONNREFUSED' || err.code === 'ENOTFOUND' || err.message?.includes('connection') || err.message?.includes('getaddrinfo')) {
-    const missingEnvVars = [];
-    if (!process.env.DB_HOST) missingEnvVars.push('DB_HOST: NOT SET');
-    if (!process.env.DB_PORT) missingEnvVars.push('DB_PORT: NOT SET');
-    if (!process.env.DB_NAME) missingEnvVars.push('DB_NAME: NOT SET');
-    if (!process.env.DB_USER) missingEnvVars.push('DB_USER: NOT SET');
-    if (!process.env.DB_PASSWORD) missingEnvVars.push('DB_PASSWORD: NOT SET');
-
     return res.status(500).json({
       error: 'Database connection failed',
-      message: 'Unable to connect to database. Please check environment variables.',
+      message: 'Unable to connect to Supabase database.',
       details: isProduction 
-        ? (missingEnvVars.length > 0 ? `Missing Env Vars: ${missingEnvVars.join(', ')}` : `DB_HOST: ${process.env.DB_HOST || 'NOT SET'}`)
+        ? 'Check Supabase connection settings. Host: db.rxbtkjihvqjmamdwmsev.supabase.co, Port: 5432'
         : err.message,
       ...(isProduction ? {} : { 
         stack: err.stack,
         code: err.code,
-        envCheck: {
-          DB_HOST: process.env.DB_HOST ? 'SET' : 'NOT SET',
-          DB_PORT: process.env.DB_PORT ? 'SET' : 'NOT SET',
-          DB_NAME: process.env.DB_NAME ? 'SET' : 'NOT SET',
-          DB_USER: process.env.DB_USER ? 'SET' : 'NOT SET',
-          DB_PASSWORD: process.env.DB_PASSWORD ? 'SET' : 'NOT SET'
+        supabaseConfig: {
+          host: 'db.rxbtkjihvqjmamdwmsev.supabase.co',
+          port: 5432,
+          database: 'postgres',
+          user: 'postgres',
+          note: 'Direkt Supabase bağlantısı kullanılıyor (environment variables yok)'
         }
       })
     });
