@@ -19,7 +19,8 @@ if (!process.env.DB_PASSWORD && process.env.NODE_ENV === 'production') {
   // Throw etme, sadece uyar - bağlantı denemesi sırasında hata alınacak
 }
 
-const pool = new Pool({
+// Connection pool configuration
+const poolConfig = {
   // Supabase Database Connection
   // Production: Vercel environment variables kullanılır
   // Development: Default değerler (Supabase)
@@ -30,13 +31,26 @@ const pool = new Pool({
   password: process.env.DB_PASSWORD || (process.env.NODE_ENV === 'production' ? '' : 'orhanozan33'),
   max: 20,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 10000,
+  connectionTimeoutMillis: 15000, // Artırıldı (15 saniye)
   // Supabase SSL gerektirir (hem production hem development'ta aktif)
   // Supabase cloud database olduğu için SSL her zaman gereklidir
   ssl: {
     rejectUnauthorized: false
   },
+};
+
+// Debug: Connection config'i logla (password hariç)
+console.log('🔍 Database Connection Config:', {
+  host: poolConfig.host,
+  port: poolConfig.port,
+  database: poolConfig.database,
+  user: poolConfig.user,
+  password: poolConfig.password ? '[SET]' : '[NOT SET]',
+  ssl: poolConfig.ssl ? 'Enabled' : 'Disabled',
+  connectionTimeout: poolConfig.connectionTimeoutMillis + 'ms'
 });
+
+const pool = new Pool(poolConfig);
 
 // Test connection
 pool.on('connect', () => {
@@ -64,4 +78,3 @@ pool.on('error', (err) => {
 });
 
 export default pool;
-
