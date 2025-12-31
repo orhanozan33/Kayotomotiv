@@ -337,25 +337,6 @@ export default function Layout({ children }: LayoutProps) {
               )}
             </div>
 
-            {/* Services */}
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>{t('footer.services.title') || 'Hizmetlerimiz'}</h3>
-              <ul className={styles.footerLinks}>
-                <li>
-                  <Link href="/auto-sales">{t('footer.services.autoSales') || 'Araç Satış'}</Link>
-                </li>
-                <li>
-                  <Link href="/auto-repair">{t('footer.services.repair') || 'Oto Tamir'}</Link>
-                </li>
-                <li>
-                  <Link href="/car-wash">{t('footer.services.carWash') || 'Oto Yıkama'}</Link>
-                </li>
-                <li>
-                  <Link href="/contact">{t('footer.services.contact') || 'İletişim'}</Link>
-                </li>
-              </ul>
-            </div>
-
             {/* Contact Info */}
             <div className={styles.footerSection}>
               <h3 className={styles.footerTitle}>{t('footer.contact.title') || 'İletişim'}</h3>
