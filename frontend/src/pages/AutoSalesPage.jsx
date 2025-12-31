@@ -43,10 +43,13 @@ function AutoSalesPage() {
   const loadVehicles = async () => {
     try {
       setLoading(true)
+      console.log('🔍 Loading vehicles with filters:', filters)
       const response = await vehiclesAPI.getAll(filters)
+      console.log('✅ Vehicles response:', response.data)
       setVehicles(response.data?.vehicles || [])
     } catch (error) {
-      console.error('Error loading vehicles:', error)
+      console.error('❌ Error loading vehicles:', error)
+      console.error('❌ Error details:', error.response?.data || error.message)
       setVehicles([])
     } finally {
       setLoading(false)

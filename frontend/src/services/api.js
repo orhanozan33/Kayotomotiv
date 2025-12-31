@@ -27,8 +27,10 @@ if (!API_BASE_URL.endsWith('/api')) {
 }
 
 // Debug: API base URL'yi console'a yazdır
-console.log('API Base URL configured:', API_BASE_URL)
-console.log('VITE_API_URL from env:', import.meta.env.VITE_API_URL)
+console.log('🔧 API Base URL configured:', API_BASE_URL)
+console.log('🔧 VITE_API_URL from env:', import.meta.env.VITE_API_URL)
+console.log('🔧 Window location origin:', window.location.origin)
+console.log('🔧 Production mode:', import.meta.env.PROD)
 
 const api = axios.create({
   baseURL: API_BASE_URL,
