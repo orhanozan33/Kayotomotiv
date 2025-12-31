@@ -53,18 +53,16 @@ export const errorHandler = (err, req, res, next) => {
     return res.status(500).json({
       error: 'Database connection failed',
       message: 'Unable to connect to Supabase database.',
-      details: isProduction 
-        ? 'Check Supabase connection settings. Host: db.rxbtkjihvqjmamdwmsev.supabase.co, Port: 5432'
-        : err.message,
+      details: `Check Supabase connection settings. Host: db.rxbtkjihvqjmamdwmsev.supabase.co, Port: 6543 (Session Pooler) or use Supabase REST API`,
       ...(isProduction ? {} : { 
         stack: err.stack,
         code: err.code,
         supabaseConfig: {
           host: 'db.rxbtkjihvqjmamdwmsev.supabase.co',
-          port: 5432,
+          port: 6543,
           database: 'postgres',
           user: 'postgres',
-          note: 'Direkt Supabase bağlantısı kullanılıyor (environment variables yok)'
+          note: 'Direkt Supabase bağlantısı kullanılıyor - Session Pooler (IPv4 uyumlu). Alternatif: Supabase REST API'
         }
       })
     });
