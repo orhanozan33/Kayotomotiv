@@ -44,26 +44,41 @@ export const updateSettings = async (req, res, next) => {
 
 export const getSocialMediaLinks = async (req, res, next) => {
   try {
-    const result = await pool.query(
-      `SELECT key, value FROM settings 
-       WHERE key IN ('social_facebook', 'social_instagram', 'social_x', 'contact_phone')`
-    );
+    console.log('📥 getSocialMediaLinks called');
+    
+    // Default empty links
     const links = {
       facebook: '',
       instagram: '',
       x: '',
       phone: ''
     };
-    result.rows.forEach(row => {
-      if (row.key === 'contact_phone') {
-        links.phone = row.value || '';
-      } else {
-        const key = row.key.replace('social_', '');
-        links[key] = row.value || '';
-      }
-    });
+    
+    try {
+      const result = await pool.query(
+        `SELECT key, value FROM settings 
+         WHERE key IN ('social_facebook', 'social_instagram', 'social_x', 'contact_phone')`
+      );
+      
+      console.log('✅ Settings query result:', result.rows.length, 'rows');
+      
+      result.rows.forEach(row => {
+        if (row.key === 'contact_phone') {
+          links.phone = row.value || '';
+        } else {
+          const key = row.key.replace('social_', '');
+          links[key] = row.value || '';
+        }
+      });
+    } catch (dbError) {
+      console.error('⚠️  Settings table query failed, returning empty links:', dbError.message);
+      // If settings table doesn't exist or query fails, return empty links
+      // This prevents 500 error and allows frontend to continue
+    }
+    
     res.json({ links });
   } catch (error) {
+    console.error('❌ getSocialMediaLinks error:', error);
     next(error);
   }
 };

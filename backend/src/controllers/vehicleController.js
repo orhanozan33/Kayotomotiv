@@ -3,6 +3,8 @@ import pool from '../config/database.js';
 
 export const getVehicles = async (req, res, next) => {
   try {
+    console.log('📥 getVehicles called with filters:', req.query);
+    
     const filters = {
       brand: req.query.brand,
       model: req.query.model,
@@ -16,18 +18,29 @@ export const getVehicles = async (req, res, next) => {
       excludeSold: req.query.excludeSold !== 'false' // Default to true, but allow override
     };
 
+    console.log('🔍 Filters applied:', filters);
+
     const vehicles = await Vehicle.findAll(filters);
+    console.log('✅ Vehicles found:', vehicles.length);
 
     // Get images for each vehicle
     const vehiclesWithImages = await Promise.all(
       vehicles.map(async (vehicle) => {
-        const images = await Vehicle.getImages(vehicle.id);
-        return { ...vehicle, images };
+        try {
+          const images = await Vehicle.getImages(vehicle.id);
+          return { ...vehicle, images: images || [] };
+        } catch (imageError) {
+          console.warn('⚠️  Error loading images for vehicle', vehicle.id, ':', imageError.message);
+          return { ...vehicle, images: [] };
+        }
       })
     );
 
+    console.log('✅ Returning', vehiclesWithImages.length, 'vehicles with images');
     res.json({ vehicles: vehiclesWithImages });
   } catch (error) {
+    console.error('❌ getVehicles error:', error);
+    console.error('❌ Error stack:', error.stack);
     next(error);
   }
 };
