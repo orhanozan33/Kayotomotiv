@@ -48,8 +48,13 @@ if (missingDb.length > 0) {
 // Also check for pgbouncer mode (Supabase pooler)
 const hasSslModeInUrl = connectionString?.includes('sslmode=require');
 const hasPgBouncer = connectionString?.includes('pgbouncer=true');
-// For Supabase pooler connections, SSL should always be enabled
-const sslEnabled = hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL));
+
+// Determine if SSL should be enabled
+// For Supabase (non-localhost), always enable SSL
+const isLocalhost = !connectionString && (dbHost === 'localhost' || dbHost === '127.0.0.1');
+const sslEnabled = isLocalhost 
+  ? false 
+  : (hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
