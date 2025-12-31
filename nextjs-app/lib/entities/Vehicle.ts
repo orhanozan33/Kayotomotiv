@@ -9,7 +9,7 @@ import {
 
 export type VehicleStatus = 'available' | 'reserved' | 'sold';
 
-@Entity('vehicles')
+@Entity('auto_sales')
 export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
