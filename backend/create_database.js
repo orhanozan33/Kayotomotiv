@@ -10,16 +10,24 @@ const { Pool } = pg;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Connect to default postgres database first
+// NOT: Bu dosya artık kullanılmıyor - Supabase kullanılıyor!
+// Supabase'de database oluşturma gerekmez, 'postgres' database'i kullanılır
+
+// Connect to Supabase database
 const adminPool = new Pool({
-  host: process.env.DB_HOST || 'localhost',
-  port: process.env.DB_PORT || 5432,
-  database: 'postgres', // Connect to default database
+  host: process.env.DB_HOST || 'db.rxbtkjihvqjmamdwmsev.supabase.co',
+  port: parseInt(process.env.DB_PORT) || 6543,
+  database: 'postgres', // Supabase default database
   user: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '333333',
+  password: process.env.DB_PASSWORD || 'orhanozan33',
+  ssl: {
+    rejectUnauthorized: false
+  },
 });
 
-const dbName = process.env.DB_NAME || 'ototamir';
+// NOT: Bu dosya artık kullanılmıyor - Supabase kullanılıyor!
+// Supabase'de database oluşturma gerekmez, 'postgres' database'i kullanılır
+const dbName = process.env.DB_NAME || 'postgres'; // Supabase database
 
 async function createDatabase() {
   try {
