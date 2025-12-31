@@ -43,7 +43,9 @@ if (missingDb.length > 0) {
 }
 
 // Default to SSL enabled unless explicitly disabled via DB_SSL=false.
-const sslEnabled = process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL);
+// If DATABASE_URL contains sslmode=require, force SSL
+const hasSslModeInUrl = connectionString?.includes('sslmode=require') || connectionString?.includes('sslmode=require');
+const sslEnabled = hasSslModeInUrl ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
