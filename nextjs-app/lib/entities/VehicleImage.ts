@@ -7,7 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 
-@Entity('vehicle_images')
+@Entity('auto_sales_images')
 export class VehicleImage {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

@@ -93,7 +93,7 @@ export const dbApi = {
 
   getVehicleImages: async (vehicleId: string) => {
     const result = await pool.query(
-      'SELECT * FROM vehicle_images WHERE vehicle_id = $1 ORDER BY display_order ASC',
+      'SELECT * FROM auto_sales_images WHERE vehicle_id = $1 ORDER BY display_order ASC',
       [vehicleId]
     );
     return result.rows || [];
