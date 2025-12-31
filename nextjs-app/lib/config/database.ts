@@ -16,7 +16,8 @@ function isTruthy(value: unknown): boolean {
 const isServerless = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
 
 // Support either a single DATABASE_URL (recommended for pooler) or discrete DB_* variables.
-const connectionString = process.env.DATABASE_URL || process.env.POSTGRES_URL || undefined;
+// Trim whitespace to handle Windows line endings
+const connectionString = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim() || undefined;
 
 // IMPORTANT: DB connection details must come ONLY from environment variables.
 // No hard-coded defaults are allowed.
@@ -44,8 +45,11 @@ if (missingDb.length > 0) {
 
 // Default to SSL enabled unless explicitly disabled via DB_SSL=false.
 // If DATABASE_URL contains sslmode=require, force SSL
-const hasSslModeInUrl = connectionString?.includes('sslmode=require') || connectionString?.includes('sslmode=require');
-const sslEnabled = hasSslModeInUrl ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL));
+// Also check for pgbouncer mode (Supabase pooler)
+const hasSslModeInUrl = connectionString?.includes('sslmode=require');
+const hasPgBouncer = connectionString?.includes('pgbouncer=true');
+// For Supabase pooler connections, SSL should always be enabled
+const sslEnabled = hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
