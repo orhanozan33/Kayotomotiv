@@ -10,6 +10,7 @@
     "seed": "tsx scripts/seed-data.ts"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

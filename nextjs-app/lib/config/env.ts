@@ -14,6 +14,11 @@ interface EnvConfig {
     password?: string;
     ssl: boolean;
   };
+  // Supabase
+  supabase: {
+    url: string;
+    anonKey: string;
+  };
   // JWT
   jwt: {
     secret: string;
@@ -64,6 +69,10 @@ function getEnvConfig(): EnvConfig {
   // Frontend
   const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:3000';
 
+  // Supabase
+  const supabaseUrl = process.env.SUPABASE_URL?.trim() || '';
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY?.trim() || '';
+
   return {
     database: {
       url: databaseUrl,
@@ -73,6 +82,10 @@ function getEnvConfig(): EnvConfig {
       user: dbUser,
       password: dbPassword,
       ssl: process.env.DB_SSL !== 'false',
+    },
+    supabase: {
+      url: supabaseUrl,
+      anonKey: supabaseAnonKey,
     },
     jwt: {
       secret: jwtSecret,
@@ -111,6 +124,10 @@ try {
       user: process.env.DB_USER?.trim(),
       password: process.env.DB_PASSWORD?.trim(),
       ssl: process.env.DB_SSL !== 'false',
+    },
+    supabase: {
+      url: process.env.SUPABASE_URL?.trim() || '',
+      anonKey: process.env.SUPABASE_ANON_KEY?.trim() || '',
     },
     jwt: {
       secret: process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars',
