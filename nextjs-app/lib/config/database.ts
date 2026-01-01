@@ -2,7 +2,7 @@ import dns from 'dns';
 import { Pool, PoolConfig } from 'pg';
 
 // Prefer IPv4 addresses when a host resolves to both AAAA and A records.
-// This avoids common serverless/DNS issues where IPv6 is returned first but not routable (e.g. Vercel IPv4).
+// This avoids common serverless/DNS issues where IPv6 is returned first but not routable.
 try {
   dns.setDefaultResultOrder('ipv4first');
 } catch {
@@ -13,7 +13,8 @@ function isTruthy(value: unknown): boolean {
   return value === true || value === 'true' || value === '1' || value === 1;
 }
 
-const isServerless = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+// Check if running in production/serverless environment
+const isProduction = process.env.NODE_ENV === 'production';
 
 // Support either a single DATABASE_URL (recommended for pooler) or discrete DB_* variables.
 // Trim whitespace to handle Windows line endings
@@ -45,19 +46,16 @@ if (missingDb.length > 0) {
 
 // Default to SSL enabled unless explicitly disabled via DB_SSL=false.
 // If DATABASE_URL contains sslmode=require, force SSL
-// Also check for pgbouncer mode (Supabase pooler)
+// Also check for pgbouncer mode (connection pooler)
 const hasSslModeInUrl = connectionString?.includes('sslmode=require');
 const hasPgBouncer = connectionString?.includes('pgbouncer=true');
 
 // Determine if SSL should be enabled
-// For Supabase (contains .supabase.co), always enable SSL
 const isLocalhost = !connectionString && dbHost && (dbHost === 'localhost' || dbHost === '127.0.0.1');
-const isSupabase = connectionString?.includes('.supabase.') || (!connectionString && dbHost && dbHost.includes('.supabase.'));
-// For Supabase, always enable SSL. For localhost, disable. Otherwise use DB_SSL setting.
-// In production/Vercel, always enable SSL for Supabase connections
+// For localhost, disable SSL. For production, always enable SSL. Otherwise use DB_SSL setting.
 const sslEnabled = isLocalhost 
   ? false 
-  : (isSupabase || hasSslModeInUrl || hasPgBouncer || isServerless ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
+  : (hasSslModeInUrl || hasPgBouncer || isProduction ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
@@ -69,9 +67,9 @@ const poolConfig: PoolConfig = {
         user: dbUser!,
         password: dbPassword!,
       }),
-  // In serverless environments, keep pool size small to avoid exhausting DB connections.
-  max: isServerless ? Number(process.env.DB_POOL_MAX || 1) : Number(process.env.DB_POOL_MAX || 20),
-  idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || (isServerless ? 10000 : 30000)),
+  // In production environments, keep pool size small to avoid exhausting DB connections.
+  max: isProduction ? Number(process.env.DB_POOL_MAX || 1) : Number(process.env.DB_POOL_MAX || 20),
+  idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || (isProduction ? 10000 : 30000)),
   connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT_MS || 15000),
   // Avoid noisy prepared statement issues when using pgBouncer/poolers.
   statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
@@ -90,7 +88,7 @@ console.log('🔍 Database Connection Config:', {
   password: dbPassword ? '[SET]' : '[NOT SET]',
   ssl: poolConfig.ssl ? 'Enabled' : 'Disabled',
   poolMax: poolConfig.max,
-  isServerless,
+  isProduction,
   dns: 'ipv4first',
 });
 

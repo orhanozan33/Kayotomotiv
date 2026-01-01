@@ -1,0 +1,14 @@
+{
+  "build": {
+    "command": "npm run build",
+    "directory": ".",
+    "installCommand": "npm install"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ]
+}
+

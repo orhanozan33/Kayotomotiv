@@ -25,7 +25,8 @@ import {
   Page,
 } from '@/lib/entities';
 
-const isServerless = Boolean(process.env.VERCEL || process.env.VERCEL_ENV);
+// Check if running in production environment
+const isProduction = process.env.NODE_ENV === 'production';
 
 function getEnvConfig() {
   try {
@@ -133,8 +134,8 @@ export const AppDataSource = new DataSource({
   ],
   migrations: ['lib/migrations/*.ts'],
   extra: {
-    max: isServerless ? 1 : 20,
-    idleTimeoutMillis: isServerless ? 10000 : 30000,
+    max: isProduction ? 1 : 20,
+    idleTimeoutMillis: isProduction ? 10000 : 30000,
     connectionTimeoutMillis: 15000,
   },
 });
