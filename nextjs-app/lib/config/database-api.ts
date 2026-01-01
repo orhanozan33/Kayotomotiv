@@ -82,17 +82,17 @@ export const dbApi = {
       }
     }
 
-    const result = await pool.query(query, params);
+    const result = await getPool().query(query, params);
     return result.rows || [];
   },
 
   getVehicleById: async (id: string) => {
-    const result = await pool.query('SELECT * FROM auto_sales WHERE id = $1', [id]);
+    const result = await getPool().query('SELECT * FROM auto_sales WHERE id = $1', [id]);
     return result.rows[0] || null;
   },
 
   getVehicleImages: async (vehicleId: string) => {
-    const result = await pool.query(
+    const result = await getPool().query(
       'SELECT * FROM auto_sales_images WHERE vehicle_id = $1 ORDER BY display_order ASC',
       [vehicleId]
     );
@@ -101,14 +101,14 @@ export const dbApi = {
 
   // Users
   getUserByEmail: async (email: string) => {
-    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    const result = await getPool().query('SELECT * FROM users WHERE email = $1', [email]);
     return result.rows[0] || null;
   },
 
   // Settings
   getSettings: async () => {
     try {
-      const result = await pool.query('SELECT key, value FROM settings');
+      const result = await getPool().query('SELECT key, value FROM settings');
       const settings: Record<string, string> = {};
       result.rows.forEach((row: any) => {
         settings[row.key] = row.value;
@@ -127,7 +127,7 @@ export const dbApi = {
   getSettingsByKeys: async (keys: string[]) => {
     try {
       const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
-      const result = await pool.query(
+      const result = await getPool().query(
         `SELECT key, value FROM settings WHERE key IN (${placeholders})`,
         keys
       );
@@ -147,7 +147,7 @@ export const dbApi = {
   },
 
   updateSetting: async (key: string, value: string) => {
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO settings (key, value, updated_at) 
        VALUES ($1, $2, NOW()) 
        ON CONFLICT (key) 
@@ -163,7 +163,7 @@ export const dbApi = {
     const results = [];
     
     for (const [key, value] of updates) {
-      const result = await pool.query(
+      const result = await getPool().query(
         `INSERT INTO settings (key, value, updated_at) 
          VALUES ($1, $2, NOW()) 
          ON CONFLICT (key) 
