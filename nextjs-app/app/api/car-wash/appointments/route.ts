@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import Joi from 'joi';
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO car_wash_appointments 
        (package_id, appointment_date, appointment_time, addon_ids, customer_name, customer_email, customer_phone, vehicle_brand, vehicle_model, notes)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
@@ -64,7 +64,7 @@ export async function GET(request: NextRequest) {
     const adminError = requireAdmin(authResult.user);
     if (adminError) return adminError;
 
-    const result = await pool.query(`
+    const result = await getPool().query(`
       SELECT 
         cwa.*,
         cwp.name as package_name,

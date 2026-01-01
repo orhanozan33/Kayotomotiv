@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Repair revenue
-    const repairResult = await pool.query(
+    const repairResult = await getPool().query(
       `SELECT COALESCE(SUM(total_price), 0) as total
        FROM repair_quotes
        ${dateFilter}
@@ -45,7 +45,7 @@ export async function GET(request: NextRequest) {
     );
 
     // Car wash revenue
-    const carWashResult = await pool.query(
+    const carWashResult = await getPool().query(
       `SELECT COALESCE(SUM(total_price), 0) as total
        FROM car_wash_appointments
        ${dateFilter}

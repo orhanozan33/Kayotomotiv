@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
     const adminError = requireAdmin(authResult.user);
     if (adminError) return adminError;
 
-    const result = await pool.query(
+    const result = await getPool().query(
       'SELECT * FROM settings ORDER BY key'
     );
 
@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest) {
 
     // Update or insert each setting
     for (const [key, value] of Object.entries(settings)) {
-      await pool.query(
+      await getPool().query(
         `INSERT INTO settings (key, value, updated_at)
          VALUES ($1, $2, NOW())
          ON CONFLICT (key) 

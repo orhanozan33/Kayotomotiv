@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import Joi from 'joi';
@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO contact_messages (name, email, phone, subject, message)
        VALUES ($1, $2, $3, $4, $5)
        RETURNING *`,
@@ -61,10 +61,10 @@ export async function GET(request: NextRequest) {
 
     query += ' ORDER BY created_at DESC';
 
-    const result = await pool.query(query, params);
+    const result = await getPool().query(query, params);
 
     // Count total messages
-    const totalResult = await pool.query('SELECT COUNT(*) as total FROM contact_messages');
+    const totalResult = await getPool().query('SELECT COUNT(*) as total FROM contact_messages');
     const total = parseInt(totalResult.rows[0].total);
 
     return NextResponse.json({ messages: result.rows, total });

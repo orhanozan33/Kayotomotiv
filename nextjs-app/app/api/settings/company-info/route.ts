@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
       'company_email',
     ];
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `SELECT key, value FROM settings WHERE key = ANY($1)`,
       [keys]
     );

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -49,13 +49,13 @@ export async function GET(request: NextRequest) {
 
     query += ' ORDER BY created_at DESC';
 
-    const result = await pool.query(query, params);
+    const result = await getPool().query(query, params);
 
     // Calculate total_spent for each customer
     const customers = await Promise.all(
       result.rows.map(async (customer: any) => {
         try {
-          const serviceResult = await pool.query(
+          const serviceResult = await getPool().query(
             'SELECT COALESCE(SUM(price), 0) as total FROM service_records WHERE customer_id = $1',
             [customer.id]
           );
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO customers 
        (first_name, last_name, email, phone, address, vehicle_brand, vehicle_model, vehicle_year, license_plate, notes, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, NOW(), NOW())

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
 
     query += ' ORDER BY performed_date DESC, created_at DESC';
 
-    const result = await pool.query(query, params);
+    const result = await getPool().query(query, params);
 
     return NextResponse.json({ receipts: result.rows });
   } catch (error: any) {
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO receipts 
        (customer_id, service_record_id, customer_name, customer_phone, customer_email, license_plate, 
         service_name, service_description, service_type, price, performed_date, company_info, created_at, updated_at)

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -20,7 +20,7 @@ const createServiceSchema = Joi.object({
 export async function GET(request: NextRequest) {
   try {
     await initializeDatabase();
-    const result = await pool.query(
+    const result = await getPool().query(
       "SELECT * FROM repair_services WHERE is_active = true ORDER BY display_order, name"
     );
     return NextResponse.json({ services: result.rows });
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO repair_services (name, description, category, base_price, display_order, is_active, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, $6, NOW(), NOW())
        RETURNING *`,

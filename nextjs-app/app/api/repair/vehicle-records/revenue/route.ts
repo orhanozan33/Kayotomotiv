@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       dateFilter = "WHERE DATE_TRUNC('year', created_at) = DATE_TRUNC('year', CURRENT_DATE)";
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `SELECT 
         COUNT(*) as count,
         COALESCE(SUM(total_price), 0) as total_revenue,

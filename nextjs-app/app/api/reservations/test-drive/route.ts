@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import Joi from 'joi';
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
     const authResult = await authenticate(request);
     const userId = authResult.user?.id || null;
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO test_drive_requests 
        (vehicle_id, user_id, customer_name, customer_email, customer_phone, message, preferred_date, preferred_time)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
     const authResult = await authenticate(request);
     if (authResult.error) return authResult.error;
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `SELECT tdr.*, v.brand, v.model, v.year
        FROM test_drive_requests tdr
        JOIN auto_sales v ON tdr.vehicle_id = v.id

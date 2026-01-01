@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { sanitizeSQLQuery } from '@/lib/utils/security';
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
     const sanitizedSQL = sanitizeSQLQuery(value.sql);
 
     // Güvenli SQL sorgusunu çalıştır
-    const result = await pool.query({
+    const result = await getPool().query({
       text: sanitizedSQL,
       rowMode: 'array', // Güvenlik için array modu
     });

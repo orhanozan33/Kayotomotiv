@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     const notifications: any[] = [];
 
     // Pending reservations
-    const pendingReservations = await pool.query(
+    const pendingReservations = await getPool().query(
       "SELECT COUNT(*) as count FROM vehicle_reservations WHERE status = 'pending'"
     );
     if (parseInt(pendingReservations.rows[0].count) > 0) {
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Pending test drives
-    const pendingTestDrives = await pool.query(
+    const pendingTestDrives = await getPool().query(
       "SELECT COUNT(*) as count FROM test_drive_requests WHERE status = 'pending'"
     );
     if (parseInt(pendingTestDrives.rows[0].count) > 0) {

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
 
     query += ' ORDER BY rq.created_at DESC';
 
-    const result = await pool.query(query, params);
+    const result = await getPool().query(query, params);
 
     const quotes = result.rows.map((row: any) => {
       let parsedServices: any[] = [];
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `INSERT INTO repair_quotes 
        (vehicle_brand, vehicle_model, license_plate, services_data, total_price, status, notes, created_at, updated_at)
        VALUES ($1, $2, $3, $4, $5, 'completed', $6, NOW(), NOW())

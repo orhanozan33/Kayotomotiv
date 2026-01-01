@@ -1,17 +1,17 @@
-import pool from './database';
+import { getPool } from './database';
 
 // PostgreSQL Pool wrapper
 export const db = {
   query: async (text: string, params?: any[]) => {
     try {
-      return await pool.query(text, params);
+      return await getPool().query(text, params);
     } catch (error) {
       console.error('❌ PostgreSQL query error:', error);
       throw error;
     }
   },
-  connect: () => pool.connect(),
-  end: () => pool.end(),
+  connect: () => getPool().connect(),
+  end: () => getPool().end(),
 };
 
 interface VehicleFilters {

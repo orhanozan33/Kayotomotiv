@@ -105,4 +105,9 @@ pool.on('error', (err: any) => {
   });
 });
 
+// Export function to get pool instance
+export function getPool(): Pool {
+  return pool;
+}
+
 export default pool;
