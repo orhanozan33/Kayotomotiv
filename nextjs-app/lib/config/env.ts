@@ -101,19 +101,25 @@ function getEnvConfig(): EnvConfig {
 }
 
 // Validate on import
-// Note: In development, we allow the app to start even if some env vars are missing
-// but they will be required when actually used
+// Note: During build time, we allow missing env vars to prevent build failures
+// They will be validated at runtime when actually used
 let envConfig: EnvConfig;
 try {
   envConfig = getEnvConfig();
 } catch (error: any) {
   console.error('❌ Environment configuration error:', error.message);
-  // In production, fail fast
-  if (process.env.NODE_ENV === 'production') {
+  // During build (VERCEL build phase), don't fail - allow build to complete
+  // Environment variables will be validated at runtime
+  const isBuildTime = process.env.VERCEL === '1' && !process.env.VERCEL_ENV;
+  if (isBuildTime) {
+    console.warn('⚠️  Build time: Using minimal config (env vars will be validated at runtime)');
+  } else if (process.env.NODE_ENV === 'production' && !isBuildTime) {
+    // Only fail in production runtime, not during build
     throw error;
+  } else {
+    console.warn('⚠️  Continuing with minimal config');
   }
-  // In development, create a minimal config with defaults
-  console.warn('⚠️  Continuing in development mode with minimal config');
+  // Create a minimal config with defaults
   const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
   envConfig = {
     database: {
