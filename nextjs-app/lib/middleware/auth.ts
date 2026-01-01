@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import jwt from 'jsonwebtoken';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import envConfig from '@/lib/config/env';
 
 export interface AuthenticatedRequest extends NextRequest {
