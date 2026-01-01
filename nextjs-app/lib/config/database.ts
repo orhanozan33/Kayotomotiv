@@ -54,9 +54,10 @@ const hasPgBouncer = connectionString?.includes('pgbouncer=true');
 const isLocalhost = !connectionString && dbHost && (dbHost === 'localhost' || dbHost === '127.0.0.1');
 const isSupabase = connectionString?.includes('.supabase.') || (!connectionString && dbHost && dbHost.includes('.supabase.'));
 // For Supabase, always enable SSL. For localhost, disable. Otherwise use DB_SSL setting.
+// In production/Vercel, always enable SSL for Supabase connections
 const sslEnabled = isLocalhost 
   ? false 
-  : (isSupabase || hasSslModeInUrl || hasPgBouncer ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
+  : (isSupabase || hasSslModeInUrl || hasPgBouncer || isServerless ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
 const poolConfig: PoolConfig = {
   ...(connectionString
