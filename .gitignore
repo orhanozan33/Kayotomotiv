@@ -38,3 +38,6 @@ backend/uploads/*
 
 # Vercel
 .vercel
+
+# Zeabur
+.zeabur/
