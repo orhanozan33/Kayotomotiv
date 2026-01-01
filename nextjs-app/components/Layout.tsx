@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
+import CarBrandsSlider from './CarBrandsSlider';
 import { settingsAPI } from '@/lib/services/api';
 import styles from './Layout.module.css';
 

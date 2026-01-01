@@ -1,47 +1,48 @@
-.car-brands-slider {
+.carBrandsSlider {
   width: 100%;
   background: white;
   border-bottom: 1px solid #e0e0e0;
   overflow: hidden;
-  padding: 0.35rem 0;
+  padding: 0.5rem 0;
   position: relative;
   margin-bottom: 0;
 }
 
-.brands-track {
+.brandsTrack {
   display: flex;
-  gap: 2rem;
+  gap: 2.5rem;
   align-items: center;
-  animation: scroll 40s linear infinite;
+  animation: scroll 35s linear infinite;
   white-space: nowrap;
+  will-change: transform;
 }
 
-.brands-track:hover {
+.brandsTrack:hover {
   animation-play-state: paused;
 }
 
-.brand-item {
+.brandItem {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: color 0.3s ease, transform 0.3s ease;
-  height: 28px;
-  padding: 0 1rem;
+  height: 32px;
+  padding: 0 1.25rem;
 }
 
-.brand-item:hover {
+.brandItem:hover {
   color: #4CAF50;
-  transform: scale(1.08);
+  transform: scale(1.1);
 }
 
-.brand-name {
+.brandName {
   white-space: nowrap;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
   color: #333;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   transition: color 0.3s ease;
 }
 
@@ -54,8 +55,9 @@
   }
 }
 
+/* Desktop only - hide on mobile */
 @media (max-width: 768px) {
-  .car-brands-slider {
+  .carBrandsSlider {
     display: none;
   }
 }
