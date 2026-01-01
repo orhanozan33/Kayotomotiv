@@ -37,7 +37,7 @@ export async function authenticate(
     const decoded = jwt.verify(token, envConfig.jwt.secret) as { userId: string };
 
     // Verify user still exists and is active
-    const result = await pool.query(
+    const result = await getPool().query(
       'SELECT id, email, role, is_active FROM users WHERE id = $1',
       [decoded.userId]
     );
