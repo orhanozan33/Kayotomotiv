@@ -210,38 +210,38 @@ export default function Layout({ children }: LayoutProps) {
                     onMouseDown={(e) => handleMouseDown(e, 'resize')}
                     style={{ cursor: 'nwse-resize' }}
                   />
-                  <div className={styles.dragHint}>{t('header.dragHint')}</div>
-                  <div className={styles.resizeHint}>{t('header.resizeHint')}</div>
+                  <div className={styles.dragHint}>{String(t('header.dragHint') || '')}</div>
+                  <div className={styles.resizeHint}>{String(t('header.resizeHint') || '')}</div>
                 </>
               )}
             </div>
-            <h1 className={styles.logoTitle}>{t('header.logoTitle')}</h1>
+            <h1 className={styles.logoTitle}>{String(t('header.logoTitle') || '')}</h1>
           </Link>
           <nav className={styles.nav}>
             <Link href="/" className={pathname === '/' ? styles.active : ''}>
-              {t('nav.home')}
+              {String(t('nav.home') || '')}
             </Link>
             <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''}>
-              {t('nav.autoSales')}
+              {String(t('nav.autoSales') || '')}
             </Link>
             <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''}>
-              {t('nav.autoRepair')}
+              {String(t('nav.autoRepair') || '')}
             </Link>
             <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''}>
-              {t('nav.autoBodyShop')}
+              {String(t('nav.autoBodyShop') || '')}
             </Link>
             <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''}>
-              {t('nav.carWash')}
+              {String(t('nav.carWash') || '')}
             </Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.active : ''}>
-              {t('nav.contact')}
+              {String(t('nav.contact') || '')}
             </Link>
             <LanguageSwitcher />
           </nav>
           <button
             className={styles.mobileMenuButton}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={t('header.menu')}
+            aria-label={String(t('header.menu') || '')}
           >
             <span className={styles.mobileMenuIcon}></span>
             <span className={styles.mobileMenuIcon}></span>
@@ -251,22 +251,22 @@ export default function Layout({ children }: LayoutProps) {
         {mobileMenuOpen && (
           <nav className={styles.mobileNav}>
             <Link href="/" className={pathname === '/' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.home')}
+              {String(t('nav.home') || '')}
             </Link>
             <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.autoSales')}
+              {String(t('nav.autoSales') || '')}
             </Link>
             <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.autoRepair')}
+              {String(t('nav.autoRepair') || '')}
             </Link>
             <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.autoBodyShop')}
+              {String(t('nav.autoBodyShop') || '')}
             </Link>
             <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.carWash')}
+              {String(t('nav.carWash') || '')}
             </Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {t('nav.contact')}
+              {String(t('nav.contact') || '')}
             </Link>
             <div className={styles.mobileLanguageSwitcher}>
               <LanguageSwitcher />
