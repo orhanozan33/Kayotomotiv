@@ -141,7 +141,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
     return (
       <div className={styles.vehicleModalOverlay} onClick={handleModalClose}>
         <div className={styles.vehicleModalContent} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.loading}>{t('common.loading')}</div>
+          <div className={styles.loading}>{String(t('common.loading') || '')}</div>
         </div>
       </div>
     );
@@ -151,7 +151,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
     return (
       <div className={styles.vehicleModalOverlay} onClick={handleModalClose}>
         <div className={styles.vehicleModalContent} onClick={(e) => e.stopPropagation()}>
-          <div className={styles.error}>{t('common.error')}</div>
+          <div className={styles.error}>{String(t('common.error') || '')}</div>
         </div>
       </div>
     );
@@ -215,7 +215,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                       }}
                     />
                     <div className={styles.imageZoomHint}>
-                      🔍 {t('autoSales.details.clickToZoom') || 'Büyütmek için tıklayın'}
+                      🔍 {String(t('autoSales.details.clickToZoom') || 'Büyütmek için tıklayın')}
                     </div>
                   </div>
                   {validImages.length > 1 && (
@@ -244,7 +244,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                   )}
                 </>
               ) : (
-                <div className={styles.noImage}>{t('common.noImage')}</div>
+                <div className={styles.noImage}>{String(t('common.noImage') || '')}</div>
               )}
             </div>
 
@@ -266,18 +266,18 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                 <div className={styles.specCard}>
                   <div className={styles.specIcon}>⛽</div>
                   <div className={styles.specContent}>
-                    <div className={styles.specLabel}>{t('autoSales.details.specs.fuelType')}</div>
+                    <div className={styles.specLabel}>{String(t('autoSales.details.specs.fuelType') || '')}</div>
                     <div className={styles.specValue}>
                       {vehicle.fuel_type === 'petrol'
-                        ? t('autoSales.details.fuelPetrol')
+                        ? String(t('autoSales.details.fuelPetrol') || '')
                         : vehicle.fuel_type === 'diesel'
-                          ? t('autoSales.details.fuelDiesel')
+                          ? String(t('autoSales.details.fuelDiesel') || '')
                           : vehicle.fuel_type === 'electric'
-                            ? t('autoSales.details.fuelElectric')
+                            ? String(t('autoSales.details.fuelElectric') || '')
                             : vehicle.fuel_type === 'hybrid'
-                              ? t('autoSales.details.fuelHybrid')
+                              ? String(t('autoSales.details.fuelHybrid') || '')
                               : vehicle.fuel_type === 'lpg'
-                                ? t('autoSales.details.fuelLpg')
+                                ? String(t('autoSales.details.fuelLpg') || '')
                                 : vehicle.fuel_type || 'N/A'}
                     </div>
                   </div>
@@ -286,26 +286,26 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                   <div className={styles.specIcon}>⚙️</div>
                   <div className={styles.specContent}>
                     <div className={styles.specLabel}>
-                      {t('autoSales.details.specs.transmission')}
+                      {String(t('autoSales.details.specs.transmission') || '')}
                     </div>
                     <div className={styles.specValue}>
                       {vehicle.transmission === 'automatic'
-                        ? t('autoSales.details.transmissionAutomatic')
-                        : t('autoSales.details.transmissionManual')}
+                        ? String(t('autoSales.details.transmissionAutomatic') || '')
+                        : String(t('autoSales.details.transmissionManual') || '')}
                     </div>
                   </div>
                 </div>
                 <div className={styles.specCard}>
                   <div className={styles.specIcon}>📅</div>
                   <div className={styles.specContent}>
-                    <div className={styles.specLabel}>{t('autoSales.details.year') || 'Yıl'}</div>
+                    <div className={styles.specLabel}>{String(t('autoSales.details.year') || 'Yıl')}</div>
                     <div className={styles.specValue}>{vehicle.year}</div>
                   </div>
                 </div>
                 <div className={styles.specCard}>
                   <div className={styles.specIcon}>📏</div>
                   <div className={styles.specContent}>
-                    <div className={styles.specLabel}>{t('autoSales.details.specs.mileage')}</div>
+                    <div className={styles.specLabel}>{String(t('autoSales.details.specs.mileage') || '')}</div>
                     <div className={styles.specValue}>
                       {vehicle.mileage?.toLocaleString() || 'N/A'} km
                     </div>
@@ -314,10 +314,10 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                 <div className={styles.specCard}>
                   <div className={styles.specIcon}>🎨</div>
                   <div className={styles.specContent}>
-                    <div className={styles.specLabel}>{t('autoSales.details.specs.color')}</div>
+                    <div className={styles.specLabel}>{String(t('autoSales.details.specs.color') || '')}</div>
                     <div className={styles.specValue}>
                       {vehicle.color
-                        ? t(`autoSales.details.colors.${vehicle.color}`) || vehicle.color
+                        ? String(t(`autoSales.details.colors.${vehicle.color}`) || vehicle.color)
                         : 'N/A'}
                     </div>
                   </div>
@@ -326,7 +326,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
 
               {vehicle.description && (
                 <div className={styles.description}>
-                  <h3>{t('autoSales.details.description')}</h3>
+                  <h3>{String(t('autoSales.details.description') || '')}</h3>
                   <p>{vehicle.description}</p>
                 </div>
               )}
@@ -336,7 +336,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                   onClick={() => setShowReservationForm(true)}
                   className={styles.btnPrimary}
                 >
-                  {t('autoSales.details.reservation')}
+                  {String(t('autoSales.details.reservation') || '')}
                 </button>
               </div>
             </div>
@@ -347,12 +347,12 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
       {showReservationForm && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h2>{t('autoSales.forms.reservation.title')}</h2>
+            <h2>{String(t('autoSales.forms.reservation.title') || '')}</h2>
             <form onSubmit={handleReservationSubmit}>
               <input
                 type="text"
                 name="customer_name"
-                placeholder={t('autoSales.forms.reservation.name')}
+                placeholder={String(t('autoSales.forms.reservation.name') || '')}
                 value={formData.customer_name}
                 onChange={handleInputChange}
                 required
@@ -360,7 +360,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
               <input
                 type="email"
                 name="customer_email"
-                placeholder={t('autoSales.forms.reservation.email')}
+                placeholder={String(t('autoSales.forms.reservation.email') || '')}
                 value={formData.customer_email}
                 onChange={handleInputChange}
                 required
@@ -368,7 +368,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
               <input
                 type="tel"
                 name="customer_phone"
-                placeholder={t('autoSales.forms.reservation.phone')}
+                placeholder={String(t('autoSales.forms.reservation.phone') || '')}
                 value={formData.customer_phone}
                 onChange={handleInputChange}
                 required
@@ -376,7 +376,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
               <input
                 type="date"
                 name="preferred_date"
-                placeholder={t('autoSales.forms.reservation.preferredDate') || 'Tercih Edilen Tarih'}
+                placeholder={String(t('autoSales.forms.reservation.preferredDate') || 'Tercih Edilen Tarih')}
                 value={formData.preferred_date}
                 onChange={handleInputChange}
                 required
@@ -384,22 +384,22 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
               <input
                 type="time"
                 name="preferred_time"
-                placeholder={t('autoSales.forms.reservation.preferredTime') || 'Tercih Edilen Saat'}
+                placeholder={String(t('autoSales.forms.reservation.preferredTime') || 'Tercih Edilen Saat')}
                 value={formData.preferred_time}
                 onChange={handleInputChange}
                 required
               />
               <textarea
                 name="message"
-                placeholder={t('autoSales.forms.reservation.message')}
+                placeholder={String(t('autoSales.forms.reservation.message') || '')}
                 value={formData.message}
                 onChange={handleInputChange}
                 rows={4}
               />
               <div className={styles.modalActions}>
-                <button type="submit">{t('autoSales.forms.reservation.submit')}</button>
+                <button type="submit">{String(t('autoSales.forms.reservation.submit') || '')}</button>
                 <button type="button" onClick={() => setShowReservationForm(false)}>
-                  {t('autoSales.forms.reservation.cancel')}
+                  {String(t('autoSales.forms.reservation.cancel') || '')}
                 </button>
               </div>
             </form>

@@ -46,7 +46,7 @@ export default function LanguageSwitcher() {
       <button
         className={styles.languageButton}
         onClick={() => setIsOpen(!isOpen)}
-        title={t(currentLanguage.nameKey)}
+        title={String(t(currentLanguage.nameKey) || '')}
       >
         <span className={styles.languageCode}>{currentLanguage.code.toUpperCase()}</span>
         <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>

@@ -280,10 +280,10 @@ export default function Layout({ children }: LayoutProps) {
           <div className={styles.footerGrid}>
             {/* Company Info */}
             <div className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>{t('footer.company.title') || 'KAY Auto Service'}</h3>
+              <h3 className={styles.footerTitle}>{String(t('footer.company.title') || 'KAY Auto Service')}</h3>
               <p className={styles.footerDescription}>
-                {t('footer.company.description') ||
-                  'Tüm otomotif ihtiyaçlarınız için güvenilir ortağınız. Profesyonel hizmet, kaliteli işçilik.'}
+                {String(t('footer.company.description') ||
+                  'Tüm otomotif ihtiyaçlarınız için güvenilir ortağınız. Profesyonel hizmet, kaliteli işçilik.')}
               </p>
               {(socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
                 <div className={styles.socialLinks}>
@@ -339,7 +339,7 @@ export default function Layout({ children }: LayoutProps) {
 
             {/* Contact Info */}
             <div className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>{t('footer.contact.title') || 'İletişim'}</h3>
+              <h3 className={styles.footerTitle}>{String(t('footer.contact.title') || 'İletişim')}</h3>
               <ul className={styles.footerContact}>
                 {socialLinks.phone && (
                   <li>
@@ -353,13 +353,13 @@ export default function Layout({ children }: LayoutProps) {
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
                   </svg>
-                  <span>{t('footer.contact.address') || 'Ankara, Türkiye'}</span>
+                  <span>{String(t('footer.contact.address') || 'Ankara, Türkiye')}</span>
                 </li>
                 <li>
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
-                  <span>{t('footer.contact.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00'}</span>
+                  <span>{String(t('footer.contact.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00')}</span>
                 </li>
               </ul>
             </div>
@@ -368,7 +368,7 @@ export default function Layout({ children }: LayoutProps) {
           {/* Copyright */}
           <div className={styles.footerBottom}>
             <p className={styles.copyright}>
-              © {new Date().getFullYear()} {t('footer.copyright') || 'KAY Auto Service. Tüm hakları saklıdır.'}
+              © {new Date().getFullYear()} {String(t('footer.copyright') || 'KAY Auto Service. Tüm hakları saklıdır.')}
             </p>
           </div>
         </div>
