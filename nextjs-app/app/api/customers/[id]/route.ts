@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { initializeDatabase } from '@/lib/config/typeorm';
-import pool from '@/lib/config/database';
+import { getPool } from '@/lib/config/database';
 import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { requireAdmin } from '@/lib/middleware/auth';
@@ -34,7 +34,7 @@ export async function GET(
     if (adminError) return adminError;
 
     const resolvedParams = await Promise.resolve(params);
-    const customerResult = await pool.query(
+    const customerResult = await getPool().query(
       'SELECT * FROM customers WHERE id = $1',
       [resolvedParams.id]
     );
@@ -46,7 +46,7 @@ export async function GET(
     const customer = customerResult.rows[0];
 
     // Get vehicles
-    const vehiclesResult = await pool.query(
+    const vehiclesResult = await getPool().query(
       'SELECT * FROM customer_vehicles WHERE customer_id = $1 ORDER BY created_at DESC',
       [resolvedParams.id]
     );
@@ -66,14 +66,14 @@ export async function GET(
     };
 
     try {
-      const serviceRecordsResult = await pool.query(
+      const serviceRecordsResult = await getPool().query(
         'SELECT * FROM service_records WHERE customer_id = $1 ORDER BY performed_date DESC',
         [resolvedParams.id]
       );
       serviceRecords = serviceRecordsResult.rows;
 
       // Calculate stats
-      const statsResult = await pool.query(
+      const statsResult = await getPool().query(
         `SELECT 
           COUNT(*) as total_services,
           COALESCE(SUM(price), 0) as total_spent,
@@ -150,7 +150,7 @@ export async function PUT(
     updateValues.push(resolvedParams.id);
     updateFields.push(`updated_at = NOW()`);
 
-    const result = await pool.query(
+    const result = await getPool().query(
       `UPDATE customers 
        SET ${updateFields.join(', ')}
        WHERE id = $${paramCount}
@@ -181,7 +181,7 @@ export async function DELETE(
     if (adminError) return adminError;
 
     const resolvedParams = await Promise.resolve(params);
-    const result = await pool.query(
+    const result = await getPool().query(
       `DELETE FROM customers 
        WHERE id = $1
        RETURNING *`,
