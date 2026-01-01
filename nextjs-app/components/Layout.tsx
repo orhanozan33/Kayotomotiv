@@ -275,6 +275,7 @@ export default function Layout({ children }: LayoutProps) {
           </nav>
         )}
       </header>
+      <CarBrandsSlider />
       <main className={styles.mainContent}>{children}</main>
       <footer className={styles.footer}>
         <div className={styles.footerContainer}>
