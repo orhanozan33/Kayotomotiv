@@ -106,4 +106,3 @@ pool.on('error', (err: any) => {
 });
 
 export default pool;
-
