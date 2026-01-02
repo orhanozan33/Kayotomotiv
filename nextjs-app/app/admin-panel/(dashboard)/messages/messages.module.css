@@ -1,30 +1,30 @@
 .messagesPage {
-  padding: 2rem;
+  padding: 1.4rem;
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
 }
 
 .pageHeader h1 {
   margin: 0;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: #333;
 }
 
 .filters {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .filterSelect {
-  padding: 0.5rem 1rem;
+  padding: 0.245rem 0.7rem;
   border: 2px solid #ddd;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   background: white;
   cursor: pointer;
 }
@@ -53,7 +53,7 @@
 }
 
 .messagesTable th {
-  padding: 1rem;
+  padding: 0.7rem;
   text-align: left;
   font-weight: 600;
   color: #333;
@@ -62,7 +62,7 @@
 }
 
 .messagesTable td {
-  padding: 1rem;
+  padding: 0.7rem;
   border-bottom: 1px solid #eee;
   vertical-align: top;
 }
@@ -79,7 +79,7 @@
 .statusBadge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
   font-weight: 500;
   display: inline-block;
 }
@@ -101,15 +101,22 @@
 
 .actionButtons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.actionButtons button {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btnView,
 .btnDelete {
-  padding: 0.5rem 1rem;
+  padding: 0.245rem 0.7rem;
   border: none;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -143,7 +150,7 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 1rem;
+  padding: 0.7rem;
 }
 
 .modalContent {
@@ -160,20 +167,20 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
+  padding: 1.05rem;
   border-bottom: 2px solid #eee;
 }
 
 .modalHeader h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   color: #333;
 }
 
 .closeBtn {
   background: none;
   border: none;
-  font-size: 2rem;
+  font-size: 1.4rem;
   color: #666;
   cursor: pointer;
   line-height: 1;
@@ -193,12 +200,12 @@
 }
 
 .modalBody {
-  padding: 1.5rem;
+  padding: 1.05rem;
 }
 
 .detailRow {
   display: flex;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   align-items: flex-start;
 }
 
@@ -210,11 +217,11 @@
   font-weight: 600;
   color: #666;
   min-width: 120px;
-  margin-right: 1rem;
+  margin-right: 0.7rem;
 }
 
 .detailRow.fullWidth label {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
 }
 
 .detailRow span {
@@ -224,7 +231,7 @@
 
 .messageContent {
   background: #f9f9f9;
-  padding: 1rem;
+  padding: 0.7rem;
   border-radius: 8px;
   white-space: pre-wrap;
   word-wrap: break-word;
@@ -236,16 +243,16 @@
 .modalFooter {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  padding: 1.5rem;
+  gap: 0.7rem;
+  padding: 1.05rem;
   border-top: 2px solid #eee;
 }
 
 .statusSelect {
-  padding: 0.5rem 1rem;
+  padding: 0.245rem 0.7rem;
   border: 2px solid #ddd;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   background: white;
   cursor: pointer;
   margin-right: auto;
@@ -257,12 +264,12 @@
 }
 
 .btnSecondary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.367rem 1.05rem;
   background: #666;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.3s;
 }
@@ -273,20 +280,20 @@
 
 .loading {
   text-align: center;
-  padding: 3rem;
-  font-size: 1.25rem;
+  padding: 2.1rem;
+  font-size: 0.875rem;
   color: #666;
 }
 
 @media (max-width: 768px) {
   .messagesPage {
-    padding: 1rem;
+    padding: 0.7rem;
   }
 
   .pageHeader {
     flex-direction: column;
     align-items: flex-start;
-    gap: 1rem;
+    gap: 0.7rem;
   }
 
   .messagesTable {

@@ -1,7 +1,7 @@
 .settingsPage {
   width: 100%;
   max-width: 100%;
-  padding: 2rem;
+  padding: 1.4rem;
   box-sizing: border-box;
 }
 
@@ -9,14 +9,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
   flex-wrap: wrap;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .pageHeader h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -26,17 +26,17 @@
 
 .headerButtons {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   flex-wrap: wrap;
 }
 
 .btnPrimary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -51,19 +51,19 @@
 
 .tabs {
   display: flex;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  gap: 0.7rem;
+  margin-bottom: 1.4rem;
   border-bottom: 2px solid #e9ecef;
   padding-bottom: 0.5rem;
 }
 
 .tabs button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   border: none;
   background: transparent;
   color: #666;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   transition: all 0.3s ease;
   border-bottom: 3px solid transparent;
@@ -95,7 +95,7 @@
 
 .modalContent {
   background: white;
-  padding: 2rem;
+  padding: 1.4rem;
   border-radius: 16px;
   width: 90%;
   max-width: 500px;
@@ -110,23 +110,23 @@
 
 .modalContent h2 {
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.05rem;
   color: #333;
 }
 
 .modalContent form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .modalContent input,
 .modalContent select,
 .modalContent textarea {
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-family: inherit;
 }
 
@@ -136,17 +136,17 @@
 
 .modalActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 0.7rem;
   flex-wrap: wrap;
 }
 
 .modalActions button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   cursor: pointer;
   transition: all 0.3s ease;
 }
@@ -163,8 +163,8 @@
 .formGroup {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
+  gap: 0.35rem;
+  margin-bottom: 0.7rem;
 }
 
 .formGroup label {
@@ -174,64 +174,64 @@
 
 .formGroup small {
   color: #666;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
 }
 
 .totalTaxRate {
-  padding: 1rem;
+  padding: 0.7rem;
   background: #f0f8ff;
   border-radius: 8px;
-  margin: 1rem 0;
-  font-size: 1.125rem;
+  margin: 0.7rem 0;
+  font-size: 0.787rem;
 }
 
 .locationSection {
   border: 1px solid #ddd;
-  padding: 1rem;
+  padding: 0.7rem;
   border-radius: 8px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.05rem;
   background: #f9f9f9;
 }
 
 .locationSection h3 {
   margin: 0 0 1rem 0;
-  font-size: 1.1rem;
+  font-size: 0.77rem;
   color: #333;
 }
 
 .permissionsContainer {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
-  margin: 1.5rem 0;
+  gap: 1.05rem;
+  margin: 1.05rem 0;
   max-height: 60vh;
   overflow-y: auto;
-  padding: 1rem;
+  padding: 0.7rem;
 }
 
 .permissionSection {
   border: 1px solid #ddd;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 0.7rem;
   background: #f9f9f9;
 }
 
 .permissionSection h3 {
   margin: 0 0 1rem 0;
-  font-size: 1.1rem;
+  font-size: 0.77rem;
   color: #333;
 }
 
 .permissionCheckboxes {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.525rem;
 }
 
 .permissionCheckboxes label {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   cursor: pointer;
 }
 
@@ -241,33 +241,33 @@
 }
 
 .permissionPassword {
-  margin-top: 0.5rem;
+  margin-top: 0.35rem;
   padding-top: 0.5rem;
   border-top: 1px solid #ddd;
 }
 
 .permissionPassword label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   font-weight: 600;
 }
 
 .permissionPassword input {
   width: 100%;
-  padding: 0.5rem;
+  padding: 0.35rem;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
 .sectionHeader {
-  margin: 2rem 0 1rem 0;
+  margin: 1.4rem 0 1rem 0;
   border-bottom: 2px solid #e0e0e0;
   padding-bottom: 0.5rem;
 }
 
 .sectionHeader h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   color: #333;
 }
 
@@ -289,7 +289,7 @@
 }
 
 .dataTable th {
-  padding: 0.75rem;
+  padding: 0.525rem;
   text-align: left;
   font-weight: 600;
   color: #333;
@@ -298,7 +298,7 @@
 }
 
 .dataTable td {
-  padding: 0.75rem;
+  padding: 0.525rem;
   border-bottom: 1px solid #eee;
   white-space: nowrap;
 }
@@ -309,7 +309,7 @@
 
 .actionButtons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   flex-wrap: nowrap;
   justify-content: flex-end;
 }
@@ -329,13 +329,15 @@
 .btnPermissions,
 .btnDelete,
 .btnCancel {
-  padding: 0.5rem 1rem;
+  padding: 0.35rem 0.7rem;
   border: none;
   border-radius: 4px;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.3s ease;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .btnEdit {
@@ -379,8 +381,8 @@
 
 .loading {
   text-align: center;
-  padding: 2rem;
-  font-size: 1.2rem;
+  padding: 1.4rem;
+  font-size: 0.84rem;
   color: #666;
 }
 
@@ -388,14 +390,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.05rem;
   padding-bottom: 1rem;
   border-bottom: 2px solid #eee;
 }
 
 .modalHeader h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   color: #333;
 }
 
@@ -406,7 +408,7 @@
   border-radius: 50%;
   width: 32px;
   height: 32px;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -421,26 +423,26 @@
 }
 
 .modalBody {
-  margin: 1.5rem 0;
+  margin: 1.05rem 0;
 }
 
 .userDetailSection {
-  margin-bottom: 2rem;
-  padding: 1rem;
+  margin-bottom: 1.4rem;
+  padding: 0.7rem;
   background: #f9f9f9;
   border-radius: 8px;
 }
 
 .userDetailSection h3 {
   margin: 0 0 1rem 0;
-  font-size: 1.2rem;
+  font-size: 0.84rem;
   color: #333;
 }
 
 .detailRow {
   display: flex;
   justify-content: space-between;
-  padding: 0.75rem 0;
+  padding: 0.525rem 0;
   border-bottom: 1px solid #eee;
 }
 
@@ -462,14 +464,14 @@
 .permissionsSummary {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.525rem;
 }
 
 .permissionSummaryItem {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.75rem;
+  padding: 0.525rem;
   background: white;
   border-radius: 6px;
   border: 1px solid #ddd;
@@ -481,14 +483,14 @@
 
 .permissionBadges {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   flex-wrap: wrap;
 }
 
 .badge {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
-  font-size: 0.75rem;
+  font-size: 0.525rem;
   font-weight: 600;
 }
 
@@ -517,13 +519,13 @@
 }
 
 .searchContainer {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.05rem;
 }
 
 .searchContainer input {
   width: 100%;
-  padding: 0.75rem;
-  font-size: 1rem;
+  padding: 0.525rem;
+  font-size: 0.7rem;
   border: 2px solid #ddd;
   border-radius: 8px;
   transition: all 0.3s ease;
@@ -537,21 +539,21 @@
 
 .noResults {
   text-align: center;
-  padding: 3rem;
+  padding: 2.1rem;
   color: #666;
-  font-size: 1.125rem;
+  font-size: 0.787rem;
 }
 
 .detailSection {
-  margin-bottom: 2rem;
-  padding: 1rem;
+  margin-bottom: 1.4rem;
+  padding: 0.7rem;
   background: #f9f9f9;
   border-radius: 8px;
 }
 
 .detailSection h3 {
   margin: 0 0 1rem 0;
-  font-size: 1.2rem;
+  font-size: 0.84rem;
   color: #333;
   border-bottom: 1px solid #ddd;
   padding-bottom: 0.5rem;
@@ -560,7 +562,7 @@
 .detailGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .detailItem {
@@ -576,17 +578,17 @@
 .detailItem label {
   font-weight: 600;
   color: #666;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
 }
 
 .detailItem span {
   color: #333;
-  font-size: 1rem;
+  font-size: 0.7rem;
 }
 
 @media (max-width: 768px) {
   .settingsPage {
-    padding: 1rem;
+    padding: 0.7rem;
   }
 
   .pageHeader {
@@ -595,7 +597,7 @@
   }
 
   .pageHeader h1 {
-    font-size: 2rem;
+    font-size: 1.4rem;
   }
 
   .headerButtons {
@@ -613,7 +615,7 @@
 
   .modalContent {
     width: 95%;
-    padding: 1.5rem;
+    padding: 1.05rem;
   }
 
   .modalActions {

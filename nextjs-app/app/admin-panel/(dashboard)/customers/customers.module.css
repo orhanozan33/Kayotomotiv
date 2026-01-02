@@ -1,18 +1,18 @@
 .customersPage {
   max-width: 1400px;
-  padding: 2rem;
+  padding: 1.4rem;
 }
 
 .pageHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
 }
 
 .pageHeader h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   -webkit-background-clip: text;
@@ -21,12 +21,12 @@
 }
 
 .btnPrimary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -40,16 +40,16 @@
 }
 
 .searchSection {
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
 }
 
 .searchInput {
   width: 100%;
   max-width: 500px;
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   transition: all 0.3s ease;
 }
 
@@ -75,7 +75,7 @@
 
 .modalContent {
   background: white;
-  padding: 2rem;
+  padding: 1.4rem;
   border-radius: 16px;
   max-width: 600px;
   width: 90%;
@@ -91,7 +91,7 @@
   right: 1rem;
   background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
   border: 3px solid #4caf50;
-  font-size: 1.75rem;
+  font-size: 1.225rem;
   font-weight: 900;
   cursor: pointer;
   color: white;
@@ -118,7 +118,7 @@
 
 .modalContent h2 {
   margin: 0 0 1.5rem 0;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   font-weight: 700;
   color: #1a1a1a;
 }
@@ -126,17 +126,17 @@
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 .formGrid input,
 .formGrid select,
 .modalContent textarea {
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 1px solid #ddd;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   width: 100%;
   box-sizing: border-box;
   transition: all 0.3s ease;
@@ -158,22 +158,22 @@
 
 .modalContent textarea {
   font-family: inherit;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   resize: vertical;
 }
 
 .modalActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 0.7rem;
 }
 
 .modalActions button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.367rem 1.05rem;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -219,14 +219,14 @@
 
 .customersTable th,
 .customersTable td {
-  padding: 1rem;
+  padding: 0.7rem;
   text-align: left;
   border-bottom: 1px solid #e9ecef;
 }
 
 .customersTable th {
   font-weight: 700;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   color: #495057;
@@ -239,16 +239,22 @@
 
 .actionButtons {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.35rem;
   align-items: center;
+  flex-wrap: nowrap;
+}
+
+.actionButtons button {
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .customersTable td button {
-  padding: 0.4rem 0.8rem;
+  padding: 0.28rem 0.8rem;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.525rem;
   font-weight: 600;
   white-space: nowrap;
   transition: all 0.2s ease;
@@ -286,8 +292,8 @@
 .loading,
 .noResults {
   text-align: center;
-  padding: 3rem;
-  font-size: 1.25rem;
+  padding: 2.1rem;
+  font-size: 0.875rem;
   color: #666;
   background: white;
   border-radius: 16px;
@@ -317,18 +323,18 @@
 .errorToastContent {
   background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
   color: white;
-  padding: 1rem 1.5rem;
+  padding: 0.49rem 1.05rem;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(244, 67, 54, 0.4);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
   min-width: 300px;
   max-width: 500px;
 }
 
 .errorIcon {
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   flex-shrink: 0;
 }
 
@@ -341,7 +347,7 @@
   background: transparent;
   border: none;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -368,18 +374,18 @@
 .successToastContent {
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
-  padding: 1rem 1.5rem;
+  padding: 0.49rem 1.05rem;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(76, 175, 80, 0.4);
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 0.7rem;
   min-width: 300px;
   max-width: 500px;
 }
 
 .successIcon {
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   flex-shrink: 0;
 }
 
@@ -392,7 +398,7 @@
   background: transparent;
   border: none;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   cursor: pointer;
   padding: 0;
   width: 24px;
@@ -414,7 +420,7 @@
   }
 
   .customersTable {
-    font-size: 0.875rem;
+    font-size: 0.612rem;
   }
 }
 

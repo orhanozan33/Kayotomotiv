@@ -39,6 +39,7 @@ export default function AutoSalesPage() {
   const [loading, setLoading] = useState(true);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
   const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     brand: '',
     model: '',
@@ -96,13 +97,35 @@ export default function AutoSalesPage() {
   const handleFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loadVehicles();
+    // Close filter on mobile after search
+    if (window.innerWidth <= 768) {
+      setIsFilterOpen(false);
+    }
+  };
+
+  const toggleFilter = () => {
+    setIsFilterOpen(!isFilterOpen);
   };
 
   return (
     <div className={styles.autoSalesPage}>
       <div className={styles.container}>
         <div className={styles.filtersSection}>
-          <form onSubmit={handleFilterSubmit} className={styles.filtersForm}>
+          <button
+            type="button"
+            onClick={toggleFilter}
+            className={styles.filterToggle}
+            aria-expanded={isFilterOpen}
+          >
+            {isMounted ? t('autoSales.filters.filter') : 'Filtrele'}
+            <span className={styles.filterToggleIcon}>
+              {isFilterOpen ? '▲' : '▼'}
+            </span>
+          </button>
+          <form
+            onSubmit={handleFilterSubmit}
+            className={`${styles.filtersForm} ${isFilterOpen ? styles.filtersFormOpen : ''}`}
+          >
             <select name="brand" value={filters.brand} onChange={handleFilterChange}>
               <option value="">{isMounted ? t('autoSales.filters.brand') : 'Marka'}</option>
               {Object.keys(carBrandsAndModels).map((brand) => (

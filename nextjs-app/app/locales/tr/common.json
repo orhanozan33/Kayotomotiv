@@ -556,6 +556,18 @@
     "confirmDeleteAddon": "Bu ekstrayı silmek istediğinizden emin misiniz?",
     "searchAppointments": "Müşteri, email, telefon veya paket ile ara...",
     "filterByDate": "Tarihe göre filtrele",
+    "allStatuses": "Tüm Durumlar",
+    "statusPending": "Beklemede",
+    "statusConfirmed": "Onaylandı",
+    "statusInProgress": "Devam Ediyor",
+    "statusCompleted": "Tamamlandı",
+    "statusCancelled": "İptal Edildi",
+    "printReceipt": "Makbuz Yazdır",
+    "delete": "Sil",
+    "noAppointments": "Randevu bulunamadı",
+    "appointmentDeletedSuccessfully": "Randevu başarıyla silindi!",
+    "confirmDeleteAppointmentTitle": "Randevuyu Sil",
+    "confirmDeleteAppointment": "Bu randevuyu silmek istediğinizden emin misiniz?",
     "errors": {
       "updating": "Durum güncellenirken hata oluştu",
       "savingPackage": "Paket kaydedilirken hata oluştu",
@@ -563,6 +575,8 @@
       "savingAddon": "Eklenti kaydedilirken hata oluştu",
       "deletingAddon": "Eklenti silinirken hata oluştu",
       "updatingStatus": "Durum güncellenirken hata oluştu",
+      "updatingAppointmentStatus": "Randevu durumu güncellenirken hata oluştu",
+      "deletingAppointment": "Randevu silinirken hata oluştu",
       "printingReceipt": "Makbuz yazdırılırken hata oluştu",
       "popupBlocked": "Popup engellendi. Lütfen popup blocker'ı kapatın."
     }
@@ -909,6 +923,12 @@
     "phonePlaceholder": "Telefon numarasını girin",
     "phonePlaceholder2": "Şirket telefon numarasını girin",
     "emailPlaceholder": "E-posta adresini girin",
+    "companyLogo": "Şirket Logosu",
+    "uploadLogo": "Logoyu Yükle",
+    "removeLogo": "Logoyu Kaldır",
+    "logoUploaded": "Logo başarıyla yüklendi",
+    "logoRemoved": "Logo kaldırıldı",
+    "logoHint": "Logo makbuzda firma bilgilerinin altında görünecektir. (Opsiyonel)",
     "facebookUrl": "Facebook URL",
     "facebookPlaceholder": "Facebook sayfa URL'si",
     "instagramUrl": "Instagram URL",
@@ -971,7 +991,9 @@
       "savingPermissions": "İzinler kaydedilirken hata oluştu",
       "savingSocialMedia": "Sosyal medya linkleri kaydedilirken hata oluştu",
       "savingCompanyInfo": "Şirket bilgileri kaydedilirken hata oluştu",
-      "savingTaxRates": "Vergi oranları kaydedilirken hata oluştu"
+      "savingTaxRates": "Vergi oranları kaydedilirken hata oluştu",
+      "uploadingLogo": "Logo yüklenirken hata oluştu",
+      "removingLogo": "Logo kaldırılırken hata oluştu"
     }
   },
   "adminMessages": {

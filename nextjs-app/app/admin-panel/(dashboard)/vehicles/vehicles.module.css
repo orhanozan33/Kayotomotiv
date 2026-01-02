@@ -6,21 +6,21 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.4rem;
 }
 
 .pageHeader h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 1.75rem;
 }
 
 .btnPrimary {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   background: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -44,7 +44,7 @@
 
 .modalContent {
   background: white;
-  padding: 2rem;
+  padding: 1.4rem;
   border-radius: 8px;
   max-width: 800px;
   width: 90%;
@@ -63,7 +63,7 @@
   right: 1rem;
   background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
   border: 3px solid #4caf50;
-  font-size: 1.75rem;
+  font-size: 1.225rem;
   font-weight: 900;
   cursor: pointer;
   color: white;
@@ -92,16 +92,16 @@
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1rem;
-  margin-bottom: 1rem;
+  gap: 0.7rem;
+  margin-bottom: 0.7rem;
 }
 
 .formGrid input,
 .formGrid select {
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   width: 100%;
   box-sizing: border-box;
   appearance: none;
@@ -118,34 +118,34 @@
 
 .modalContent textarea {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 1px solid #ddd;
   border-radius: 4px;
-  font-size: 1rem;
-  margin-bottom: 1rem;
+  font-size: 0.7rem;
+  margin-bottom: 0.7rem;
   font-family: inherit;
   box-sizing: border-box;
 }
 
 .formGroupImages {
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .formGroupImages label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.35rem;
   font-weight: 600;
   color: #333;
 }
 
 .fileInput {
   width: 100%;
-  padding: 0.75rem;
+  padding: 0.525rem;
   border: 2px dashed #ddd;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
   background-color: #f9f9f9;
   transition: all 0.3s ease;
 }
@@ -156,15 +156,15 @@
 }
 
 .formGroupImages h4 {
-  margin: 1.5rem 0 0.75rem 0;
-  font-size: 1rem;
+  margin: 1.05rem 0 0.75rem 0;
+  font-size: 0.7rem;
   font-weight: 600;
   color: #333;
 }
 
 .existingImagesSection,
 .newImagesSection {
-  margin-top: 1.5rem;
+  margin-top: 1.05rem;
 }
 
 .existingImagesSection h4 {
@@ -178,8 +178,8 @@
 .imagePreviewContainer {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 1rem;
-  margin-top: 1rem;
+  gap: 0.7rem;
+  margin-top: 0.7rem;
 }
 
 .imagePreviewItem {
@@ -208,7 +208,7 @@
   width: 32px;
   height: 32px;
   cursor: pointer;
-  font-size: 1.5rem;
+  font-size: 1.05rem;
   font-weight: 900;
   display: flex;
   align-items: center;
@@ -244,7 +244,7 @@
   width: 28px;
   height: 28px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -255,7 +255,7 @@
 
 .setPrimaryBtn {
   background: rgba(255, 193, 7, 0.9);
-  font-size: 1rem;
+  font-size: 0.7rem;
 }
 
 .setPrimaryBtn:hover {
@@ -284,22 +284,22 @@
   color: white;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.525rem;
   font-weight: 600;
 }
 
 .modalActions {
   display: flex;
-  gap: 1rem;
+  gap: 0.7rem;
   justify-content: flex-end;
-  margin-top: 1rem;
+  margin-top: 0.7rem;
 }
 
 .modalActions button {
-  padding: 0.75rem 1.5rem;
+  padding: 0.525rem 1.05rem;
   border: none;
   border-radius: 4px;
-  font-size: 1rem;
+  font-size: 0.7rem;
   cursor: pointer;
 }
 
@@ -331,18 +331,26 @@
 
 .vehiclesTable th,
 .vehiclesTable td {
-  padding: 1rem;
+  padding: 0.7rem;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
 
+.actionButtons {
+  display: flex;
+  gap: 0.35rem;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
 .vehiclesTable td button {
-  padding: 0.5rem 1rem;
-  margin-right: 0.5rem;
+  padding: 0.35rem 0.7rem;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 0.875rem;
+  font-size: 0.612rem;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .vehiclesTable td button:not(.btnDanger) {

@@ -730,14 +730,16 @@ export default function VehiclesPage() {
                   <td>{vehicle.year}</td>
                   <td>${vehicle.price.toLocaleString()}</td>
                   <td>{vehicle.status}</td>
-                  <td>
-                    <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit')}</button>
-                    <button
-                      onClick={() => handleDelete(vehicle.id)}
-                      className={styles.btnDanger}
-                    >
-                      {t('vehicles.delete') || 'Sil'}
-                    </button>
+                  <td onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.actionButtons}>
+                      <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit')}</button>
+                      <button
+                        onClick={() => handleDelete(vehicle.id)}
+                        className={styles.btnDanger}
+                      >
+                        {t('vehicles.delete') || 'Sil'}
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}

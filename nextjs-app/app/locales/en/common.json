@@ -690,6 +690,18 @@
     "confirmDeleteAddon": "Are you sure you want to delete this add-on?",
     "searchAppointments": "Search by customer, email, phone or package...",
     "filterByDate": "Filter by date",
+    "allStatuses": "All Statuses",
+    "statusPending": "Pending",
+    "statusConfirmed": "Confirmed",
+    "statusInProgress": "In Progress",
+    "statusCompleted": "Completed",
+    "statusCancelled": "Cancelled",
+    "printReceipt": "Print Receipt",
+    "delete": "Delete",
+    "noAppointments": "No appointments found",
+    "appointmentDeletedSuccessfully": "Appointment deleted successfully!",
+    "confirmDeleteAppointmentTitle": "Delete Appointment",
+    "confirmDeleteAppointment": "Are you sure you want to delete this appointment?",
     "errors": {
       "updating": "Error updating status",
       "savingPackage": "Error saving package",
@@ -697,6 +709,8 @@
       "savingAddon": "Error saving add-on",
       "deletingAddon": "Error deleting add-on",
       "updatingStatus": "Error updating status",
+      "updatingAppointmentStatus": "Error updating appointment status",
+      "deletingAppointment": "Error deleting appointment",
       "printingReceipt": "Error printing receipt",
       "popupBlocked": "Popup blocked. Please disable popup blocker."
     }
@@ -918,6 +932,12 @@
     "phonePlaceholder": "Enter phone number",
     "phonePlaceholder2": "Enter company phone number",
     "emailPlaceholder": "Enter email address",
+    "companyLogo": "Company Logo",
+    "uploadLogo": "Upload Logo",
+    "removeLogo": "Remove Logo",
+    "logoUploaded": "Logo uploaded successfully",
+    "logoRemoved": "Logo removed",
+    "logoHint": "Logo will appear below company information on receipts. (Optional)",
     "facebookUrl": "Facebook URL",
     "facebookPlaceholder": "Facebook page URL",
     "instagramUrl": "Instagram URL",
@@ -980,7 +1000,9 @@
       "savingPermissions": "Error saving permissions",
       "savingSocialMedia": "Error saving social media links",
       "savingCompanyInfo": "Error saving company information",
-      "savingTaxRates": "Error saving tax rates"
+      "savingTaxRates": "Error saving tax rates",
+      "uploadingLogo": "Error uploading logo",
+      "removingLogo": "Error removing logo"
     }
   },
   "adminMessages": {

@@ -85,8 +85,12 @@ export default function SettingsPage() {
     company_tax_number: '',
     company_address: '',
     company_phone: '',
-    company_email: ''
+    company_email: '',
+    company_logo_url: ''
   });
+  const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [logoPreview, setLogoPreview] = useState<string>('');
+  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [showTaxModal, setShowTaxModal] = useState(false);
   const [taxRate, setTaxRate] = useState('0');
   const [federalTaxRate, setFederalTaxRate] = useState('0');
@@ -197,13 +201,16 @@ export default function SettingsPage() {
     try {
       const response = await settingsAPI.getSettings();
       if (response.data?.settings) {
+        const logoUrl = response.data.settings.company_logo_url || '';
         setCompanyInfo({
           company_name: response.data.settings.company_name || '',
           company_tax_number: response.data.settings.company_tax_number || '',
           company_address: response.data.settings.company_address || '',
           company_phone: response.data.settings.company_phone || '',
-          company_email: response.data.settings.company_email || ''
+          company_email: response.data.settings.company_email || '',
+          company_logo_url: logoUrl
         });
+        setLogoPreview(logoUrl);
       }
     } catch (error) {
       console.error('Error loading company info:', error);
@@ -274,6 +281,16 @@ export default function SettingsPage() {
         companyInfo = companyResponse.data?.companyInfo || {};
       } catch (error) {
         console.error('Error loading company info:', error);
+      }
+
+      // Also load logo from settings
+      try {
+        const settingsResponse = await settingsAPI.getSettings();
+        if (settingsResponse.data?.settings?.company_logo_url) {
+          companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
+        }
+      } catch (error) {
+        console.error('Error loading logo:', error);
       }
 
       const taxRateValue = parseFloat(taxRate) || 0;
@@ -393,6 +410,11 @@ export default function SettingsPage() {
 </head>
 <body>
   <div class="receipt-header">
+    ${companyInfo.company_logo_url ? `
+    <div style="text-align: center; margin-bottom: 15px;">
+      <img src="${companyInfo.company_logo_url}" alt="Company Logo" style="max-width: 200px; max-height: 100px; object-fit: contain;" />
+    </div>
+    ` : ''}
     <div class="company-name">${companyInfo.company_name || t('settings.companyName')}</div>
     <div class="company-info">
       ${companyInfo.company_address ? `<div>${companyInfo.company_address.replace(/\n/g, '<br>')}</div>` : ''}
@@ -510,6 +532,65 @@ export default function SettingsPage() {
     }
   };
 
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setLogoFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setLogoPreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleUploadLogo = async () => {
+    if (!logoFile) return;
+    
+    try {
+      setUploadingLogo(true);
+      const formData = new FormData();
+      formData.append('logo', logoFile);
+
+      const response = await fetch('/api/settings/logo', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        },
+        body: formData
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Logo yüklenemedi');
+      }
+
+      const data = await response.json();
+      setCompanyInfo({ ...companyInfo, company_logo_url: data.logoUrl });
+      setLogoPreview(data.logoUrl);
+      setLogoFile(null);
+      showSuccess(t('settings.logoUploaded') || 'Logo başarıyla yüklendi');
+    } catch (error: any) {
+      showError(t('settings.errors.uploadingLogo') || 'Logo yüklenirken hata oluştu: ' + error.message);
+    } finally {
+      setUploadingLogo(false);
+    }
+  };
+
+  const handleRemoveLogo = async () => {
+    try {
+      await settingsAPI.updateSettings({
+        company_logo_url: ''
+      });
+      setCompanyInfo({ ...companyInfo, company_logo_url: '' });
+      setLogoPreview('');
+      setLogoFile(null);
+      showSuccess(t('settings.logoRemoved') || 'Logo kaldırıldı');
+    } catch (error: any) {
+      showError(t('settings.errors.removingLogo') || 'Logo kaldırılırken hata oluştu: ' + (error.response?.data?.error || error.message));
+    }
+  };
+
   const handleSaveCompanyInfo = async () => {
     try {
       await settingsAPI.updateSettings({
@@ -517,7 +598,8 @@ export default function SettingsPage() {
         company_tax_number: companyInfo.company_tax_number || '',
         company_address: companyInfo.company_address || '',
         company_phone: companyInfo.company_phone || '',
-        company_email: companyInfo.company_email || ''
+        company_email: companyInfo.company_email || '',
+        company_logo_url: companyInfo.company_logo_url || ''
       });
       showSuccess(t('settings.companyInfoSaved'));
       setShowCompanyModal(false);
@@ -802,6 +884,46 @@ export default function SettingsPage() {
                 value={companyInfo.company_email}
                 onChange={(e) => setCompanyInfo({ ...companyInfo, company_email: e.target.value })}
               />
+            </div>
+            <div className={styles.formGroup}>
+              <label>{t('settings.companyLogo') || 'Şirket Logosu'}</label>
+              {logoPreview && (
+                <div style={{ marginBottom: '10px', textAlign: 'center' }}>
+                  <img 
+                    src={logoPreview} 
+                    alt="Logo Preview" 
+                    style={{ maxWidth: '200px', maxHeight: '100px', objectFit: 'contain', border: '1px solid #ddd', padding: '10px', borderRadius: '4px' }}
+                  />
+                </div>
+              )}
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogoChange}
+                style={{ marginBottom: '10px' }}
+              />
+              {logoFile && (
+                <button 
+                  onClick={handleUploadLogo} 
+                  disabled={uploadingLogo}
+                  className={styles.btnPrimary}
+                  style={{ marginRight: '10px', marginBottom: '10px' }}
+                >
+                  {uploadingLogo ? (t('common.uploading') || 'Yükleniyor...') : (t('settings.uploadLogo') || 'Logoyu Yükle')}
+                </button>
+              )}
+              {logoPreview && (
+                <button 
+                  onClick={handleRemoveLogo}
+                  className={styles.btnSecondary}
+                  style={{ marginBottom: '10px' }}
+                >
+                  {t('settings.removeLogo') || 'Logoyu Kaldır'}
+                </button>
+              )}
+              <small style={{ display: 'block', color: '#666', marginTop: '5px' }}>
+                {t('settings.logoHint') || 'Logo makbuzda firma bilgilerinin altında görünecektir. (Opsiyonel)'}
+              </small>
             </div>
             <div className={styles.modalActions}>
               <button onClick={handleSaveCompanyInfo} className={styles.btnPrimary}>{t('common.save')}</button>

@@ -698,12 +698,29 @@
     "confirmDeleteAddon": "Êtes-vous sûr de vouloir supprimer cet extra?",
     "searchAppointments": "Rechercher par client, email, téléphone ou forfait...",
     "filterByDate": "Filtrer par date",
+    "allStatuses": "Tous les Statuts",
+    "statusPending": "En Attente",
+    "statusConfirmed": "Confirmé",
+    "statusInProgress": "En Cours",
+    "statusCompleted": "Terminé",
+    "statusCancelled": "Annulé",
+    "printReceipt": "Imprimer le Reçu",
+    "delete": "Supprimer",
+    "noAppointments": "Aucun rendez-vous trouvé",
+    "appointmentDeletedSuccessfully": "Rendez-vous supprimé avec succès!",
+    "confirmDeleteAppointmentTitle": "Supprimer le Rendez-vous",
+    "confirmDeleteAppointment": "Êtes-vous sûr de vouloir supprimer ce rendez-vous?",
     "errors": {
       "updating": "Erreur lors de la mise à jour du statut",
+      "updatingStatus": "Erreur lors de la mise à jour du statut",
+      "updatingAppointmentStatus": "Erreur lors de la mise à jour du statut du rendez-vous",
+      "deletingAppointment": "Erreur lors de la suppression du rendez-vous",
       "savingPackage": "Erreur lors de l'enregistrement du forfait",
       "deletingPackage": "Erreur lors de la suppression du forfait",
       "savingAddon": "Erreur lors de l'enregistrement de l'extra",
-      "deletingAddon": "Erreur lors de la suppression de l'extra"
+      "deletingAddon": "Erreur lors de la suppression de l'extra",
+      "printingReceipt": "Erreur lors de l'impression du reçu",
+      "popupBlocked": "Popup bloqué. Veuillez désactiver le bloqueur de popup."
     }
   },
   "repairQuotes": {
@@ -900,6 +917,12 @@
     "phonePlaceholder": "Entrez le numéro de téléphone",
     "phonePlaceholder2": "Entrez le numéro de téléphone de l'entreprise",
     "emailPlaceholder": "Entrez l'adresse email",
+    "companyLogo": "Logo de l'Entreprise",
+    "uploadLogo": "Télécharger le Logo",
+    "removeLogo": "Supprimer le Logo",
+    "logoUploaded": "Logo téléchargé avec succès",
+    "logoRemoved": "Logo supprimé",
+    "logoHint": "Le logo apparaîtra sous les informations de l'entreprise sur les reçus. (Optionnel)",
     "facebookUrl": "URL Facebook",
     "facebookPlaceholder": "URL de la page Facebook",
     "instagramUrl": "URL Instagram",
@@ -945,7 +968,17 @@
     "receiptPrintTitle": "Reçu",
     "receiptPrintBtn": "Imprimer",
     "receiptCloseBtn": "Fermer",
-    "receiptCustomerLabel": "Client"
+    "receiptCustomerLabel": "Client",
+    "errors": {
+      "savingUser": "Erreur lors de l'enregistrement de l'utilisateur",
+      "deletingUser": "Erreur lors de la suppression de l'utilisateur",
+      "savingPermissions": "Erreur lors de l'enregistrement des permissions",
+      "savingSocialMedia": "Erreur lors de l'enregistrement des liens des réseaux sociaux",
+      "savingCompanyInfo": "Erreur lors de l'enregistrement des informations de l'entreprise",
+      "savingTaxRates": "Erreur lors de l'enregistrement des taux de taxe",
+      "uploadingLogo": "Erreur lors du téléchargement du logo",
+      "removingLogo": "Erreur lors de la suppression du logo"
+    }
   },
   "common": {
     "loading": "Chargement...",

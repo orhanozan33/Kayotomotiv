@@ -22,6 +22,7 @@ export async function GET(request: NextRequest) {
       'company_address',
       'company_phone',
       'company_email',
+      'company_logo_url',
     ];
 
     const result = await getPool().query(
