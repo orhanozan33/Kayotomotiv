@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import dotenv from 'dotenv';
 import { join } from 'path';
-import { AppDataSource } from '@/lib/config/typeorm';
+import { DataSource } from 'typeorm';
 import { User } from '@/lib/entities/User';
 import { Vehicle } from '@/lib/entities/Vehicle';
 import { VehicleImage } from '@/lib/entities/VehicleImage';
@@ -10,18 +10,72 @@ import { CarWashPackage } from '@/lib/entities/CarWashPackage';
 import { CarWashAddon } from '@/lib/entities/CarWashAddon';
 import { Settings } from '@/lib/entities/Settings';
 import { Page } from '@/lib/entities/Page';
+import { VehicleReservation } from '@/lib/entities/VehicleReservation';
+import { TestDriveRequest } from '@/lib/entities/TestDriveRequest';
+import { RepairServicePricing } from '@/lib/entities/RepairServicePricing';
+import { RepairQuote } from '@/lib/entities/RepairQuote';
+import { RepairQuoteItem } from '@/lib/entities/RepairQuoteItem';
+import { RepairAppointment } from '@/lib/entities/RepairAppointment';
+import { CarWashAppointment } from '@/lib/entities/CarWashAppointment';
+import { CarWashAppointmentAddon } from '@/lib/entities/CarWashAppointmentAddon';
+import { Customer } from '@/lib/entities/Customer';
+import { CustomerVehicle } from '@/lib/entities/CustomerVehicle';
+import { ServiceRecord } from '@/lib/entities/ServiceRecord';
+import { Receipt } from '@/lib/entities/Receipt';
+import { ContactMessage } from '@/lib/entities/ContactMessage';
+import { UserPermission } from '@/lib/entities/UserPermission';
 import bcrypt from 'bcryptjs';
 
-// Load environment variables
+// Load environment variables - try .env.local first, then .env
+const envLocalPath = join(process.cwd(), '.env.local');
 const envPath = join(process.cwd(), '.env');
-dotenv.config({ path: envPath });
+dotenv.config({ path: envLocalPath });
+dotenv.config({ path: envPath }); // Fallback to .env if .env.local doesn't exist
+
+// Create DataSource specifically for seed script (bypasses env.ts validation)
+const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+if (!databaseUrl) {
+  throw new Error('DATABASE_URL or POSTGRES_URL environment variable is required');
+}
+
+const SeedDataSource = new DataSource({
+  type: 'postgres',
+  url: databaseUrl,
+  ssl: databaseUrl.includes('supabase') ? { rejectUnauthorized: false } : false,
+  entities: [
+    User,
+    Vehicle,
+    VehicleImage,
+    Settings,
+    VehicleReservation,
+    TestDriveRequest,
+    RepairService,
+    RepairServicePricing,
+    RepairQuote,
+    RepairQuoteItem,
+    RepairAppointment,
+    CarWashPackage,
+    CarWashAddon,
+    CarWashAppointment,
+    CarWashAppointmentAddon,
+    Customer,
+    CustomerVehicle,
+    ServiceRecord,
+    Receipt,
+    ContactMessage,
+    UserPermission,
+    Page,
+  ],
+  synchronize: false,
+  logging: false,
+});
 
 export async function seedDatabase() {
   try {
-    // Initialize database connection first (directly, not through initializeDatabase to avoid circular calls)
+    // Initialize database connection
     console.log('🔄 Initializing database connection...');
-    if (!AppDataSource.isInitialized) {
-      await AppDataSource.initialize();
+    if (!SeedDataSource.isInitialized) {
+      await SeedDataSource.initialize();
       console.log('✅ Database connected');
     } else {
       console.log('✅ Database already connected');
@@ -29,14 +83,14 @@ export async function seedDatabase() {
 
     console.log('🌱 Starting database seeding...');
 
-    const userRepo = AppDataSource.getRepository(User);
-    const vehicleRepo = AppDataSource.getRepository(Vehicle);
-    const vehicleImageRepo = AppDataSource.getRepository(VehicleImage);
-    const repairServiceRepo = AppDataSource.getRepository(RepairService);
-    const carWashPackageRepo = AppDataSource.getRepository(CarWashPackage);
-    const carWashAddonRepo = AppDataSource.getRepository(CarWashAddon);
-    const settingsRepo = AppDataSource.getRepository(Settings);
-    const pageRepo = AppDataSource.getRepository(Page);
+    const userRepo = SeedDataSource.getRepository(User);
+    const vehicleRepo = SeedDataSource.getRepository(Vehicle);
+    const vehicleImageRepo = SeedDataSource.getRepository(VehicleImage);
+    const repairServiceRepo = SeedDataSource.getRepository(RepairService);
+    const carWashPackageRepo = SeedDataSource.getRepository(CarWashPackage);
+    const carWashAddonRepo = SeedDataSource.getRepository(CarWashAddon);
+    const settingsRepo = SeedDataSource.getRepository(Settings);
+    const pageRepo = SeedDataSource.getRepository(Page);
 
     // 1. Create default admin user
     const existingAdmin = await userRepo.findOne({ where: { email: 'admin@gmail.com' } });
@@ -228,8 +282,18 @@ export async function seedDatabase() {
     console.log('✅ Seeded pages');
 
     console.log('✅ Database seeding completed successfully!');
+    
+    // Close database connection
+    if (SeedDataSource.isInitialized) {
+      await SeedDataSource.destroy();
+      console.log('✅ Database connection closed');
+    }
   } catch (error: any) {
     console.error('❌ Error seeding database:', error);
+    // Close connection even on error
+    if (SeedDataSource.isInitialized) {
+      await SeedDataSource.destroy().catch(() => {});
+    }
     throw error;
   }
 }
