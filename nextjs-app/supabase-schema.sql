@@ -307,6 +307,7 @@ CREATE TABLE IF NOT EXISTS "receipts" (
     "service_type" VARCHAR(100),
     "amount" DECIMAL(10, 2) NOT NULL,
     "payment_method" VARCHAR(50),
+    "company_logo_url" VARCHAR(500),
     "receipt_date" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
