@@ -48,6 +48,7 @@
     },
     "noResults": "No vehicles found",
     "loading": "Loading vehicles...",
+    "reserved": "RESERVED",
     "details": {
       "reservation": "Request Reservation",
       "testDrive": "Request Test Drive",

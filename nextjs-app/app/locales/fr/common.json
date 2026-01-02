@@ -48,6 +48,7 @@
     },
     "noResults": "Aucun véhicule trouvé",
     "loading": "Chargement des véhicules...",
+    "reserved": "RÉSERVÉ",
     "details": {
       "reservation": "Demander une Réservation",
       "testDrive": "Demander un Essai",

@@ -48,6 +48,7 @@
     },
     "noResults": "Araç bulunamadı",
     "loading": "Araçlar yükleniyor...",
+    "reserved": "REZERVE",
     "details": {
       "reservation": "Rezervasyon İste",
       "testDrive": "Test Sürüşü İste",

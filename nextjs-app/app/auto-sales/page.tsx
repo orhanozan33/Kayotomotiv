@@ -197,7 +197,9 @@ export default function AutoSalesPage() {
                   {isReserved && (
                     <>
                       <div className={styles.reservedBadge}>
-                        <span className={styles.reservedText}>REZERVE</span>
+                        <span className={styles.reservedText}>
+                          {isMounted ? t('autoSales.reserved') : 'REZERVE'}
+                        </span>
                       </div>
                       {reservationEndTime && <CountdownTimer endTime={reservationEndTime} />}
                     </>
