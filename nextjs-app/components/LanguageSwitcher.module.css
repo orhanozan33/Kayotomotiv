@@ -118,6 +118,14 @@
 
   .dropdown {
     min-width: 120px;
+    right: 0;
+    left: auto;
+    transform-origin: top right;
+  }
+
+  .languageSwitcher {
+    display: flex;
+    justify-content: flex-end;
   }
 }
 
