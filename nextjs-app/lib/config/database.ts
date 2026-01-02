@@ -18,7 +18,16 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Support either a single DATABASE_URL (recommended for pooler) or discrete DB_* variables.
 // Trim whitespace to handle Windows line endings
-const connectionString = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim() || undefined;
+let connectionString = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim() || undefined;
+
+// Remove sslmode=require from connectionString if present - we'll handle SSL via ssl object instead
+// This prevents conflicts between connectionString SSL params and explicit ssl config
+if (connectionString) {
+  connectionString = connectionString
+    .replace(/[?&]sslmode=require/g, '')
+    .replace(/[?&]sslmode=prefer/g, '')
+    .replace(/[?&]sslmode=disable/g, '');
+}
 
 // IMPORTANT: DB connection details must come ONLY from environment variables.
 // No hard-coded defaults are allowed.
@@ -103,6 +112,7 @@ const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
       query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
       // SSL configuration: For Supabase and production, always use SSL with rejectUnauthorized: false
       // This allows self-signed certificates from Supabase
+      // IMPORTANT: When using connectionString, the ssl object takes precedence over connectionString SSL params
       ssl: sslEnabled ? { 
         rejectUnauthorized: false
       } : false,
