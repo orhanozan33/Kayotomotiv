@@ -9,14 +9,14 @@ export default function I18nProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     // Wait for i18n to initialize
     if (i18n.isInitialized) {
-      // Initialize i18n language from localStorage or default to Turkish
+      // Initialize i18n language from localStorage or default to French
       if (typeof window !== 'undefined') {
         const savedLang = localStorage.getItem('i18nextLng');
         if (savedLang && ['tr', 'en', 'fr'].includes(savedLang)) {
           i18n.changeLanguage(savedLang);
         } else {
-          i18n.changeLanguage('tr');
-          localStorage.setItem('i18nextLng', 'tr');
+          i18n.changeLanguage('fr');
+          localStorage.setItem('i18nextLng', 'fr');
         }
       }
       setIsReady(true);
@@ -28,8 +28,8 @@ export default function I18nProvider({ children }: { children: React.ReactNode }
           if (savedLang && ['tr', 'en', 'fr'].includes(savedLang)) {
             i18n.changeLanguage(savedLang);
           } else {
-            i18n.changeLanguage('tr');
-            localStorage.setItem('i18nextLng', 'tr');
+            i18n.changeLanguage('fr');
+            localStorage.setItem('i18nextLng', 'fr');
           }
         }
         setIsReady(true);

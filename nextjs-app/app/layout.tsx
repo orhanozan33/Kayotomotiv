@@ -15,7 +15,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="tr">
+    <html lang="fr">
       <body>
         <I18nProvider>
           <ErrorProvider>

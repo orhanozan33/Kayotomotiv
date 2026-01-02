@@ -8,7 +8,8 @@ i18n
   .use(initReactI18next)
   .init({
     resources: locales,
-    fallbackLng: 'en',
+    fallbackLng: 'fr',
+    lng: 'fr', // Set default language to French
     defaultNS: 'common',
     ns: ['common'],
     interpolation: {

@@ -101,9 +101,30 @@
   margin-left: 250px;
   padding: 2rem;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 100vh;
   width: calc(100% - 250px);
   max-width: none;
   box-sizing: border-box;
+}
+
+.adminContent::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.adminContent::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.adminContent::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.adminContent::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 @media (max-width: 768px) {
