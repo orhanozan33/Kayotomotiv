@@ -295,7 +295,32 @@ function CarWashPage() {
         {showAppointmentForm && (
           <div className={styles.modal}>
             <div className={styles.modalContent}>
-              <h2>{t('carWash.appointmentForm.title')}</h2>
+              <div className={styles.modalHeader}>
+                <h2>{t('carWash.appointmentForm.title')}</h2>
+                <button
+                  type="button"
+                  className={styles.modalClose}
+                  onClick={() => {
+                    setShowAppointmentForm(false);
+                    setSelectedPackage(null);
+                    setSelectedAddons([]);
+                    setFormData({
+                      appointment_date: '',
+                      appointment_time: '',
+                      customer_name: '',
+                      customer_email: '',
+                      customer_phone: '',
+                      vehicle_brand: '',
+                      vehicle_model: '',
+                      notes: '',
+                    });
+                    setAvailableModels([]);
+                  }}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
               <form onSubmit={handleAppointmentSubmit}>
                 {selectedPackage && (
                   <div className={styles.selectedPackage}>
