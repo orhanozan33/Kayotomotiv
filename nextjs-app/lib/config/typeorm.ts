@@ -69,11 +69,48 @@ function getEnvConfig() {
   }
 }
 
+// Helper function to parse connection string and remove SSL parameters
+function parseConnectionString(url: string): { host: string; port: number; database: string; username: string; password: string } | null {
+  try {
+    const urlObj = new URL(url);
+    return {
+      host: urlObj.hostname,
+      port: parseInt(urlObj.port) || 5432,
+      database: urlObj.pathname.slice(1) || 'postgres',
+      username: urlObj.username,
+      password: urlObj.password,
+    };
+  } catch {
+    return null;
+  }
+}
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
   ...(() => {
     try {
       const envConfig = getEnvConfig();
+      const databaseUrl = envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+      
+      // If we have a connection string, check if it's Supabase
+      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
+      
+      // For Supabase, parse connection string to avoid SSL parameter conflicts
+      if (databaseUrl && isSupabase) {
+        const parsed = parseConnectionString(databaseUrl);
+        if (parsed) {
+          console.log('🔧 Parsing Supabase connection string to avoid SSL parameter conflicts');
+          return {
+            host: parsed.host,
+            port: parsed.port,
+            database: parsed.database,
+            username: parsed.username,
+            password: parsed.password,
+          };
+        }
+      }
+      
+      // For non-Supabase or if parsing failed, use connection string as-is
       return envConfig.database.url
         ? { url: envConfig.database.url }
         : {
@@ -86,6 +123,23 @@ export const AppDataSource = new DataSource({
     } catch {
       // Fallback for development
       const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
+      
+      // For Supabase, parse connection string to avoid SSL parameter conflicts
+      if (databaseUrl && isSupabase) {
+        const parsed = parseConnectionString(databaseUrl);
+        if (parsed) {
+          console.log('🔧 Parsing Supabase connection string to avoid SSL parameter conflicts');
+          return {
+            host: parsed.host,
+            port: parsed.port,
+            database: parsed.database,
+            username: parsed.username,
+            password: parsed.password,
+          };
+        }
+      }
+      
       if (databaseUrl) {
         return { url: databaseUrl };
       }
