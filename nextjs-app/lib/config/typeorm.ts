@@ -69,17 +69,33 @@ function getEnvConfig() {
   }
 }
 
-// Helper function to parse connection string and remove SSL parameters
+// Helper function to parse PostgreSQL connection string and remove SSL parameters
 function parseConnectionString(url: string): { host: string; port: number; database: string; username: string; password: string } | null {
   try {
-    const urlObj = new URL(url);
-    return {
-      host: urlObj.hostname,
-      port: parseInt(urlObj.port) || 5432,
-      database: urlObj.pathname.slice(1) || 'postgres',
-      username: urlObj.username,
-      password: urlObj.password,
-    };
+    // Parse postgresql://username:password@host:port/database format
+    // Example: postgresql://postgres.user:password@host:6543/postgres?pgbouncer=true&sslmode=require
+    const match = url.match(/^postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/([^?]+)/);
+    if (match) {
+      return {
+        username: match[1],
+        password: match[2],
+        host: match[3],
+        port: parseInt(match[4]),
+        database: match[5],
+      };
+    }
+    // Try without port: postgresql://username:password@host/database
+    const matchNoPort = url.match(/^postgresql:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+)/);
+    if (matchNoPort) {
+      return {
+        username: matchNoPort[1],
+        password: matchNoPort[2],
+        host: matchNoPort[3],
+        port: 5432,
+        database: matchNoPort[4],
+      };
+    }
+    return null;
   } catch {
     return null;
   }
