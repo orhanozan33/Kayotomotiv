@@ -42,22 +42,29 @@ function getEnvConfig(): EnvConfig {
   const dbUser = process.env.DB_USER?.trim();
   const dbPassword = process.env.DB_PASSWORD?.trim();
 
-  // Validate database config
-  if (!databaseUrl && (!dbHost || !dbPort || !dbName || !dbUser || !dbPassword)) {
-    throw new Error(
-      'Database configuration missing. Set either DATABASE_URL/POSTGRES_URL or all DB_* variables.'
-    );
+  // Check if we're in build time (Next.js build process)
+  const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                      process.env.NEXT_PHASE === 'phase-development-build' ||
+                      (!process.env.VERCEL && process.env.NODE_ENV === 'production');
+
+  // Validate database config - skip during build time
+  if (!isBuildTime) {
+    if (!databaseUrl && (!dbHost || !dbPort || !dbName || !dbUser || !dbPassword)) {
+      throw new Error(
+        'Database configuration missing. Set either DATABASE_URL/POSTGRES_URL or all DB_* variables.'
+      );
+    }
   }
 
-  // JWT
+  // JWT - skip validation during build time
   const jwtSecret = process.env.JWT_SECRET;
-  if (!jwtSecret || jwtSecret.length < 32) {
+  if (!isBuildTime && (!jwtSecret || jwtSecret.length < 32)) {
     throw new Error('JWT_SECRET must be at least 32 characters long');
   }
 
-  // Backend
+  // Backend - skip validation during build time
   const backendPasswordHash = process.env.BACKEND_PASSWORD_HASH;
-  if (!backendPasswordHash) {
+  if (!isBuildTime && !backendPasswordHash) {
     throw new Error('BACKEND_PASSWORD_HASH is required');
   }
 

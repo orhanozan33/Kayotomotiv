@@ -69,57 +69,31 @@ function getEnvConfig() {
   }
 }
 
-// Get database URL
-const databaseUrl = (() => {
-  try {
-    const envConfig = getEnvConfig();
-    return envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  } catch {
-    return process.env.DATABASE_URL || process.env.POSTGRES_URL;
-  }
-})();
+// Get database URL - DIRECT from env, bypass env.ts validation
+const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
 
 // Check if localhost (disable SSL for localhost)
-const isLocalhost = !databaseUrl && (
+const isLocalhost = databaseUrl ? (
+  databaseUrl.includes('localhost') || 
+  databaseUrl.includes('127.0.0.1')
+) : (
   process.env.DB_HOST === 'localhost' || 
   process.env.DB_HOST === '127.0.0.1'
-) || (
-  databaseUrl && (
-    databaseUrl.includes('localhost') || 
-    databaseUrl.includes('127.0.0.1')
-  )
 );
+
+// Check if Supabase
+const isSupabase = databaseUrl ? (
+  databaseUrl.includes('supabase.co') || 
+  databaseUrl.includes('pooler.supabase.com')
+) : false;
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
   // Use DATABASE_URL directly - TypeORM will handle it
-  // If DATABASE_URL is not set, use individual DB_* variables
-  ...(databaseUrl 
-    ? { url: databaseUrl }
-    : (() => {
-        try {
-          const envConfig = getEnvConfig();
-          return {
-            host: envConfig.database.host,
-            port: envConfig.database.port,
-            database: envConfig.database.name,
-            username: envConfig.database.user,
-            password: envConfig.database.password ? String(envConfig.database.password) : '',
-          };
-        } catch {
-          return {
-            host: process.env.DB_HOST || 'localhost',
-            port: Number(process.env.DB_PORT) || 5432,
-            database: process.env.DB_NAME || 'postgres',
-            username: process.env.DB_USER || 'postgres',
-            password: String(process.env.DB_PASSWORD || ''),
-          };
-        }
-      })()
-  ),
+  url: databaseUrl || undefined,
   
-  // 🔴 KRİTİK: Supabase self-signed sertifikaları için rejectUnauthorized: false ZORUNLU
-  // Localhost için SSL'i kapat
+  // 🔴 KRİTİK: Supabase için SSL ZORUNLU ve rejectUnauthorized: false
+  // Localhost için SSL'i kapat, diğer her yerde açık
   ssl: isLocalhost ? false : {
     rejectUnauthorized: false
   },
