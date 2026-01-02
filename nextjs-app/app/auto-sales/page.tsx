@@ -215,27 +215,32 @@ export default function AutoSalesPage() {
                         </p>
                       </div>
                     </div>
-                    <p className={styles.vehicleDetails}>
-                      <span className={styles.vehicleYearInline}>{vehicle.year}</span>
-                      <span> • </span>
-                      <span className={styles.transmissionText}>
-                        {isMounted
-                          ? vehicle.transmission === 'automatic'
-                            ? t('autoSales.details.transmissionAutomatic')
-                            : t('autoSales.details.transmissionManual')
-                          : vehicle.transmission === 'automatic'
-                            ? 'Otomatik'
-                            : 'Manuel'}
-                      </span>
+                    <div className={styles.vehicleDetails}>
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailIcon}>📅</span>
+                        <span className={styles.detailText}>{vehicle.year}</span>
+                      </div>
+                      <div className={styles.detailItem}>
+                        <span className={styles.detailIcon}>⚙️</span>
+                        <span className={styles.detailText}>
+                          {isMounted
+                            ? vehicle.transmission === 'automatic'
+                              ? t('autoSales.details.transmissionAutomatic')
+                              : t('autoSales.details.transmissionManual')
+                            : vehicle.transmission === 'automatic'
+                              ? 'Otomatik'
+                              : 'Manuel'}
+                        </span>
+                      </div>
                       {vehicle.mileage && (
-                        <span>
-                          {' '}
-                          • <span className={styles.mileageText}>
+                        <div className={styles.detailItem}>
+                          <span className={styles.detailIcon}>📏</span>
+                          <span className={styles.detailText}>
                             {vehicle.mileage?.toLocaleString()} km
                           </span>
-                        </span>
+                        </div>
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
               );
