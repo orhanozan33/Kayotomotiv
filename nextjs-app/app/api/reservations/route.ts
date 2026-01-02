@@ -5,6 +5,9 @@ import { authenticate } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import Joi from 'joi';
 
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const createReservationSchema = Joi.object({
@@ -19,18 +22,47 @@ const createReservationSchema = Joi.object({
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 POST /api/reservations - Starting...');
+    console.log('🔍 Environment check:', {
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL || process.env.POSTGRES_URL),
+      nodeEnv: process.env.NODE_ENV,
+      isVercel: Boolean(process.env.VERCEL),
+    });
+
+    // Initialize database connection
     await initializeDatabase();
+    
+    // Test database connection
+    const pool = getPool();
+    try {
+      await pool.query('SELECT 1');
+      console.log('✅ Database connection test successful');
+    } catch (testError: any) {
+      console.error('❌ Database connection test failed:', {
+        message: testError.message,
+        code: testError.code,
+      });
+      throw testError;
+    }
+
     const body = await request.json();
+    console.log('📝 Request body:', {
+      vehicle_id: body.vehicle_id,
+      customer_email: body.customer_email,
+      has_message: Boolean(body.message),
+    });
 
     const { error, value } = createReservationSchema.validate(body);
     if (error) {
+      console.error('❌ Validation error:', error.details[0].message);
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
     const authResult = await authenticate(request);
     const userId = authResult.user?.id || null;
 
-    const result = await getPool().query(
+    console.log('💾 Inserting reservation into database...');
+    const result = await pool.query(
       `INSERT INTO vehicle_reservations 
        (vehicle_id, user_id, customer_name, customer_email, customer_phone, message, preferred_date, preferred_time)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
@@ -47,8 +79,14 @@ export async function POST(request: NextRequest) {
       ]
     );
 
+    console.log('✅ Reservation created successfully:', result.rows[0].id);
     return NextResponse.json({ reservation: result.rows[0] }, { status: 201 });
   } catch (error: any) {
+    console.error('❌ POST /api/reservations - Error:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+    });
     return handleError(error, isProduction);
   }
 }

@@ -108,9 +108,14 @@
         "name": "Nom Complet",
         "email": "Email",
         "phone": "Téléphone",
+        "preferredDate": "Date Préférée",
+        "preferredTime": "Heure Préférée",
         "message": "Message (optionnel)",
         "submit": "Soumettre",
-        "cancel": "Annuler"
+        "cancel": "Annuler",
+        "success": "Réservation envoyée avec succès!",
+        "error": "Une erreur s'est produite",
+        "errorPrefix": "Erreur lors de l'envoi de la réservation: "
       },
       "testDrive": {
         "title": "Demander un Essai",

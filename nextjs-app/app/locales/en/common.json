@@ -108,9 +108,14 @@
         "name": "Full Name",
         "email": "Email",
         "phone": "Phone",
+        "preferredDate": "Preferred Date",
+        "preferredTime": "Preferred Time",
         "message": "Message (optional)",
         "submit": "Submit",
-        "cancel": "Cancel"
+        "cancel": "Cancel",
+        "success": "Reservation sent successfully!",
+        "error": "An error occurred",
+        "errorPrefix": "Error sending reservation: "
       },
       "testDrive": {
         "title": "Request Test Drive",

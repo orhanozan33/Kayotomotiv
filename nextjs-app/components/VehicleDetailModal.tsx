@@ -111,7 +111,7 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
         vehicle_id: vehicleId,
         ...formData,
       });
-      showSuccess(t('common.success') || 'Başarılı!');
+      showSuccess(t('autoSales.forms.reservation.success') || t('common.success') || 'Başarılı!');
       setShowReservationForm(false);
       setFormData({
         customer_name: '',
@@ -122,9 +122,9 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
         preferred_time: '',
       });
     } catch (error: any) {
+      const errorMessage = error.response?.data?.error || error.message || t('autoSales.forms.reservation.error') || 'Rezervasyon gönderilirken hata oluştu';
       showError(
-        'Rezervasyon gönderilirken hata oluştu: ' +
-          (error.response?.data?.error || error.message)
+        (t('autoSales.forms.reservation.errorPrefix') || 'Rezervasyon gönderilirken hata oluştu: ') + errorMessage
       );
     }
   };

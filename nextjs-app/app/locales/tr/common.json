@@ -108,9 +108,14 @@
         "name": "Ad Soyad",
         "email": "E-posta",
         "phone": "Telefon",
+        "preferredDate": "Tercih Edilen Tarih",
+        "preferredTime": "Tercih Edilen Saat",
         "message": "Mesaj (isteğe bağlı)",
         "submit": "Gönder",
-        "cancel": "İptal"
+        "cancel": "İptal",
+        "success": "Rezervasyon başarıyla gönderildi!",
+        "error": "Bir hata oluştu",
+        "errorPrefix": "Rezervasyon gönderilirken hata oluştu: "
       },
       "testDrive": {
         "title": "Test Sürüşü İste",
