@@ -1,5 +1,7 @@
 import 'reflect-metadata';
 import { DataSource } from 'typeorm';
+import dotenv from 'dotenv';
+import path from 'path';
 import {
   User,
   Vehicle,
@@ -24,6 +26,14 @@ import {
   UserPermission,
   Page,
 } from '@/lib/entities';
+
+// Load .env file in production mode if environment variables are not set
+// Next.js automatically loads .env in development, but not in production
+if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+  const envPath = path.join(process.cwd(), '.env');
+  dotenv.config({ path: envPath });
+  console.log('📝 TypeORM: Loaded .env file for production mode');
+}
 
 // Check if running in production environment
 const isProduction = process.env.NODE_ENV === 'production';

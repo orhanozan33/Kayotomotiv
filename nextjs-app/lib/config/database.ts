@@ -1,5 +1,15 @@
 import dns from 'dns';
 import { Pool, PoolConfig } from 'pg';
+import dotenv from 'dotenv';
+import path from 'path';
+
+// Load .env file in production mode if environment variables are not set
+// Next.js automatically loads .env in development, but not in production
+if (process.env.NODE_ENV === 'production' && !process.env.DATABASE_URL && !process.env.POSTGRES_URL) {
+  const envPath = path.join(process.cwd(), '.env');
+  dotenv.config({ path: envPath });
+  console.log('📝 Loaded .env file for production mode');
+}
 
 // Prefer IPv4 addresses when a host resolves to both AAAA and A records.
 // This avoids common serverless/DNS issues where IPv6 is returned first but not routable.
