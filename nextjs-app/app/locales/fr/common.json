@@ -130,6 +130,40 @@
     "subtitle": "Services de réparation automobile professionnels avec des mécaniciens expérimentés. Obtenez un devis pour votre véhicule.",
     "loading": "Chargement des services...",
     "getQuote": "Obtenir un Devis",
+    "hero": {
+      "title": "Services Professionnels de Réparation Auto",
+      "description": "Nous offrons le meilleur service pour votre véhicule avec nos techniciens expérimentés et notre équipement moderne. Contactez-nous pour la réparation du moteur, l'entretien des freins, le service de climatisation et bien plus encore."
+    },
+    "features": {
+      "experienced": {
+        "title": "Techniciens Expérimentés",
+        "description": "Vous pouvez confier en toute sécurité votre véhicule avec des années d'expérience."
+      },
+      "modern": {
+        "title": "Équipement Moderne",
+        "description": "Diagnostic rapide et précis avec des appareils de pointe."
+      },
+      "quality": {
+        "title": "Service de Qualité",
+        "description": "Pièces de rechange d'origine et travail garanti."
+      },
+      "fast": {
+        "title": "Service Rapide",
+        "description": "Économie de temps avec des opérations rapidement terminées."
+      }
+    },
+    "servicesInfo": {
+      "title": "Nos Services",
+      "description": "Nous offrons la réparation du moteur, l'entretien des freins, le service de climatisation, la réparation des systèmes électriques, le changement de pneus et bien d'autres services. Cliquez sur le bouton obtenir un devis pour des informations de prix détaillées."
+    },
+    "categories": {
+      "engine": "Réparation Moteur",
+      "brake": "Entretien des Freins",
+      "ac": "Service de Climatisation",
+      "electrical": "Système Électrique",
+      "tire": "Changement de Pneus",
+      "maintenance": "Service d'Entretien"
+    },
     "quoteForm": {
       "title": "Obtenir un Devis",
       "vehicleInfo": "Informations sur le Véhicule",
