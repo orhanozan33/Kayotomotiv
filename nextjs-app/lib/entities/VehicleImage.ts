@@ -6,8 +6,10 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
+import { Vehicle } from './Vehicle';
 
-@Entity('auto_sales_images')
+@Entity('vehicle_images')
 export class VehicleImage {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -15,12 +17,12 @@ export class VehicleImage {
   @Column({ type: 'uuid', name: 'vehicle_id' })
   vehicleId!: string;
 
-  // Use string-based relation to avoid circular dependency
-  @ManyToOne('Vehicle', 'images', {
+  // Use direct class reference instead of string-based relation for production build compatibility
+  @ManyToOne(() => Vehicle, (vehicle) => vehicle.images, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'vehicle_id' })
-  vehicle!: any;
+  vehicle!: Relation<Vehicle>;
 
   @Column({ type: 'varchar', name: 'image_url' })
   imageUrl!: string;

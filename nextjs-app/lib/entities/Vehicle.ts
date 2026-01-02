@@ -6,10 +6,12 @@ import {
   UpdateDateColumn,
   OneToMany,
 } from 'typeorm';
+import type { Relation } from 'typeorm';
+import { VehicleImage } from './VehicleImage';
 
 export type VehicleStatus = 'available' | 'reserved' | 'sold';
 
-@Entity('auto_sales')
+@Entity('vehicles')
 export class Vehicle {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -56,11 +58,11 @@ export class Vehicle {
   @Column({ type: 'varchar', name: 'created_by', nullable: true })
   createdBy?: string;
 
-  // Use string-based relation to avoid circular dependency
-  @OneToMany('VehicleImage', 'vehicle', {
+  // Use direct class reference instead of string-based relation for production build compatibility
+  @OneToMany(() => VehicleImage, (image) => image.vehicle, {
     cascade: true,
   })
-  images!: any[];
+  images!: Relation<VehicleImage>[];
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;
