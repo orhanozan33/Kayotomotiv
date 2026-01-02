@@ -72,7 +72,7 @@ function getEnvConfig() {
 // Get database URL - DIRECT from env, bypass env.ts validation
 const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
 
-// Check if localhost (disable SSL for localhost)
+// Check if localhost (disable SSL for localhost only)
 const isLocalhost = databaseUrl ? (
   databaseUrl.includes('localhost') || 
   databaseUrl.includes('127.0.0.1')
@@ -81,19 +81,13 @@ const isLocalhost = databaseUrl ? (
   process.env.DB_HOST === '127.0.0.1'
 );
 
-// Check if Supabase
-const isSupabase = databaseUrl ? (
-  databaseUrl.includes('supabase.co') || 
-  databaseUrl.includes('pooler.supabase.com')
-) : false;
-
 export const AppDataSource = new DataSource({
   type: 'postgres',
   // Use DATABASE_URL directly - TypeORM will handle it
   url: databaseUrl || undefined,
   
-  // 🔴 KRİTİK: Supabase için SSL ZORUNLU ve rejectUnauthorized: false
-  // Localhost için SSL'i kapat, diğer her yerde açık
+  // 🔴 KRİTİK: SSL ZORUNLU - Supabase self-signed sertifikaları için rejectUnauthorized: false
+  // Localhost için SSL'i kapat, diğer her yerde (Supabase dahil) SSL açık
   ssl: isLocalhost ? false : {
     rejectUnauthorized: false
   },
