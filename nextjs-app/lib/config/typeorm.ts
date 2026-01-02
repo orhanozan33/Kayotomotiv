@@ -101,12 +101,12 @@ export const AppDataSource = new DataSource({
   ssl: (() => {
     try {
       const envConfig = getEnvConfig();
-      const databaseUrl = envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+      const databaseUrl = (envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
       
       // Check if connection string contains sslmode=require or pgbouncer (Supabase)
       const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
       const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
-      const isSupabase = databaseUrl?.includes('supabase.co');
+      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
       
       // Only enable SSL if explicitly set to true and not localhost
       const isLocalhost = !envConfig.database.url && 
@@ -116,9 +116,17 @@ export const AppDataSource = new DataSource({
         return false; // Disable SSL for localhost
       }
       
-      // For Supabase or connection strings with sslmode=require, always enable SSL
+      // For Supabase or connection strings with sslmode=require, always enable SSL with rejectUnauthorized: false
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || envConfig.database.ssl) {
         // Supabase uses self-signed certificates, so we need to accept them
+        // CRITICAL: rejectUnauthorized: false is required for Supabase SSL certificates
+        return { 
+          rejectUnauthorized: false
+        };
+      }
+      
+      // In production, default to SSL enabled with rejectUnauthorized: false for safety
+      if (isProduction) {
         return { 
           rejectUnauthorized: false
         };
@@ -127,10 +135,10 @@ export const AppDataSource = new DataSource({
       return false;
     } catch {
       // For development/fallback, check if it's localhost or Supabase
-      const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-      const dbHost = process.env.DB_HOST || 'localhost';
+      const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+      const dbHost = process.env.DB_HOST?.trim() || 'localhost';
       const isLocalhost = dbHost === 'localhost' || dbHost === '127.0.0.1';
-      const isSupabase = databaseUrl?.includes('supabase.co');
+      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
       const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
       const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
       
@@ -138,9 +146,17 @@ export const AppDataSource = new DataSource({
         return false; // Disable SSL for localhost
       }
       
-      // For Supabase, always enable SSL
+      // For Supabase, always enable SSL with rejectUnauthorized: false
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || process.env.DB_SSL === 'true') {
         // Supabase uses self-signed certificates, so we need to accept them
+        // CRITICAL: rejectUnauthorized: false is required for Supabase SSL certificates
+        return { 
+          rejectUnauthorized: false
+        };
+      }
+      
+      // In production, default to SSL enabled with rejectUnauthorized: false for safety
+      if (isProduction) {
         return { 
           rejectUnauthorized: false
         };
