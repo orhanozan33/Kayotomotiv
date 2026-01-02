@@ -776,6 +776,7 @@
       "popupBlockerError": "Print window could not be opened due to pop-up blocker. Please disable your browser's pop-up blocker and try again.",
       "completeServices": "Complete Services",
       "cartEmpty": "Cart is empty!",
+      "servicesAdded": "Services added successfully!",
       "servicesAddedSuccessfully": "services added successfully!",
       "customerUpdated": "Customer information updated!",
       "vehicleAdded": "Vehicle added successfully!",

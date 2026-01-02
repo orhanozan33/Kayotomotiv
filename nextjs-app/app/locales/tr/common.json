@@ -642,6 +642,7 @@
       "popupBlockerError": "Pop-up engelleyici nedeniyle yazdırma penceresi açılamadı. Lütfen tarayıcınızın pop-up engelleyicisini kapatın ve tekrar deneyin.",
       "completeServices": "İşlemleri Tamamla",
       "cartEmpty": "Sepet boş!",
+      "servicesAdded": "Hizmetler başarıyla eklendi!",
       "servicesAddedSuccessfully": "hizmet başarıyla eklendi!",
       "customerUpdated": "Müşteri bilgileri güncellendi!",
       "vehicleAdded": "Araç başarıyla eklendi!",
