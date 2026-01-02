@@ -4,11 +4,13 @@ import VehicleRepository from '@/lib/repositories/VehicleRepository';
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 import { resolveParams } from '@/lib/utils/routeParams';
+import { uploadImageToSupabase } from '@/lib/services/supabaseStorage';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
 const isProduction = process.env.NODE_ENV === 'production';
+const useSupabaseStorage = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY;
 
 export async function POST(
   request: NextRequest,
@@ -43,22 +45,44 @@ export async function POST(
       return NextResponse.json({ error: 'File size must be less than 5MB' }, { status: 400 });
     }
 
-    // Save file to uploads directory
-    const uploadDir = join(process.cwd(), 'public', 'uploads');
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
+    let imageUrl: string;
+
+    // Use Supabase Storage in production/Vercel, local file system in development
+    if (useSupabaseStorage) {
+      try {
+        const { url } = await uploadImageToSupabase(file, 'vehicle-images', 'vehicles');
+        imageUrl = url;
+      } catch (uploadError: any) {
+        console.error('Supabase upload error:', uploadError);
+        // Fallback to local storage if Supabase upload fails
+        const uploadDir = join(process.cwd(), 'public', 'uploads');
+        if (!existsSync(uploadDir)) {
+          await mkdir(uploadDir, { recursive: true });
+        }
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+        const fileExtension = file.name.split('.').pop();
+        const filename = `${uniqueSuffix}.${fileExtension}`;
+        const filepath = join(uploadDir, filename);
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
+        await writeFile(filepath, buffer);
+        imageUrl = `/uploads/${filename}`;
+      }
+    } else {
+      // Local file system storage (development)
+      const uploadDir = join(process.cwd(), 'public', 'uploads');
+      if (!existsSync(uploadDir)) {
+        await mkdir(uploadDir, { recursive: true });
+      }
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+      const fileExtension = file.name.split('.').pop();
+      const filename = `${uniqueSuffix}.${fileExtension}`;
+      const filepath = join(uploadDir, filename);
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      await writeFile(filepath, buffer);
+      imageUrl = `/uploads/${filename}`;
     }
-
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-    const fileExtension = file.name.split('.').pop();
-    const filename = `${uniqueSuffix}.${fileExtension}`;
-    const filepath = join(uploadDir, filename);
-
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
-    await writeFile(filepath, buffer);
-
-    const imageUrl = `/uploads/${filename}`;
 
     // Add image to database
     const image = await VehicleRepository.addImage(resolvedParams.id, imageUrl, isPrimary);
