@@ -264,10 +264,16 @@ CREATE TABLE IF NOT EXISTS "car_wash_appointment_addons" (
 CREATE TABLE IF NOT EXISTS "vehicle_reservations" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "vehicle_id" UUID REFERENCES "vehicles"("id") ON DELETE CASCADE,
-    "customer_id" UUID REFERENCES "customers"("id") ON DELETE CASCADE,
-    "reservation_date" DATE NOT NULL,
+    "user_id" UUID REFERENCES "users"("id") ON DELETE SET NULL,
+    "customer_id" UUID REFERENCES "customers"("id") ON DELETE SET NULL,
+    "customer_name" VARCHAR(200) NOT NULL,
+    "customer_email" VARCHAR(255) NOT NULL,
+    "customer_phone" VARCHAR(20) NOT NULL,
+    "message" TEXT,
+    "preferred_date" DATE,
+    "preferred_time" TIME,
     "status" VARCHAR(50) DEFAULT 'pending',
-    "notes" TEXT,
+    "reservation_end_time" TIMESTAMP,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -278,10 +284,16 @@ CREATE TABLE IF NOT EXISTS "vehicle_reservations" (
 CREATE TABLE IF NOT EXISTS "test_drive_requests" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     "vehicle_id" UUID REFERENCES "vehicles"("id") ON DELETE CASCADE,
-    "customer_id" UUID REFERENCES "customers"("id") ON DELETE CASCADE,
-    "requested_date" DATE NOT NULL,
+    "user_id" UUID REFERENCES "users"("id") ON DELETE SET NULL,
+    "customer_id" UUID REFERENCES "customers"("id") ON DELETE SET NULL,
+    "customer_name" VARCHAR(200) NOT NULL,
+    "customer_email" VARCHAR(255) NOT NULL,
+    "customer_phone" VARCHAR(20) NOT NULL,
+    "preferred_date" DATE,
+    "preferred_time" TIME,
+    "message" TEXT,
     "status" VARCHAR(50) DEFAULT 'pending',
-    "notes" TEXT,
+    "reservation_end_time" TIMESTAMP,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
