@@ -56,14 +56,14 @@ function getEnvConfig(): EnvConfig {
     }
   }
 
-  // JWT - skip validation during build time
-  const jwtSecret = process.env.JWT_SECRET;
+  // JWT - skip validation during build time, use fallback
+  const jwtSecret = process.env.JWT_SECRET || (isBuildTime ? 'dev-secret-key-change-in-production-min-32-chars' : '');
   if (!isBuildTime && (!jwtSecret || jwtSecret.length < 32)) {
     throw new Error('JWT_SECRET must be at least 32 characters long');
   }
 
-  // Backend - skip validation during build time
-  const backendPasswordHash = process.env.BACKEND_PASSWORD_HASH;
+  // Backend - skip validation during build time, use fallback
+  const backendPasswordHash = process.env.BACKEND_PASSWORD_HASH || (isBuildTime ? '' : '');
   if (!isBuildTime && !backendPasswordHash) {
     throw new Error('BACKEND_PASSWORD_HASH is required');
   }
@@ -82,10 +82,10 @@ function getEnvConfig(): EnvConfig {
       ssl: process.env.DB_SSL !== 'false',
     },
     jwt: {
-      secret: jwtSecret,
+      secret: jwtSecret || 'dev-secret-key-change-in-production-min-32-chars',
     },
     backend: {
-      passwordHash: backendPasswordHash,
+      passwordHash: backendPasswordHash || '',
     },
     frontend: {
       url: frontendUrl,
