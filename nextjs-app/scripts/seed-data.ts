@@ -242,6 +242,9 @@ export async function seedDatabase() {
       },
     ];
 
+    let createdCount = 0;
+    let skippedCount = 0;
+    
     for (const vehicleData of vehicles) {
       const existing = await vehicleRepo.findOne({
         where: {
@@ -263,9 +266,16 @@ export async function seedDatabase() {
         vehicleImage.isPrimary = true;
         vehicleImage.displayOrder = 0;
         await vehicleImageRepo.save(vehicleImage);
+        createdCount++;
+      } else {
+        skippedCount++;
       }
     }
-    console.log('✅ Seeded vehicles');
+    
+    // Get total vehicle count from database
+    const totalVehicles = await vehicleRepo.count();
+    console.log(`✅ Seeded vehicles: ${createdCount} created, ${skippedCount} already existed`);
+    console.log(`📊 Total vehicles in database: ${totalVehicles}`);
 
     // 3. Seed Repair Services
     const repairServices = [
