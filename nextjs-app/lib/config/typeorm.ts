@@ -208,7 +208,14 @@ export async function initializeDatabase(): Promise<DataSource> {
         // This prevents build errors from seed script imports
       }
       isInitialized = true;
+      console.log('✅ Database connection initialized successfully');
     } catch (error: any) {
+      console.error('❌ Database initialization error:', {
+        message: error.message,
+        code: error.code,
+        name: error.name,
+      });
+      
       // If error is about duplicate key (already exists) or NOT NULL constraint (schema already correct), ignore it
       const isIgnorableError =
         error.message?.includes('duplicate key') ||

@@ -4,6 +4,10 @@ import VehicleRepository, { VehicleFilters } from '@/lib/repositories/VehicleRep
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 export async function GET(request: NextRequest) {
