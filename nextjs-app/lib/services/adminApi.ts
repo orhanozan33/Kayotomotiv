@@ -132,8 +132,23 @@ export const repairAPI = {
     api.put(`/repair/appointments/${id}/status`, { status, notes }),
 };
 
-// Admin Repair API (alias)
-export const adminRepairAPI = repairAPI;
+// Admin Repair API - explicitly defined to ensure TypeScript type inference works correctly
+export const adminRepairAPI = {
+  getServices: repairAPI.getServices,
+  createService: repairAPI.createService,
+  updateService: repairAPI.updateService,
+  deleteService: repairAPI.deleteService,
+  getQuotes: repairAPI.getQuotes,
+  getVehicleRecords: repairAPI.getVehicleRecords,
+  getVehicleRecordsRevenue: repairAPI.getVehicleRecordsRevenue,
+  createVehicleRecord: repairAPI.createVehicleRecord,
+  deleteVehicleRecord: repairAPI.deleteVehicleRecord,
+  cleanupOldRecords: repairAPI.cleanupOldRecords,
+  updateQuoteStatus: repairAPI.updateQuoteStatus,
+  deleteQuote: repairAPI.deleteQuote,
+  getAppointments: repairAPI.getAppointments,
+  updateAppointmentStatus: repairAPI.updateAppointmentStatus,
+};
 
 // Car Wash API
 export const carWashAPI = {
