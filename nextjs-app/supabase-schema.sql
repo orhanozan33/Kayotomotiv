@@ -199,10 +199,12 @@ CREATE TABLE IF NOT EXISTS "repair_appointments" (
 -- ============================================
 CREATE TABLE IF NOT EXISTS "car_wash_packages" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "name" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
     "description" TEXT,
-    "price" DECIMAL(10, 2) NOT NULL,
+    "base_price" DECIMAL(10, 2) NOT NULL,
     "duration_minutes" INTEGER,
+    "is_active" BOOLEAN DEFAULT true,
+    "display_order" INTEGER DEFAULT 0,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -212,9 +214,11 @@ CREATE TABLE IF NOT EXISTS "car_wash_packages" (
 -- ============================================
 CREATE TABLE IF NOT EXISTS "car_wash_addons" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "name" VARCHAR(255) NOT NULL,
+    "name" VARCHAR(200) NOT NULL,
     "description" TEXT,
     "price" DECIMAL(10, 2) NOT NULL,
+    "is_active" BOOLEAN DEFAULT true,
+    "display_order" INTEGER DEFAULT 0,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -224,11 +228,21 @@ CREATE TABLE IF NOT EXISTS "car_wash_addons" (
 -- ============================================
 CREATE TABLE IF NOT EXISTS "car_wash_appointments" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    "user_id" UUID REFERENCES "users"("id"),
     "customer_id" UUID REFERENCES "customers"("id") ON DELETE CASCADE,
+    "customer_name" VARCHAR(200) NOT NULL,
+    "customer_email" VARCHAR(255) NOT NULL,
+    "customer_phone" VARCHAR(20) NOT NULL,
     "package_id" UUID REFERENCES "car_wash_packages"("id") ON DELETE CASCADE,
-    "appointment_date" TIMESTAMP NOT NULL,
-    "status" VARCHAR(50) DEFAULT 'scheduled',
-    "total_price" DECIMAL(10, 2),
+    "package_name" VARCHAR(200) NOT NULL,
+    "package_price" DECIMAL(10, 2) NOT NULL,
+    "vehicle_brand" VARCHAR(100),
+    "vehicle_model" VARCHAR(100),
+    "addon_ids" JSONB,
+    "appointment_date" DATE NOT NULL,
+    "appointment_time" TIME NOT NULL,
+    "total_price" DECIMAL(10, 2) NOT NULL,
+    "status" VARCHAR(50) DEFAULT 'pending',
     "notes" TEXT,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
