@@ -122,6 +122,7 @@ export const repairAPI = {
   getVehicleRecords: (params?: any) => api.get('/repair/vehicle-records', { params }),
   getVehicleRecordsRevenue: (params?: any) => api.get('/repair/vehicle-records/revenue', { params }),
   createVehicleRecord: (data: any) => api.post('/repair/vehicle-records', data),
+  deleteVehicleRecord: (id: string) => api.delete(`/repair/vehicle-records/${id}`),
   cleanupOldRecords: () => api.delete('/repair/vehicle-records/cleanup'),
   updateQuoteStatus: (id: string, status: string, notes?: string, total_price?: number) =>
     api.put(`/repair/quotes/${id}/status`, { status, notes, total_price }),
@@ -145,6 +146,7 @@ export const carWashAPI = {
   updateAddon: (id: string, data: any) => api.put(`/car-wash/addons/${id}`, data),
   deleteAddon: (id: string) => api.delete(`/car-wash/addons/${id}`),
   getAppointments: (params?: any) => api.get('/car-wash/appointments', { params }),
+  getAppointmentById: (id: string) => api.get(`/car-wash/appointments/${id}`),
   updateAppointmentStatus: (id: string, status: string, notes?: string) =>
     api.put(`/car-wash/appointments/${id}/status`, { status, notes }),
   deleteAppointment: (id: string) => api.delete(`/car-wash/appointments/${id}`),

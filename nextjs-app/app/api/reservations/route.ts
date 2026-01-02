@@ -68,7 +68,7 @@ export async function GET(request: NextRequest) {
       let reservationsQuery = `
         SELECT vr.*, v.brand, v.model, v.year, v.status as vehicle_status
         FROM vehicle_reservations vr
-        JOIN auto_sales v ON vr.vehicle_id = v.id
+        JOIN vehicles v ON vr.vehicle_id = v.id
         WHERE 1=1
       `;
       const params: any[] = [];
@@ -93,7 +93,7 @@ export async function GET(request: NextRequest) {
           v.year,
           v.updated_at,
           v.created_at
-        FROM auto_sales v
+        FROM vehicles v
         WHERE v.status = 'reserved'
       `;
       
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
       let reservationsQuery = `
         SELECT vr.*, v.brand, v.model, v.year, v.status as vehicle_status
         FROM vehicle_reservations vr
-        JOIN auto_sales v ON vr.vehicle_id = v.id
+        JOIN vehicles v ON vr.vehicle_id = v.id
         WHERE 1=1
       `;
       const params: any[] = [];
@@ -163,7 +163,7 @@ export async function GET(request: NextRequest) {
           v.year,
           v.updated_at,
           v.created_at
-        FROM auto_sales v
+        FROM vehicles v
         WHERE v.status = 'reserved'
       `;
       

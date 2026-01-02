@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useTranslation } from 'react-i18next';
 import { authAPI } from '@/lib/services/adminApi';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
@@ -9,7 +8,6 @@ import styles from './login.module.css';
 
 export default function LoginPage() {
   const { t } = useTranslation();
-  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -36,11 +34,12 @@ export default function LoginPage() {
       localStorage.setItem('user', JSON.stringify(user));
       // Use window.location to force a full page reload and re-check auth
       window.location.href = '/admin-panel/dashboard';
-    } catch (err: any) {
+    } catch (err: unknown) {
       let errorMessage = t('login.error') || 'Giriş başarısız';
       
-      if (err.response?.data) {
-        const errorData = err.response.data;
+      const error = err as any;
+      if (error?.response?.data) {
+        const errorData = error.response.data;
         if (typeof errorData.error === 'object' && errorData.error !== null) {
           errorMessage = errorData.error.message || errorData.error.code || JSON.stringify(errorData.error);
         } else if (typeof errorData.error === 'string') {
@@ -48,8 +47,8 @@ export default function LoginPage() {
         } else if (errorData.message) {
           errorMessage = errorData.message;
         }
-      } else if (err.message) {
-        errorMessage = err.message;
+      } else if (error?.message) {
+        errorMessage = error.message;
       }
       
       setError(errorMessage);

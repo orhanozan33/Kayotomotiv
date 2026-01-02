@@ -254,8 +254,8 @@ export default function RepairServicesPage() {
         onConfirm={confirmDelete}
         title={t('repairServices.confirmDeleteTitle') || 'Hizmeti Sil'}
         message={t('repairServices.confirmDelete') || 'Bu hizmeti silmek istediğinizden emin misiniz?'}
-        confirmText={t('common.delete')}
-        cancelText={t('common.cancel')}
+        confirmText={t('common.delete') || 'Sil'}
+        cancelText={t('common.cancel') || 'İptal'}
         type="danger"
       />
 

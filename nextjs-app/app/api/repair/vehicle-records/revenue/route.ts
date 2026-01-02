@@ -40,7 +40,7 @@ export async function GET(request: NextRequest) {
         COUNT(*) as count,
         COALESCE(SUM(total_price), 0) as total_revenue,
         COALESCE(AVG(total_price), 0) as avg_price
-       FROM repair_quotes
+       FROM car_wash_records
        ${dateFilter}
        AND status = 'completed'
        AND vehicle_brand IS NOT NULL`,

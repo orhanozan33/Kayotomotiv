@@ -112,7 +112,25 @@ export class VehicleRepository {
   }
 
   async delete(id: string): Promise<void> {
-    await this.vehicleRepo.delete(id);
+    // Use query runner for transaction to ensure all related data is deleted
+    const queryRunner = AppDataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      // First, delete all related images using raw SQL to ensure hard delete
+      await queryRunner.query('DELETE FROM vehicle_images WHERE vehicle_id = $1', [id]);
+      
+      // Then delete the vehicle using raw SQL for hard delete
+      await queryRunner.query('DELETE FROM vehicles WHERE id = $1', [id]);
+      
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      await queryRunner.release();
+    }
   }
 
   async getImages(vehicleId: string): Promise<VehicleImage[]> {

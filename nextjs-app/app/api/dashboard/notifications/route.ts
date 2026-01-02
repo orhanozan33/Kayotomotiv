@@ -42,7 +42,31 @@ export async function GET(request: NextRequest) {
       });
     }
 
-    return NextResponse.json({ notifications });
+    // Unread contact messages
+    const unreadMessages = await getPool().query(
+      "SELECT COUNT(*) as count FROM contact_messages WHERE status = 'unread' OR status IS NULL"
+    );
+    const unreadCount = parseInt(unreadMessages.rows[0].count);
+    if (unreadCount > 0) {
+      notifications.push({
+        type: 'contact_message',
+        message: `${unreadCount} okunmamış mesaj var`,
+        count: unreadCount,
+      });
+    }
+
+    const pendingReservationsCount = parseInt(pendingReservations.rows[0].count);
+    const pendingTestDrivesCount = parseInt(pendingTestDrives.rows[0].count);
+    const total = pendingReservationsCount + pendingTestDrivesCount + unreadCount;
+
+    return NextResponse.json({
+      notifications,
+      pendingReservations: pendingReservationsCount,
+      pendingTestDrives: pendingTestDrivesCount,
+      pendingMessages: unreadCount,
+      total,
+      hasNotifications: total > 0,
+    });
   } catch (error: any) {
     return handleError(error, isProduction);
   }

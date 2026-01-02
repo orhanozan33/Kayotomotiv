@@ -11,10 +11,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    checkAuth();
-  }, [pathname]); // pathname değiştiğinde de kontrol et
-
-  const checkAuth = () => {
     if (typeof window === 'undefined') {
       setLoading(false);
       return;
@@ -22,24 +18,23 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     
     const token = localStorage.getItem('token');
     const user = localStorage.getItem('user');
+    let authenticated = false;
+    
     if (token && user) {
       try {
         const userData = JSON.parse(user);
         if (userData.role === 'admin' || userData.role === 'user') {
-          setIsAuthenticated(true);
-        } else {
-          setIsAuthenticated(false);
+          authenticated = true;
         }
-      } catch (e) {
+      } catch {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        setIsAuthenticated(false);
       }
-    } else {
-      setIsAuthenticated(false);
     }
+    
+    setIsAuthenticated(authenticated);
     setLoading(false);
-  };
+  }, [pathname]); // pathname değiştiğinde de kontrol et
 
   useEffect(() => {
     if (!loading && !isAuthenticated && pathname !== '/admin-panel/login') {

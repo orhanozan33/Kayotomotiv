@@ -41,6 +41,24 @@
   opacity: 0.95;
 }
 
+.notificationItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.notificationItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
 @keyframes notificationPulse {
   0%,
   100% {

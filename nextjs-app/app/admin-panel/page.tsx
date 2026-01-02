@@ -19,9 +19,9 @@ export default function AdminPanelPage() {
             router.push('/admin-panel/dashboard');
             return;
           }
-        } catch (e) {
-          // Invalid user data
-        }
+              } catch {
+                // Invalid user data
+              }
       }
       router.push('/admin-panel/login');
     }

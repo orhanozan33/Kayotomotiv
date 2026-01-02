@@ -30,13 +30,53 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.details[0].message }, { status: 400 });
     }
 
+    // First, get package information
+    const packageResult = await getPool().query(
+      'SELECT name, base_price FROM car_wash_packages WHERE id = $1',
+      [value.package_id]
+    );
+
+    if (packageResult.rows.length === 0) {
+      return NextResponse.json({ error: 'Package not found' }, { status: 404 });
+    }
+
+    const packageInfo = packageResult.rows[0];
+    const packagePrice = parseFloat(packageInfo.base_price || 0);
+
+    // Calculate addons total price
+    let addonsTotal = 0;
+    if (value.addon_ids && value.addon_ids.length > 0) {
+      const addonsResult = await getPool().query(
+        `SELECT COALESCE(SUM(price), 0) as total FROM car_wash_addons WHERE id = ANY($1)`,
+        [value.addon_ids]
+      );
+      addonsTotal = parseFloat(addonsResult.rows[0]?.total || 0);
+    }
+
+    const totalPrice = packagePrice + addonsTotal;
+
+    // Get user_id if authenticated (optional for public appointments)
+    let userId = null;
+    try {
+      const authResult = await authenticate(request);
+      if (authResult.user) {
+        userId = authResult.user.id;
+      }
+    } catch {
+      // User not authenticated - that's okay for public appointments
+      userId = null;
+    }
+
     const result = await getPool().query(
       `INSERT INTO car_wash_appointments 
-       (package_id, appointment_date, appointment_time, addon_ids, customer_name, customer_email, customer_phone, vehicle_brand, vehicle_model, notes)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+       (user_id, package_id, package_name, package_price, appointment_date, appointment_time, addon_ids, customer_name, customer_email, customer_phone, vehicle_brand, vehicle_model, notes, total_price)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14)
        RETURNING *`,
       [
+        userId,
         value.package_id,
+        packageInfo.name,
+        packagePrice,
         value.appointment_date,
         value.appointment_time,
         JSON.stringify(value.addon_ids || []),
@@ -46,6 +86,7 @@ export async function POST(request: NextRequest) {
         value.vehicle_brand || null,
         value.vehicle_model || null,
         value.notes || null,
+        totalPrice,
       ]
     );
 

@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { adminReservationsAPI, adminVehiclesAPI, adminRepairAPI, adminCarWashAPI } from '@/lib/services/adminApi';
+import { adminReservationsAPI, adminVehiclesAPI, adminRepairAPI, adminCarWashAPI, adminSettingsAPI } from '@/lib/services/adminApi';
 import ConfirmModal from '@/components/admin/ConfirmModal';
 import { findVehicleImage } from '@/lib/utils/vehicleImageService';
 import styles from './reservations.module.css';
@@ -123,6 +123,9 @@ export default function ReservationsPage() {
     repairQuotes: 0,
     carWash: 0,
   });
+  const [taxRate, setTaxRate] = useState(0);
+  const [federalTaxRate, setFederalTaxRate] = useState(0);
+  const [provincialTaxRate, setProvincialTaxRate] = useState(0);
 
   const showError = (message: string) => {
     setError(message);
@@ -169,42 +172,67 @@ export default function ReservationsPage() {
         carWash: carWashData.filter((cw) => cw.status === 'pending').length,
       });
 
-      const reservationsWithImages = await Promise.all(
-        reservationsData.map(async (reservation) => {
+      // Optimize: Batch load vehicle images instead of individual calls
+      const uniqueVehicleIds = [...new Set(reservationsData.map(r => r.vehicle_id).filter((id): id is number => id != null && typeof id === 'number'))];
+      const vehicleImageMap = new Map<number, string | null>();
+      
+      // Load images in parallel but limit concurrency
+      const IMAGE_BATCH_SIZE = 10;
+      for (let i = 0; i < uniqueVehicleIds.length; i += IMAGE_BATCH_SIZE) {
+        const batch = uniqueVehicleIds.slice(i, i + IMAGE_BATCH_SIZE);
+        await Promise.all(
+          batch.map(async (vehicleId) => {
             try {
-              if (reservation.vehicle_id) {
-                const vehicleRes = await adminVehiclesAPI.getById(String(reservation.vehicle_id));
+              const vehicleRes = await adminVehiclesAPI.getById(String(vehicleId));
               const images = vehicleRes.data?.vehicle?.images || [];
               const primaryImage = images.find((img: any) => img.is_primary) || images[0];
-              return {
-                ...reservation,
-                vehicleImage: primaryImage ? getImageUrl(primaryImage.image_url) : null,
-              };
+              vehicleImageMap.set(vehicleId, primaryImage ? getImageUrl(primaryImage.image_url) : null);
+            } catch (error) {
+              console.error('Error loading vehicle image:', error);
+              vehicleImageMap.set(vehicleId, null);
             }
-            return { ...reservation, vehicleImage: null };
-          } catch (error) {
-            console.error('Error loading vehicle image:', error);
-            return { ...reservation, vehicleImage: null };
-          }
-        })
-      );
+          })
+        );
+      }
+      
+      const reservationsWithImages = reservationsData.map((reservation) => ({
+        ...reservation,
+        vehicleImage: reservation.vehicle_id ? vehicleImageMap.get(reservation.vehicle_id) || null : null,
+      }));
 
+      // Optimize: Batch load test drive vehicle images
+      const testDriveVehicleIds = [...new Set(testDrivesData.map(td => td.vehicle_id).filter((id): id is number => id != null && typeof id === 'number'))];
+      const testDriveImageMap = new Map<number, string | null>();
+      
+      for (let i = 0; i < testDriveVehicleIds.length; i += IMAGE_BATCH_SIZE) {
+        const batch = testDriveVehicleIds.slice(i, i + IMAGE_BATCH_SIZE);
+        await Promise.all(
+          batch.map(async (vehicleId) => {
+            try {
+              const vehicleRes = await adminVehiclesAPI.getById(String(vehicleId));
+              const images = vehicleRes.data?.vehicle?.images || [];
+              const primaryImage = images.find((img: any) => img.is_primary) || images[0];
+              testDriveImageMap.set(vehicleId, primaryImage ? getImageUrl(primaryImage.image_url) : null);
+            } catch (error) {
+              console.error('Error loading vehicle image:', error);
+              testDriveImageMap.set(vehicleId, null);
+            }
+          })
+        );
+      }
+      
+      // Handle test drives without vehicle_id by searching
       const testDrivesWithImages = await Promise.all(
         testDrivesData.map(async (testDrive) => {
+          if (testDrive.vehicle_id && testDriveImageMap.has(testDrive.vehicle_id)) {
+            return {
+              ...testDrive,
+              vehicleImage: testDriveImageMap.get(testDrive.vehicle_id),
+            };
+          }
+          
+          if (testDrive.brand && testDrive.model) {
             try {
-              if (testDrive.vehicle_id) {
-                const vehicleRes = await adminVehiclesAPI.getById(String(testDrive.vehicle_id));
-              const images = vehicleRes.data?.vehicle?.images || [];
-              const primaryImage = images.find((img: any) => img.is_primary) || images[0];
-              if (primaryImage) {
-                return {
-                  ...testDrive,
-                  vehicleImage: getImageUrl(primaryImage.image_url),
-                };
-              }
-            }
-
-            if (testDrive.brand && testDrive.model) {
               const vehicleInfo = await findVehicleImage(adminVehiclesAPI, testDrive.brand, testDrive.model, testDrive.year || null);
               if (vehicleInfo && vehicleInfo.image) {
                 return {
@@ -213,13 +241,12 @@ export default function ReservationsPage() {
                   vehicle_id: vehicleInfo.vehicleId || testDrive.vehicle_id,
                 };
               }
+            } catch (error) {
+              console.error('Error finding vehicle image:', error);
             }
-
-            return { ...testDrive, vehicleImage: null };
-          } catch (error) {
-            console.error('Error loading vehicle image for test drive:', error);
-            return { ...testDrive, vehicleImage: null };
           }
+          
+          return { ...testDrive, vehicleImage: null };
         })
       );
 
@@ -774,6 +801,255 @@ export default function ReservationsPage() {
     );
   };
 
+  const handlePrintCarWashReceipt = async (appointment: CarWashAppointment) => {
+    try {
+      let companyInfo: any = {};
+      try {
+        const companyResponse = await adminSettingsAPI.getCompanyInfo();
+        companyInfo = companyResponse.data?.companyInfo || {};
+      } catch (error) {
+        console.error('Error loading company info:', error);
+      }
+
+      const effectiveFederalRate = federalTaxRate > 0 ? federalTaxRate : (taxRate / 2);
+      const effectiveProvincialRate = provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2);
+      const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
+      
+      const totalPrice = parseFloat(String(appointment.total_price || 0));
+      let basePrice = totalPrice;
+      let federalTaxAmount = 0;
+      let provincialTaxAmount = 0;
+      
+      if (totalTaxRate > 0) {
+        basePrice = totalPrice / (1 + totalTaxRate / 100);
+        federalTaxAmount = basePrice * (effectiveFederalRate / 100);
+        provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+      }
+
+      const addons = appointment.addons || [];
+
+      const receiptHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reçu</title>
+  <style>
+    @page { size: 80mm auto; margin: 0; }
+    @media print {
+      body { margin: 0; padding: 5mm; }
+      .no-print { display: none !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    body {
+      font-family: 'Courier New', 'Courier', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      width: 70mm;
+      max-width: 70mm;
+      margin: 0 auto;
+      padding: 5mm;
+      color: #000;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .company-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .company-info {
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    .receipt-body {
+      margin: 8px 0;
+    }
+    .section-divider {
+      border-top: 1px dashed #000;
+      margin: 8px 0;
+      padding-top: 8px;
+    }
+    .info-row {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .service-title {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-align: center;
+      border-top: 1px dashed #000;
+      border-bottom: 1px dashed #000;
+      padding: 4px 0;
+    }
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      font-size: 10px;
+    }
+    .total-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+    .date-info {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 9px;
+      border-top: 1px dashed #000;
+      padding-top: 8px;
+    }
+    .no-print {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .no-print button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 5px;
+    }
+    .no-print button.close {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-header">
+    <div class="company-name">${companyInfo.company_name || 'KAY Oto Servis'}</div>
+    <div class="company-info">
+      ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
+      ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
+      ${companyInfo.company_tax_number ? `<div>No TVA: ${companyInfo.company_tax_number}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="receipt-body">
+    <div class="info-row">
+      <span>Client:</span>
+      <span>${appointment.customer_name}</span>
+    </div>
+    ${appointment.customer_phone ? `
+    <div class="info-row">
+      <span>Tél:</span>
+      <span>${appointment.customer_phone}</span>
+    </div>
+    ` : ''}
+    ${appointment.customer_email ? `
+    <div class="info-row">
+      <span>Email:</span>
+      <span>${appointment.customer_email}</span>
+    </div>
+    ` : ''}
+    ${appointment.appointment_date ? `
+    <div class="info-row">
+      <span>Date:</span>
+      <span>${new Date(appointment.appointment_date).toLocaleDateString('fr-CA')}</span>
+    </div>
+    ` : ''}
+    ${appointment.appointment_time ? `
+    <div class="info-row">
+      <span>Heure:</span>
+      <span>${appointment.appointment_time}</span>
+    </div>
+    ` : ''}
+
+    <div class="section-divider">
+      <div class="service-title">SERVICE EFFECTUÉ</div>
+      <div class="service-row">
+        <span>${appointment.package_name || 'Service'}</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+      ${addons.map((addon: any) => `
+      <div class="service-row">
+        <span>${addon.addon_name || addon.name || 'Addon'}</span>
+        <span>$${parseFloat(String(addon.price || 0)).toFixed(2)}</span>
+      </div>
+      `).join('')}
+    </div>
+
+    ${totalTaxRate > 0 ? `
+    <div class="section-divider">
+      <div class="info-row">
+        <span>Sous-total:</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+      ${effectiveFederalRate > 0 ? `
+      <div class="info-row">
+        <span>TPS (${effectiveFederalRate.toFixed(2)}%):</span>
+        <span>$${federalTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+      ${effectiveProvincialRate > 0 ? `
+      <div class="info-row">
+        <span>TVQ (${effectiveProvincialRate.toFixed(2)}%):</span>
+        <span>$${provincialTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+    </div>
+    ` : ''}
+
+    <div class="total-row">
+      <span>TOTAL:</span>
+      <span>$${totalPrice.toFixed(2)}</span>
+    </div>
+
+    <div class="date-info">
+      <div>${new Date(appointment.appointment_date || new Date()).toLocaleDateString('fr-CA')}</div>
+      <div>Merci de votre visite!</div>
+    </div>
+  </div>
+
+  <div class="no-print">
+    <button onclick="window.print()">Imprimer</button>
+    <button class="close" onclick="window.close()">Fermer</button>
+  </div>
+</body>
+</html>
+      `;
+
+      const printWindow = window.open('', '_blank', 'width=400,height=600');
+      if (printWindow) {
+        try {
+          printWindow.document.write(receiptHTML);
+          printWindow.document.close();
+          setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+          }, 1000);
+        } catch (error) {
+          console.error('Error writing to print window:', error);
+          showError(t('adminCarWash.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu');
+          printWindow.close();
+        }
+      } else {
+        showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+      }
+    } catch (error: unknown) {
+      console.error('Error printing receipt:', error);
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError(t('adminCarWash.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu: ' + (err.response?.data?.error || err.message || 'Unknown error'));
+    }
+  };
+
   const renderCarWashDetailModal = () => {
     if (!carWashDetailModal.isOpen || !carWashDetailModal.appointment) return null;
 
@@ -892,6 +1168,22 @@ export default function ReservationsPage() {
                 )}
               </div>
             </div>
+          </div>
+          <div className={styles.modalActions}>
+            <button
+              type="button"
+              className={styles.btnPrint}
+              onClick={() => handlePrintCarWashReceipt(appointment)}
+            >
+              🖨️ {t('adminCarWash.printReceipt') || 'Yazdır'}
+            </button>
+            <button
+              type="button"
+              className={styles.btnCancel}
+              onClick={() => setCarWashDetailModal({ isOpen: false, appointment: null })}
+            >
+              {t('common.close') || 'Kapat'}
+            </button>
           </div>
         </div>
       </div>

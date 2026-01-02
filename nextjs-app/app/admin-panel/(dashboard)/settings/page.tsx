@@ -1273,7 +1273,7 @@ export default function SettingsPage() {
                             onClick={() => handlePrintReceipt(receipt)}
                             className={styles.btnPrimary}
                           >
-                            🖨️ {t('settings.receiptPrint')}
+                            🖨️ {t('settings.receiptPrint') || 'Makbuz Yazdır'}
                           </button>
                           <button
                             onClick={() => {
@@ -1282,7 +1282,7 @@ export default function SettingsPage() {
                             }}
                             className={styles.btnEdit}
                           >
-                            {t('settings.receiptDetail')}
+                            {t('settings.receiptDetail') || 'Detay'}
                           </button>
                         </div>
                       </td>
@@ -1300,7 +1300,7 @@ export default function SettingsPage() {
         <div className={styles.modal} onClick={() => setShowReceiptModal(false)}>
           <div className={`${styles.modalContent} ${styles.largeModal}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>{t('settings.receiptDetailTitle')}</h2>
+              <h2>{t('settings.receiptDetailTitle') || 'Makbuz Detayları'}</h2>
               <button
                 type="button"
                 className={styles.modalClose}
@@ -1314,27 +1314,27 @@ export default function SettingsPage() {
             </div>
             <div className={styles.modalBody}>
               <div className={styles.detailSection}>
-                <h3>{t('settings.receiptCustomerInfo')}</h3>
+                <h3>{t('settings.receiptCustomerInfo') || 'Müşteri Bilgileri'}</h3>
                 <div className={styles.detailGrid}>
                   <div className={styles.detailItem}>
-                    <label>{t('settings.receiptName')}:</label>
+                    <label>{t('settings.receiptName') || 'İsim'}:</label>
                     <span>{selectedReceipt.customer_name}</span>
                   </div>
                   {selectedReceipt.customer_phone && (
                     <div className={styles.detailItem}>
-                      <label>{t('settings.receiptPhone')}:</label>
+                      <label>{t('settings.receiptPhone') || 'Telefon'}:</label>
                       <span>{selectedReceipt.customer_phone}</span>
                     </div>
                   )}
                   {selectedReceipt.customer_email && (
                     <div className={styles.detailItem}>
-                      <label>{t('settings.email')}:</label>
+                      <label>{t('settings.email') || 'E-posta'}:</label>
                       <span>{selectedReceipt.customer_email}</span>
                     </div>
                   )}
                   {selectedReceipt.license_plate && (
                     <div className={styles.detailItem}>
-                      <label>{t('settings.receiptPlate')}:</label>
+                      <label>{t('settings.receiptPlate') || 'Plaka'}:</label>
                       <span>{selectedReceipt.license_plate}</span>
                     </div>
                   )}
@@ -1342,33 +1342,33 @@ export default function SettingsPage() {
               </div>
 
               <div className={styles.detailSection}>
-                <h3>{t('settings.receiptServiceInfo')}</h3>
+                <h3>{t('settings.receiptServiceInfo') || 'Hizmet Bilgileri'}</h3>
                 <div className={styles.detailGrid}>
                   <div className={`${styles.detailItem} ${styles.fullWidth}`}>
-                    <label>{t('settings.receiptServiceName')}:</label>
+                    <label>{t('settings.receiptServiceName') || 'Hizmet Adı'}:</label>
                     <span>{selectedReceipt.service_name}</span>
                   </div>
                   {selectedReceipt.service_description && (
                     <div className={`${styles.detailItem} ${styles.fullWidth}`}>
-                      <label>{t('settings.receiptDescription')}:</label>
+                      <label>{t('settings.receiptDescription') || 'Açıklama'}:</label>
                       <span>{selectedReceipt.service_description}</span>
                     </div>
                   )}
                   <div className={styles.detailItem}>
-                    <label>{t('settings.receiptType')}:</label>
-                    <span>{selectedReceipt.service_type === 'repair' ? t('settings.receiptTypeRepair') : selectedReceipt.service_type === 'car_wash' ? t('settings.receiptTypeCarWash') : selectedReceipt.service_type || '-'}</span>
+                    <label>{t('settings.receiptType') || 'Tip'}:</label>
+                    <span>{selectedReceipt.service_type === 'repair' ? (t('settings.receiptTypeRepair') || 'Tamir') : selectedReceipt.service_type === 'car_wash' ? (t('settings.receiptTypeCarWash') || 'Oto Yıkama') : selectedReceipt.service_type || '-'}</span>
                   </div>
                   <div className={styles.detailItem}>
-                    <label>{t('settings.receiptAmountLabel')}:</label>
+                    <label>{t('settings.receiptAmountLabel') || 'Tutar'}:</label>
                     <span>${parseFloat(String(selectedReceipt.price)).toFixed(2)}</span>
                   </div>
                   <div className={styles.detailItem}>
-                    <label>{t('settings.receiptPerformedDate')}:</label>
+                    <label>{t('settings.receiptPerformedDate') || 'Yapılan Tarih'}:</label>
                     <span>{new Date(selectedReceipt.performed_date).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}</span>
                   </div>
                   {selectedReceipt.created_at && (
                     <div className={styles.detailItem}>
-                      <label>{t('settings.receiptCreatedDate')}:</label>
+                      <label>{t('settings.receiptCreatedDate') || 'Oluşturulma Tarihi'}:</label>
                       <span>{new Date(selectedReceipt.created_at).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}</span>
                     </div>
                   )}
@@ -1380,7 +1380,7 @@ export default function SettingsPage() {
                 onClick={() => handlePrintReceipt(selectedReceipt)}
                 className={styles.btnPrimary}
               >
-                🖨️ {t('settings.receiptPrint')}
+                🖨️ {t('settings.receiptPrint') || 'Makbuz Yazdır'}
               </button>
               <button
                 onClick={() => {
@@ -1389,7 +1389,7 @@ export default function SettingsPage() {
                 }}
                 className={styles.btnCancel}
               >
-                {t('settings.receiptCloseBtn')}
+                {t('settings.receiptCloseBtn') || 'Kapat'}
               </button>
             </div>
           </div>

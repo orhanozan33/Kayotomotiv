@@ -113,8 +113,18 @@ export async function DELETE(
     if (adminError) return adminError;
 
     const resolvedParams = await Promise.resolve(params);
+    
+    // Perform hard delete - permanently remove from database
     await VehicleRepository.delete(resolvedParams.id);
-    return NextResponse.json({ message: 'Vehicle deleted successfully' });
+    
+    // Verify deletion by trying to find the vehicle (should return null/404)
+    const deletedVehicle = await VehicleRepository.findById(resolvedParams.id);
+    if (deletedVehicle) {
+      // If vehicle still exists, deletion failed
+      return NextResponse.json({ error: 'Vehicle deletion failed' }, { status: 500 });
+    }
+    
+    return NextResponse.json({ message: 'Vehicle deleted successfully', deleted: true });
   } catch (error: any) {
     return handleError(error, isProduction);
   }

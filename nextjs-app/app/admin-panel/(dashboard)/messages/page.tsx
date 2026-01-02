@@ -186,39 +186,39 @@ export default function MessagesPage() {
             </div>
             <div className={styles.modalBody}>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.name')}:</label>
+                <label>{t('adminMessages.name') || 'İsim'}:</label>
                 <span>{selectedMessage.name}</span>
               </div>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.email')}:</label>
+                <label>{t('adminMessages.email') || 'E-posta'}:</label>
                 <span>{selectedMessage.email}</span>
               </div>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.phone')}:</label>
+                <label>{t('adminMessages.phone') || 'Telefon'}:</label>
                 <span>{selectedMessage.phone || '-'}</span>
               </div>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.subject')}:</label>
+                <label>{t('adminMessages.subject') || 'Konu'}:</label>
                 <span>{selectedMessage.subject || '-'}</span>
               </div>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.status')}:</label>
+                <label>{t('adminMessages.status') || 'Durum'}:</label>
                 <span className={`${styles.statusBadge} ${getStatusBadge(selectedMessage.status).class}`}>
                   {getStatusBadge(selectedMessage.status).label}
                 </span>
               </div>
               <div className={styles.detailRow}>
-                <label>{t('adminMessages.date')}:</label>
+                <label>{t('adminMessages.date') || 'Tarih'}:</label>
                 <span>{formatDate(selectedMessage.created_at)}</span>
               </div>
               {selectedMessage.updated_at && selectedMessage.updated_at !== selectedMessage.created_at && (
                 <div className={styles.detailRow}>
-                  <label>{t('adminMessages.updatedAt')}:</label>
+                  <label>{t('adminMessages.updatedAt') || 'Güncellenme Tarihi'}:</label>
                   <span>{formatDate(selectedMessage.updated_at)}</span>
                 </div>
               )}
               <div className={`${styles.detailRow} ${styles.fullWidth}`}>
-                <label>{t('adminMessages.message')}:</label>
+                <label>{t('adminMessages.message') || 'Mesaj'}:</label>
                 <div className={styles.messageContent}>{selectedMessage.message}</div>
               </div>
             </div>
@@ -228,14 +228,14 @@ export default function MessagesPage() {
                 onChange={(e) => handleStatusChange(selectedMessage.id, e.target.value)}
                 className={styles.statusSelect}
               >
-                <option value="unread">{t('adminMessages.unread')}</option>
-                <option value="read">{t('adminMessages.read')}</option>
-                <option value="replied">{t('adminMessages.replied')}</option>
+                <option value="unread">{t('adminMessages.unread') || 'Okunmadı'}</option>
+                <option value="read">{t('adminMessages.read') || 'Okundu'}</option>
+                <option value="replied">{t('adminMessages.replied') || 'Yanıtlandı'}</option>
               </select>
               <button onClick={() => setDeleteModal({ isOpen: true, messageId: selectedMessage.id })} className={styles.btnDelete}>
-                {t('adminMessages.delete')}
+                {t('adminMessages.delete') || 'Sil'}
               </button>
-              <button onClick={() => setShowDetailModal(false)} className={styles.btnSecondary}>{t('adminMessages.close')}</button>
+              <button onClick={() => setShowDetailModal(false)} className={styles.btnSecondary}>{t('adminMessages.close') || 'Kapat'}</button>
             </div>
           </div>
         </div>
@@ -245,8 +245,8 @@ export default function MessagesPage() {
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, messageId: null })}
         onConfirm={handleDelete}
-        title={t('adminMessages.deleteTitle')}
-        message={t('adminMessages.confirmDelete')}
+        title={t('adminMessages.deleteTitle') || 'Mesajı Sil'}
+        message={t('adminMessages.confirmDelete') || 'Bu mesajı silmek istediğinizden emin misiniz?'}
       />
     </div>
   );

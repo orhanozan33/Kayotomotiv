@@ -18,12 +18,30 @@
   overflow-y: auto;
 }
 
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: #1a1a1a;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
 .sidebarHeader {
-  padding: 2rem;
+  padding: 1rem;
   border-bottom: 1px solid #333;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 0.5rem;
 }
 
 .sidebarHeader h2 {
@@ -53,10 +71,15 @@
 .sidebarFooter {
   padding: 1rem;
   border-top: 1px solid #333;
+  margin-top: auto;
+  position: sticky;
+  bottom: 0;
+  background: #1a1a1a;
+  z-index: 10;
 }
 
 .logoutBtn {
-  width: 100%;
+  flex: 1;
   padding: 0.75rem;
   background: #d32f2f;
   color: white;
@@ -66,6 +89,7 @@
   font-size: 1rem;
   font-weight: 600;
   transition: background 0.3s;
+  white-space: nowrap;
 }
 
 .logoutBtn:hover {

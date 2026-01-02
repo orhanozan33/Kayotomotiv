@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
     const result = await getPool().query(
       `SELECT tdr.*, v.brand, v.model, v.year
        FROM test_drive_requests tdr
-       JOIN auto_sales v ON tdr.vehicle_id = v.id
+       JOIN vehicles v ON tdr.vehicle_id = v.id
        WHERE ${authResult.user!.role === 'admin' ? '1=1' : 'tdr.user_id = $1'}
        ORDER BY tdr.created_at DESC`,
       authResult.user!.role === 'admin' ? [] : [authResult.user!.id]

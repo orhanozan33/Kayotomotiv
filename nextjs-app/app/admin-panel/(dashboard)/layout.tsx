@@ -57,7 +57,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   const canViewPage = (page: string) => {
     if (userRole === 'admin') return true;
     if (permissionsLoading || userPermissions === null) return false;
-    const permission = userPermissions.find((p: any) => p.page === page);
+    const permission = userPermissions.find((p) => p.page === page);
     return permission?.can_view === true;
   };
 
@@ -77,7 +77,9 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     <div className={styles.adminLayout}>
       <aside className={styles.sidebar}>
         <div className={styles.sidebarHeader}>
-          <h2>Admin Panel</h2>
+          <button onClick={handleLogout} className={styles.logoutBtn}>
+            {t('common.logout') || 'Çıkış Yap'}
+          </button>
           <LanguageSwitcher />
         </div>
         <nav className={styles.sidebarNav}>
@@ -116,7 +118,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               href="/admin-panel/customers"
               className={isActive('/admin-panel/customers') ? styles.active : ''}
             >
-              {t('adminNav.customers') || 'Müşteriler'}
+              {t('adminNav.customers') || 'Müşteri Kayıt'}
             </Link>
           )}
           {canViewPage('repair-services') && (
@@ -140,7 +142,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
               href="/admin-panel/repair-quotes"
               className={isActive('/admin-panel/repair-quotes') ? styles.active : ''}
             >
-              {t('adminNav.repairQuotes') || 'Tamir Teklifleri'}
+              {t('adminNav.repairQuotes') || 'Oto Yıkama Kayıt'}
             </Link>
           )}
           {userRole === 'admin' && (
@@ -152,11 +154,6 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             </Link>
           )}
         </nav>
-        <div className={styles.sidebarFooter}>
-          <button onClick={handleLogout} className={styles.logoutBtn}>
-            {t('common.logout') || 'Çıkış Yap'}
-          </button>
-        </div>
       </aside>
       <main className={styles.adminContent}>{children}</main>
     </div>

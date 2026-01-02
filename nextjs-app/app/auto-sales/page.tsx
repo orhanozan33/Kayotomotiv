@@ -34,6 +34,7 @@ interface Vehicle {
 
 export default function AutoSalesPage() {
   const { t } = useTranslation();
+  const [isMounted, setIsMounted] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
@@ -47,6 +48,7 @@ export default function AutoSalesPage() {
   });
 
   useEffect(() => {
+    setIsMounted(true);
     loadVehicles();
 
     // Check for expired reservations every 30 seconds
@@ -102,7 +104,7 @@ export default function AutoSalesPage() {
         <div className={styles.filtersSection}>
           <form onSubmit={handleFilterSubmit} className={styles.filtersForm}>
             <select name="brand" value={filters.brand} onChange={handleFilterChange}>
-              <option value="">{t('autoSales.filters.brand')}</option>
+              <option value="">{isMounted ? t('autoSales.filters.brand') : 'Marka'}</option>
               {Object.keys(carBrandsAndModels).map((brand) => (
                 <option key={brand} value={brand}>
                   {brand}
@@ -115,7 +117,7 @@ export default function AutoSalesPage() {
               onChange={handleFilterChange}
               disabled={!filters.brand}
             >
-              <option value="">{t('autoSales.filters.model')}</option>
+              <option value="">{isMounted ? t('autoSales.filters.model') : 'Model'}</option>
               {availableModels.map((model) => (
                 <option key={model} value={model}>
                   {model}
@@ -123,7 +125,7 @@ export default function AutoSalesPage() {
               ))}
             </select>
             <select name="year" value={filters.year} onChange={handleFilterChange}>
-              <option value="">{t('autoSales.filters.year')}</option>
+              <option value="">{isMounted ? t('autoSales.filters.year') : 'Yıl'}</option>
               {years.map((year) => (
                 <option key={year} value={year}>
                   {year}
@@ -133,25 +135,25 @@ export default function AutoSalesPage() {
             <input
               type="number"
               name="minPrice"
-              placeholder={t('autoSales.filters.minPrice')}
+              placeholder={isMounted ? t('autoSales.filters.minPrice') : 'Min Fiyat'}
               value={filters.minPrice}
               onChange={handleFilterChange}
             />
             <input
               type="number"
               name="maxPrice"
-              placeholder={t('autoSales.filters.maxPrice')}
+              placeholder={isMounted ? t('autoSales.filters.maxPrice') : 'Max Fiyat'}
               value={filters.maxPrice}
               onChange={handleFilterChange}
             />
-            <button type="submit">{t('autoSales.filters.filter')}</button>
+            <button type="submit">{isMounted ? t('autoSales.filters.filter') : 'Filtrele'}</button>
           </form>
         </div>
 
         {loading ? (
-          <div className={styles.loading}>{t('autoSales.loading')}</div>
+          <div className={styles.loading}>{isMounted ? t('autoSales.loading') : 'Araçlar yükleniyor...'}</div>
         ) : !vehicles || vehicles.length === 0 ? (
-          <div className={styles.noResults}>{t('autoSales.noResults')}</div>
+          <div className={styles.noResults}>{isMounted ? t('autoSales.noResults') : 'Araç bulunamadı'}</div>
         ) : (
           <div className={styles.vehiclesGrid}>
             {vehicles.map((vehicle) => {
@@ -195,7 +197,7 @@ export default function AutoSalesPage() {
                       className={styles.noImage}
                       style={{ display: imageUrl ? 'none' : 'flex' }}
                     >
-                      {t('common.noImage')}
+                      {isMounted ? t('common.noImage') : 'Resim Yok'}
                     </div>
                   </div>
                   <div className={styles.vehicleInfo}>
@@ -217,9 +219,13 @@ export default function AutoSalesPage() {
                       <span className={styles.vehicleYearInline}>{vehicle.year}</span>
                       <span> • </span>
                       <span className={styles.transmissionText}>
-                        {vehicle.transmission === 'automatic'
-                          ? t('autoSales.details.transmissionAutomatic')
-                          : t('autoSales.details.transmissionManual')}
+                        {isMounted
+                          ? vehicle.transmission === 'automatic'
+                            ? t('autoSales.details.transmissionAutomatic')
+                            : t('autoSales.details.transmissionManual')
+                          : vehicle.transmission === 'automatic'
+                            ? 'Otomatik'
+                            : 'Manuel'}
                       </span>
                       {vehicle.mileage && (
                         <span>

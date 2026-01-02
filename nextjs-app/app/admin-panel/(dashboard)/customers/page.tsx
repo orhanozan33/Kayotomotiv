@@ -79,7 +79,7 @@ export default function CustomersPage() {
         return { data: { customers: [] } };
       });
       setCustomers(response.data?.customers || []);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error loading customers:', error);
       setCustomers([]);
     } finally {
@@ -96,23 +96,23 @@ export default function CustomersPage() {
     return () => clearTimeout(timer);
   }, [searchTerm, loadCustomers]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
 
     if (name === 'vehicle_brand') {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         vehicle_brand: value,
         vehicle_model: '',
-      });
+      }));
       setAvailableModels(value ? carBrandsAndModels[value] || [] : []);
     } else {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [name]: value,
-      });
+      }));
     }
-  };
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -147,9 +147,9 @@ export default function CustomersPage() {
       });
       setAvailableModels([]);
       loadCustomers();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating customer:', error);
-      const errorMessage = error.response?.data?.error || error.response?.data?.message || error.message;
+      const errorMessage = (error as { response?: { data?: { error?: string; message?: string } }; message?: string })?.response?.data?.error || (error as { response?: { data?: { message?: string } } })?.response?.data?.message || (error as { message?: string })?.message;
       showError('Error creating customer: ' + errorMessage);
     }
   };
@@ -158,8 +158,9 @@ export default function CustomersPage() {
     try {
       const response = await adminCustomersAPI.getById(customer.id.toString());
       setSelectedCustomer(response.data.customer);
-    } catch (error: any) {
-      showError((t('customers.errors.loadingDetails') || 'Error loading details') + ': ' + (error.response?.data?.error || error.message));
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError((t('customers.errors.loadingDetails') || 'Error loading details') + ': ' + (err.response?.data?.error || err.message));
     }
   };
 
@@ -191,8 +192,9 @@ export default function CustomersPage() {
       setDeleteCustomerModal({ isOpen: false, customerId: null });
       loadCustomers();
       showSuccessMessage(t('customers.deletedSuccessfully') || 'Customer deleted successfully!');
-    } catch (error: any) {
-      showError((t('customers.errors.deleting') || 'Error deleting') + ': ' + (error.response?.data?.error || error.message));
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError((t('customers.errors.deleting') || 'Error deleting') + ': ' + (err.response?.data?.error || err.message));
       setDeleteCustomerModal({ isOpen: false, customerId: null });
     }
   };
@@ -222,7 +224,7 @@ export default function CustomersPage() {
         </div>
       )}
       <div className={styles.pageHeader}>
-        <h1>{t('customers.title') || 'Müşteriler'}</h1>
+        <h1>{t('customers.title') || 'Müşteri Kayıt'}</h1>
         <button onClick={() => setShowForm(true)} className={styles.btnPrimary}>
           {t('customers.addCustomer') || 'Müşteri Ekle'}
         </button>

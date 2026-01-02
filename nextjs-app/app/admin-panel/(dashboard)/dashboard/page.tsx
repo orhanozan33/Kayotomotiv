@@ -14,7 +14,7 @@ import styles from './dashboard.module.css';
 
 export default function DashboardPage() {
   const { t } = useTranslation();
-  const { showError, showSuccess } = useError();
+  const { showSuccess } = useError();
   const [userRole, setUserRole] = useState<string | null>(null);
   const [stats, setStats] = useState({
     vehicles: 0,
@@ -32,6 +32,7 @@ export default function DashboardPage() {
   const [notifications, setNotifications] = useState({
     pendingReservations: 0,
     pendingTestDrives: 0,
+    pendingMessages: 0,
     total: 0,
     hasNotifications: false,
   });
@@ -77,9 +78,16 @@ export default function DashboardPage() {
       ];
 
       if (isAdmin) {
+        const revenueParams: any = { 
+          period: (dateRange.startDate && dateRange.endDate) ? 'custom' : revenuePeriod 
+        };
+        if (dateRange.startDate && dateRange.endDate) {
+          revenueParams.startDate = dateRange.startDate;
+          revenueParams.endDate = dateRange.endDate;
+        }
         promises.push(
           dashboardAPI
-            .getRevenueStats({ period: revenuePeriod, ...dateRange })
+            .getRevenueStats(revenueParams)
             .catch((err) => {
               console.error('Error loading revenue stats:', err);
               return { data: { repair: { total: 0 }, carWash: { total: 0 }, total: 0 } };
@@ -121,7 +129,7 @@ export default function DashboardPage() {
 
   const playAlarmSound = () => {
     try {
-      const audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioContext = new (window.AudioContext || (window as typeof window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext || AudioContext)();
       const oscillator = audioContext.createOscillator();
       const gainNode = audioContext.createGain();
 
@@ -163,7 +171,7 @@ export default function DashboardPage() {
       const response = await dashboardAPI.getNotifications().catch((err) => {
         console.error('Error loading notifications:', err);
         return {
-          data: { pendingReservations: 0, pendingTestDrives: 0, total: 0, hasNotifications: false },
+          data: { pendingReservations: 0, pendingTestDrives: 0, pendingMessages: 0, total: 0, hasNotifications: false },
         };
       });
       const prevTotal = notifications.total;
@@ -171,6 +179,7 @@ export default function DashboardPage() {
         response.data || {
           pendingReservations: 0,
           pendingTestDrives: 0,
+          pendingMessages: 0,
           total: 0,
           hasNotifications: false,
         }
@@ -178,12 +187,18 @@ export default function DashboardPage() {
 
       if (response.data?.hasNotifications && response.data.total > prevTotal && prevTotal > 0) {
         let message = '';
-        if (response.data.pendingReservations > 0 && response.data.pendingTestDrives > 0) {
-          message = `Yeni bildirim: ${response.data.pendingReservations} rezervasyon talebi ve ${response.data.pendingTestDrives} test sürüşü talebi bekliyor!`;
-        } else if (response.data.pendingReservations > 0) {
-          message = `Yeni bildirim: ${response.data.pendingReservations} rezervasyon talebi bekliyor!`;
-        } else if (response.data.pendingTestDrives > 0) {
-          message = `Yeni bildirim: ${response.data.pendingTestDrives} test sürüşü talebi bekliyor!`;
+        const parts: string[] = [];
+        if (response.data.pendingReservations > 0) {
+          parts.push(`${response.data.pendingReservations} rezervasyon talebi`);
+        }
+        if (response.data.pendingTestDrives > 0) {
+          parts.push(`${response.data.pendingTestDrives} test sürüşü talebi`);
+        }
+        if (response.data.pendingMessages > 0) {
+          parts.push(`${response.data.pendingMessages} okunmamış mesaj`);
+        }
+        if (parts.length > 0) {
+          message = `Yeni bildirim: ${parts.join(', ')} bekliyor!`;
         }
         if (message) {
           showSuccess(message);
@@ -195,12 +210,18 @@ export default function DashboardPage() {
         prevTotal === 0
       ) {
         let message = '';
-        if (response.data.pendingReservations > 0 && response.data.pendingTestDrives > 0) {
-          message = `${response.data.pendingReservations} rezervasyon talebi ve ${response.data.pendingTestDrives} test sürüşü talebi bekliyor!`;
-        } else if (response.data.pendingReservations > 0) {
-          message = `${response.data.pendingReservations} rezervasyon talebi bekliyor!`;
-        } else if (response.data.pendingTestDrives > 0) {
-          message = `${response.data.pendingTestDrives} test sürüşü talebi bekliyor!`;
+        const parts: string[] = [];
+        if (response.data.pendingReservations > 0) {
+          parts.push(`${response.data.pendingReservations} rezervasyon talebi`);
+        }
+        if (response.data.pendingTestDrives > 0) {
+          parts.push(`${response.data.pendingTestDrives} test sürüşü talebi`);
+        }
+        if (response.data.pendingMessages > 0) {
+          parts.push(`${response.data.pendingMessages} okunmamış mesaj`);
+        }
+        if (parts.length > 0) {
+          message = `${parts.join(', ')} bekliyor!`;
         }
         if (message) {
           showSuccess(message);
@@ -212,6 +233,7 @@ export default function DashboardPage() {
       setNotifications({
         pendingReservations: 0,
         pendingTestDrives: 0,
+        pendingMessages: 0,
         total: 0,
         hasNotifications: false,
       });
@@ -249,17 +271,24 @@ export default function DashboardPage() {
         <div className={styles.notificationBanner}>
           <div className={styles.notificationIcon}>🔔</div>
           <div className={styles.notificationContent}>
-            <strong>{t('dashboard.newNotifications') || 'Yeni Bildirimler'}</strong>
-            {notifications.pendingReservations > 0 && (
-              <span>
-                {notifications.pendingReservations} {t('dashboard.pendingReservations') || 'bekleyen rezervasyon'}
-              </span>
-            )}
-            {notifications.pendingTestDrives > 0 && (
-              <span>
-                {notifications.pendingTestDrives} {t('dashboard.pendingTestDrives') || 'bekleyen test sürüşü'}
-              </span>
-            )}
+            <strong>{t('dashboard.newNotifications') || 'Yeni Bildirimler!'}</strong>
+            <div className={styles.notificationItems}>
+              {notifications.pendingReservations > 0 && (
+                <span className={styles.notificationItem}>
+                  📋 {notifications.pendingReservations} {notifications.pendingReservations === 1 ? (t('dashboard.pendingReservation') || 'Rezervasyon') : (t('dashboard.pendingReservations') || 'Rezervasyon')}
+                </span>
+              )}
+              {notifications.pendingTestDrives > 0 && (
+                <span className={styles.notificationItem}>
+                  🚗 {notifications.pendingTestDrives} {notifications.pendingTestDrives === 1 ? (t('dashboard.pendingTestDrive') || 'Test Sürüşü') : (t('dashboard.pendingTestDrives') || 'Test Sürüşü')}
+                </span>
+              )}
+              {notifications.pendingMessages > 0 && (
+                <span className={styles.notificationItem}>
+                  💬 {notifications.pendingMessages} {notifications.pendingMessages === 1 ? (t('dashboard.pendingMessage') || 'Mesaj') : (t('dashboard.pendingMessages') || 'Mesaj')}
+                </span>
+              )}
+            </div>
           </div>
         </div>
       )}
@@ -274,7 +303,7 @@ export default function DashboardPage() {
           <p className={styles.statNumber}>{stats.reservations}</p>
         </div>
         <div className={styles.statCard}>
-          <h3>{t('dashboard.repairQuotes') || 'Tamir Teklifleri'}</h3>
+          <h3>{t('dashboard.carWashRecords') || 'Oto Yıkama Kayıt'}</h3>
           <p className={styles.statNumber}>{stats.quotes}</p>
         </div>
         <div className={styles.statCard}>
@@ -331,7 +360,6 @@ export default function DashboardPage() {
                 value={dateRange.startDate}
                 onChange={(e) => {
                   setDateRange({ ...dateRange, startDate: e.target.value });
-                  setRevenuePeriod('total');
                 }}
               />
               <span>-</span>
@@ -340,7 +368,6 @@ export default function DashboardPage() {
                 value={dateRange.endDate}
                 onChange={(e) => {
                   setDateRange({ ...dateRange, endDate: e.target.value });
-                  setRevenuePeriod('total');
                 }}
               />
             </div>

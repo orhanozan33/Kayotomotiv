@@ -13,7 +13,12 @@ const languages = [
 export default function LanguageSwitcher() {
   const { i18n, t } = useTranslation('common');
   const [isOpen, setIsOpen] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
@@ -39,14 +44,17 @@ export default function LanguageSwitcher() {
     };
   }, [isOpen]);
 
-  const currentLanguage = languages.find((lang) => lang.code === i18n.language) || languages[0];
+  // Default to 'en' for server-side render to avoid hydration mismatch
+  const currentLanguageCode = isMounted ? i18n.language : 'en';
+  const currentLanguage = languages.find((lang) => lang.code === currentLanguageCode) || languages[0];
+  const languageName = isMounted ? String(t(currentLanguage.nameKey) || '') : 'English';
 
   return (
     <div className={styles.languageSwitcher} ref={dropdownRef}>
       <button
         className={styles.languageButton}
         onClick={() => setIsOpen(!isOpen)}
-        title={String(t(currentLanguage.nameKey) || '')}
+        title={languageName}
       >
         <span className={styles.languageCode}>{currentLanguage.code.toUpperCase()}</span>
         <span className={styles.chevron}>{isOpen ? '▲' : '▼'}</span>
@@ -56,11 +64,11 @@ export default function LanguageSwitcher() {
           {languages.map((lang) => (
             <button
               key={lang.code}
-              className={`${styles.dropdownItem} ${i18n.language === lang.code ? styles.active : ''}`}
+              className={`${styles.dropdownItem} ${currentLanguageCode === lang.code ? styles.active : ''}`}
               onClick={() => changeLanguage(lang.code)}
             >
               <span className={styles.languageCode}>{lang.code.toUpperCase()}</span>
-              {i18n.language === lang.code && <span className={styles.checkmark}>✓</span>}
+              {currentLanguageCode === lang.code && <span className={styles.checkmark}>✓</span>}
             </button>
           ))}
         </div>

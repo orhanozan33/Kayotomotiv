@@ -7,7 +7,12 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed": "tsx scripts/seed-data.ts"
+    "seed": "tsx scripts/seed-data.ts",
+    "fix-null-emails": "tsx scripts/fix-null-emails.ts",
+    "fix-users-email": "tsx scripts/fix-users-email-column.ts",
+    "check-vehicles": "tsx scripts/check-vehicles.ts",
+    "check-users": "tsx scripts/check-users-table.ts",
+    "check-tables": "tsx scripts/check-table-names.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",

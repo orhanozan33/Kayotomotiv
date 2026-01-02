@@ -98,6 +98,7 @@ export const pagesAPI = {
 // Contact API
 export const contactAPI = {
   createMessage: (messageData: any) => api.post('/contact', messageData),
+  getLocations: () => api.get('/contact/locations'),
 };
 
 // Settings API

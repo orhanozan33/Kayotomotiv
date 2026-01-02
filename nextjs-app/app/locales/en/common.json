@@ -347,12 +347,13 @@
       "address": "Ankara, Turkey",
       "hours": "Monday - Saturday: 09:00 - 18:00"
     },
-    "copyright": "© 2025 KAY Auto Service. All rights reserved."
+    "copyright": "KAY Auto Service. All rights reserved."
   },
   "vehicles": {
     "title": "Auto Gallery",
     "addVehicle": "Add Vehicle",
     "editVehicle": "Edit Vehicle",
+    "edit": "Edit",
     "brand": "Brand",
     "model": "Model",
     "year": "Year",
@@ -383,6 +384,9 @@
     "fuelLpg": "LPG",
     "transmissionAutomatic": "Automatic",
     "transmissionManual": "Manual",
+    "images": "Images",
+    "existingImages": "Existing Images",
+    "featured": "Featured",
     "colors": {
       "white": "White",
       "black": "Black",
@@ -430,7 +434,7 @@
     "adminPanel": "Admin Panel",
     "dashboard": "Dashboard",
     "vehicles": "Auto Gallery",
-    "customers": "Customers",
+    "customers": "Customer Record",
     "reservations": "Reservations",
     "repairServices": "Auto Repair Services",
     "repairQuotes": "Repair Quotes",
@@ -439,6 +443,29 @@
     "messages": "Messages",
     "settings": "Settings",
     "backend": "Backend"
+  },
+  "pages": {
+    "title": "Pages Management",
+    "addPage": "Add Page",
+    "editPage": "Edit Page",
+    "deletePage": "Delete Page",
+    "slug": "Slug",
+    "slugPlaceholder": "Slug (e.g., about-us)",
+    "titlePlaceholder": "Title",
+    "metaDescriptionPlaceholder": "Meta Description",
+    "contentPlaceholder": "Content",
+    "status": "Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "noPages": "No pages found",
+    "createdSuccessfully": "Page created successfully!",
+    "updatedSuccessfully": "Page updated successfully!",
+    "deletedSuccessfully": "Page deleted successfully!",
+    "deleteConfirm": "Are you sure you want to delete this page?",
+    "errors": {
+      "saving": "Error saving page",
+      "deleting": "Error deleting page"
+    }
   },
   "login": {
     "title": "Admin Login",
@@ -454,9 +481,15 @@
     "totalVehicles": "Total Vehicles",
     "reservations": "Reservations",
     "repairQuotes": "Repair Quotes",
+    "carWashRecords": "Car Wash Records",
     "carWashAppointments": "Car Wash Appointments",
     "newNotifications": "New Notifications!",
-    "pendingReservations": "pending reservation requests",
+    "pendingReservations": "Reservation",
+    "pendingReservation": "Reservation",
+    "pendingTestDrives": "Test Drive",
+    "pendingTestDrive": "Test Drive",
+    "pendingMessages": "Message",
+    "pendingMessage": "Message",
     "pendingTestDrives": "pending test drive requests",
     "revenue": {
       "title": "Revenue Statistics",
@@ -531,7 +564,7 @@
     }
   },
   "repairQuotes": {
-    "title": "Repair Quotes",
+    "title": "Car Wash Registration",
     "addVehicle": "Add Vehicle",
     "search": "Search by brand, model or license plate...",
     "noData": "No records found",
@@ -541,9 +574,11 @@
     "statusAccepted": "Accepted",
     "statusRejected": "Rejected",
     "statusCompleted": "Completed",
+    "createdSuccessfully": "Vehicle added successfully!",
     "updatedSuccessfully": "Status updated successfully!",
     "deletedSuccessfully": "Record deleted successfully!",
     "serviceDeleted": "Service deleted!",
+    "serviceAdded": "Service added!",
     "totalPrice": "Total Price",
     "confirmDeleteTitle": "Delete Record",
     "confirmDelete": "Are you sure you want to delete this record?",
@@ -566,6 +601,8 @@
       "total": "Total",
       "subtotal": "Subtotal",
       "remove": "Remove",
+      "selectedServices": "Selected Services",
+      "saveRecord": "Save",
       "selectAtLeastOneService": "Please select at least one service!"
     },
     "revenue": {
@@ -579,9 +616,14 @@
       "averagePrice": "Average Price"
     },
     "detail": {
-      "total": "Total",
+      "title": "Record Details",
+      "vehicleInfo": "Vehicle Information",
       "services": "Services",
       "noServices": "No services found",
+      "addService": "Add Service",
+      "selectService": "Select Service",
+      "printReceipt": "Print Receipt",
+      "total": "Total",
       "delete": "Delete"
     },
     "errors": {
@@ -593,6 +635,7 @@
     }
   },
   "adminCarWash": {
+    "title": "Car Wash Management",
     "management": "Car Wash Management",
     "packages": "Packages",
     "addons": "Add-ons",
@@ -610,6 +653,7 @@
     "description": "Description",
     "price": "Price",
     "duration": "Duration",
+    "actions": "Actions",
     "durationMinutes": "Duration (Minutes)",
     "minutes": "minutes",
     "displayOrder": "Display Order",
@@ -646,7 +690,7 @@
     }
   },
   "customers": {
-    "title": "Customers",
+    "title": "Customer Record",
     "addCustomer": "Add Customer",
     "search": "Search customer (name, email or phone)...",
     "name": "Name",
@@ -773,6 +817,7 @@
     "cancel": "Cancel",
     "save": "Save",
     "delete": "Delete",
+    "print": "Print",
     "edit": "Edit",
     "close": "Close",
     "back": "Back",

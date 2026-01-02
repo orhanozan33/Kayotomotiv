@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useError } from '@/contexts/ErrorContext';
-import { adminCarWashAPI, adminSettingsAPI, adminReceiptsAPI } from '@/lib/services/adminApi';
+import { adminCarWashAPI, adminSettingsAPI } from '@/lib/services/adminApi';
 import ConfirmModal from '@/components/admin/ConfirmModal';
 import styles from './car-wash.module.css';
 
@@ -54,8 +54,6 @@ export default function CarWashPage() {
   const [editingAddon, setEditingAddon] = useState<Addon | null>(null);
   const [deletePackageModal, setDeletePackageModal] = useState({ isOpen: false, packageId: null as string | null });
   const [deleteAddonModal, setDeleteAddonModal] = useState({ isOpen: false, addonId: null as string | null });
-  const [detailPackageModal, setDetailPackageModal] = useState({ isOpen: false, package: null as Package | null });
-  const [detailAddonModal, setDetailAddonModal] = useState({ isOpen: false, addon: null as Addon | null });
   const [packageFormData, setPackageFormData] = useState({
     name: '', description: '', base_price: '', duration_minutes: '', display_order: '0', is_active: true
   });
@@ -65,6 +63,26 @@ export default function CarWashPage() {
   const [taxRate, setTaxRate] = useState(0);
   const [federalTaxRate, setFederalTaxRate] = useState(0);
   const [provincialTaxRate, setProvincialTaxRate] = useState(0);
+  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [showAppointmentDetail, setShowAppointmentDetail] = useState(false);
+  const [deleteAppointmentModal, setDeleteAppointmentModal] = useState({ isOpen: false, appointmentId: null as string | null });
+  const [appointmentSearchTerm, setAppointmentSearchTerm] = useState('');
+  const [appointmentStatusFilter, setAppointmentStatusFilter] = useState('all');
+  const [appointmentDateFilter, setAppointmentDateFilter] = useState('');
+
+  const loadTaxRate = useCallback(async () => {
+    try {
+      const response = await adminSettingsAPI.getSettings();
+      if (response.data?.settings) {
+        const settings = response.data.settings;
+        setTaxRate(parseFloat(settings.tax_rate || '0'));
+        setFederalTaxRate(parseFloat(settings.federal_tax_rate || '0'));
+        setProvincialTaxRate(parseFloat(settings.provincial_tax_rate || '0'));
+      }
+    } catch (error) {
+      console.error('Error loading tax rate:', error);
+    }
+  }, []);
 
   const loadData = useCallback(async () => {
     try {
@@ -99,21 +117,7 @@ export default function CarWashPage() {
   useEffect(() => {
     loadData();
     loadTaxRate();
-  }, [loadData]);
-
-  const loadTaxRate = async () => {
-    try {
-      const response = await adminSettingsAPI.getSettings();
-      if (response.data?.settings) {
-        const settings = response.data.settings;
-        setTaxRate(parseFloat(settings.tax_rate || '0'));
-        setFederalTaxRate(parseFloat(settings.federal_tax_rate || '0'));
-        setProvincialTaxRate(parseFloat(settings.provincial_tax_rate || '0'));
-      }
-    } catch (error) {
-      console.error('Error loading tax rate:', error);
-    }
-  };
+  }, [loadData, loadTaxRate]);
 
   const handlePackageSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -196,11 +200,288 @@ export default function CarWashPage() {
     }
   };
 
+  const handleAppointmentClick = async (appointment: Appointment) => {
+    try {
+      const response = await adminCarWashAPI.getAppointmentById(appointment.id);
+      setSelectedAppointment(response.data?.appointment || appointment);
+      setShowAppointmentDetail(true);
+    } catch (error) {
+      setSelectedAppointment(appointment);
+      setShowAppointmentDetail(true);
+    }
+  };
+
+  const handleDeleteAppointment = async () => {
+    if (!deleteAppointmentModal.appointmentId) return;
+    try {
+      await adminCarWashAPI.deleteAppointment(deleteAppointmentModal.appointmentId);
+      showSuccess(t('adminCarWash.appointmentDeletedSuccessfully') || 'Randevu başarıyla silindi!');
+      setDeleteAppointmentModal({ isOpen: false, appointmentId: null });
+      loadData();
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError(t('adminCarWash.errors.deletingAppointment') || 'Randevu silinirken hata oluştu: ' + (err.response?.data?.error || err.message || 'Unknown error'));
+      setDeleteAppointmentModal({ isOpen: false, appointmentId: null });
+    }
+  };
+
+  const handlePrintReceipt = async () => {
+    if (!selectedAppointment) return;
+    
+    try {
+      let companyInfo: any = {};
+      try {
+        const companyResponse = await adminSettingsAPI.getCompanyInfo();
+        companyInfo = companyResponse.data?.companyInfo || {};
+      } catch (error) {
+        console.error('Error loading company info:', error);
+      }
+
+      const effectiveFederalRate = federalTaxRate > 0 ? federalTaxRate : (taxRate / 2);
+      const effectiveProvincialRate = provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2);
+      const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
+      
+      const totalPrice = parseFloat(String(selectedAppointment.total_price || 0));
+      let basePrice = totalPrice;
+      let federalTaxAmount = 0;
+      let provincialTaxAmount = 0;
+      
+      if (totalTaxRate > 0) {
+        basePrice = totalPrice / (1 + totalTaxRate / 100);
+        federalTaxAmount = basePrice * (effectiveFederalRate / 100);
+        provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+      }
+
+      const receiptHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reçu</title>
+  <style>
+    @page { size: 80mm auto; margin: 0; }
+    @media print {
+      body { margin: 0; padding: 5mm; }
+      .no-print { display: none !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    body {
+      font-family: 'Courier New', 'Courier', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      width: 70mm;
+      max-width: 70mm;
+      margin: 0 auto;
+      padding: 5mm;
+      color: #000;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .company-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .company-info {
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    .receipt-body {
+      margin: 8px 0;
+    }
+    .section-divider {
+      border-top: 1px dashed #000;
+      margin: 8px 0;
+      padding-top: 8px;
+    }
+    .info-row {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .service-title {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-align: center;
+      border-top: 1px dashed #000;
+      border-bottom: 1px dashed #000;
+      padding: 4px 0;
+    }
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      font-size: 10px;
+    }
+    .total-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+    .date-info {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 9px;
+      border-top: 1px dashed #000;
+      padding-top: 8px;
+    }
+    .no-print {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .no-print button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 5px;
+    }
+    .no-print button.close {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-header">
+    <div class="company-name">${companyInfo.company_name || 'KAY Oto Servis'}</div>
+    <div class="company-info">
+      ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
+      ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
+      ${companyInfo.company_tax_number ? `<div>No TVA: ${companyInfo.company_tax_number}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="receipt-body">
+    <div class="info-row">
+      <span>Client:</span>
+      <span>${selectedAppointment.customer_name}</span>
+    </div>
+    <div class="info-row">
+      <span>Email:</span>
+      <span>${selectedAppointment.customer_email}</span>
+    </div>
+    ${selectedAppointment.customer_phone ? `
+    <div class="info-row">
+      <span>Tél:</span>
+      <span>${selectedAppointment.customer_phone}</span>
+    </div>
+    ` : ''}
+    <div class="info-row">
+      <span>Date:</span>
+      <span>${new Date(selectedAppointment.appointment_date).toLocaleDateString('fr-CA')}</span>
+    </div>
+    <div class="info-row">
+      <span>Heure:</span>
+      <span>${selectedAppointment.appointment_time}</span>
+    </div>
+
+    <div class="section-divider">
+      <div class="service-title">SERVICE</div>
+      <div class="service-row">
+        <span>${selectedAppointment.package_name}</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+    </div>
+
+    ${totalTaxRate > 0 ? `
+    <div class="section-divider">
+      <div class="info-row">
+        <span>Sous-total:</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+      ${effectiveFederalRate > 0 ? `
+      <div class="info-row">
+        <span>TPS (${effectiveFederalRate.toFixed(2)}%):</span>
+        <span>$${federalTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+      ${effectiveProvincialRate > 0 ? `
+      <div class="info-row">
+        <span>TVQ (${effectiveProvincialRate.toFixed(2)}%):</span>
+        <span>$${provincialTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+    </div>
+    ` : ''}
+
+    <div class="total-row">
+      <span>TOTAL:</span>
+      <span>$${totalPrice.toFixed(2)}</span>
+    </div>
+
+    <div class="date-info">
+      <div>${new Date().toLocaleDateString('fr-CA')}</div>
+      <div>Merci de votre visite!</div>
+    </div>
+  </div>
+
+  <div class="no-print">
+    <button onclick="window.print()">Imprimer</button>
+    <button class="close" onclick="window.close()">Fermer</button>
+  </div>
+</body>
+</html>
+      `;
+
+      const printWindow = window.open('', '_blank', 'width=400,height=600');
+      if (printWindow) {
+        try {
+          printWindow.document.write(receiptHTML);
+          printWindow.document.close();
+          setTimeout(() => {
+            printWindow.focus();
+            printWindow.print();
+          }, 1000);
+        } catch (error) {
+          console.error('Error writing to print window:', error);
+          showError(t('adminCarWash.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu');
+          printWindow.close();
+        }
+      } else {
+        showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+      }
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      console.error('Error printing receipt:', error);
+      showError(t('adminCarWash.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu: ' + (err.response?.data?.error || err.message || 'Unknown error'));
+    }
+  };
+
+  const filteredAppointments = appointments.filter(appointment => {
+    const matchesSearch = !appointmentSearchTerm || 
+      appointment.customer_name.toLowerCase().includes(appointmentSearchTerm.toLowerCase()) ||
+      appointment.customer_email.toLowerCase().includes(appointmentSearchTerm.toLowerCase()) ||
+      (appointment.customer_phone && appointment.customer_phone.includes(appointmentSearchTerm)) ||
+      appointment.package_name.toLowerCase().includes(appointmentSearchTerm.toLowerCase());
+    
+    const matchesStatus = appointmentStatusFilter === 'all' || appointment.status === appointmentStatusFilter;
+    
+    const matchesDate = !appointmentDateFilter || 
+      new Date(appointment.appointment_date).toISOString().split('T')[0] === appointmentDateFilter;
+    
+    return matchesSearch && matchesStatus && matchesDate;
+  });
+
   if (loading) return <div className={styles.loading}>{t('common.loading')}</div>;
 
   return (
     <div className={styles.carWashPage}>
-      <h1>{t('adminCarWash.title') || 'Oto Yıkama Yönetimi'}</h1>
+      <h1>{t('adminCarWash.title')}</h1>
 
       <div className={styles.tabs}>
         <button className={activeTab === 'packages' ? styles.active : ''} onClick={() => setActiveTab('packages')}>
@@ -245,7 +526,7 @@ export default function CarWashPage() {
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
-                <tr><th>{t('adminCarWash.name')}</th><th>{t('adminCarWash.price')}</th><th>{t('adminCarWash.duration')}</th><th>{t('adminCarWash.status')}</th><th>{t('adminCarWash.actions') || 'İşlemler'}</th></tr>
+                <tr><th>{t('adminCarWash.name')}</th><th>{t('adminCarWash.price')}</th><th>{t('adminCarWash.duration')}</th><th>{t('adminCarWash.status')}</th><th>{t('adminCarWash.actions')}</th></tr>
               </thead>
               <tbody>
                 {packages.length === 0 ? (
@@ -314,7 +595,7 @@ export default function CarWashPage() {
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
-                <tr><th>{t('adminCarWash.name')}</th><th>{t('adminCarWash.price')}</th><th>{t('adminCarWash.status')}</th><th>{t('adminCarWash.actions') || 'İşlemler'}</th></tr>
+                <tr><th>{t('adminCarWash.name')}</th><th>{t('adminCarWash.price')}</th><th>{t('adminCarWash.status')}</th><th>{t('adminCarWash.actions')}</th></tr>
               </thead>
               <tbody>
                 {addons.length === 0 ? (
@@ -352,50 +633,106 @@ export default function CarWashPage() {
       )}
 
       {activeTab === 'appointments' && (
-        <div className={styles.tableContainer}>
-          <table className={styles.dataTable}>
-            <thead>
-              <tr>
-                <th>{t('adminCarWash.customerInfo') || 'Müşteri'}</th>
-                <th>{t('adminCarWash.package')}</th>
-                <th>{t('adminCarWash.date')}</th>
-                <th>{t('adminCarWash.time')}</th>
-                <th>{t('adminCarWash.total')}</th>
-                <th>{t('adminCarWash.status')}</th>
-                <th>{t('adminCarWash.actions') || 'İşlemler'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {appointments.length === 0 ? (
-                <tr>
-                  <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
-                    {t('adminCarWash.noAppointments') || 'Randevu bulunamadı'}
-                  </td>
-                </tr>
-              ) : (
-                appointments.map(appointment => (
-                <tr key={appointment.id}>
-                  <td>{appointment.customer_name}</td>
-                  <td>{appointment.package_name}</td>
-                  <td>{new Date(appointment.appointment_date).toLocaleDateString()}</td>
-                  <td>{appointment.appointment_time}</td>
-                  <td>${appointment.total_price}</td>
-                  <td>{appointment.status}</td>
-                  <td>
-                    <select value={appointment.status} onChange={(e) => handleAppointmentStatusUpdate(appointment.id, e.target.value)}>
-                      <option value="pending">{t('adminCarWash.statusPending')}</option>
-                      <option value="confirmed">{t('adminCarWash.statusConfirmed')}</option>
-                      <option value="in_progress">{t('adminCarWash.statusInProgress')}</option>
-                      <option value="completed">{t('adminCarWash.statusCompleted')}</option>
-                      <option value="cancelled">{t('adminCarWash.statusCancelled')}</option>
-                    </select>
-                  </td>
-                </tr>
-                ))
+        <>
+          <div className={styles.pageHeader}>
+            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+              <input
+                type="text"
+                placeholder={t('adminCarWash.searchAppointments') || 'Müşteri, email, telefon veya paket ile ara...'}
+                value={appointmentSearchTerm}
+                onChange={(e) => setAppointmentSearchTerm(e.target.value)}
+                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd', minWidth: '250px' }}
+              />
+              <select
+                value={appointmentStatusFilter}
+                onChange={(e) => setAppointmentStatusFilter(e.target.value)}
+                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+              >
+                <option value="all">{t('adminCarWash.allStatuses') || 'Tüm Durumlar'}</option>
+                <option value="pending">{t('adminCarWash.statusPending')}</option>
+                <option value="confirmed">{t('adminCarWash.statusConfirmed')}</option>
+                <option value="in_progress">{t('adminCarWash.statusInProgress')}</option>
+                <option value="completed">{t('adminCarWash.statusCompleted')}</option>
+                <option value="cancelled">{t('adminCarWash.statusCancelled')}</option>
+              </select>
+              <input
+                type="date"
+                value={appointmentDateFilter}
+                onChange={(e) => setAppointmentDateFilter(e.target.value)}
+                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                placeholder={t('adminCarWash.filterByDate') || 'Tarihe göre filtrele'}
+              />
+              {appointmentDateFilter && (
+                <button
+                  onClick={() => setAppointmentDateFilter('')}
+                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}
+                >
+                  {t('common.clear') || 'Temizle'}
+                </button>
               )}
-            </tbody>
-          </table>
-        </div>
+            </div>
+          </div>
+          <div className={styles.tableContainer}>
+            <table className={styles.dataTable}>
+              <thead>
+                <tr>
+                  <th>{t('adminCarWash.customerInfo') || 'Müşteri'}</th>
+                  <th>{t('adminCarWash.package')}</th>
+                  <th>{t('adminCarWash.date')}</th>
+                  <th>{t('adminCarWash.time')}</th>
+                  <th>{t('adminCarWash.total')}</th>
+                  <th>{t('adminCarWash.status')}</th>
+                  <th>{t('adminCarWash.actions')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredAppointments.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} style={{ textAlign: 'center', padding: '2rem' }}>
+                      {t('adminCarWash.noAppointments') || 'Randevu bulunamadı'}
+                    </td>
+                  </tr>
+                ) : (
+                  filteredAppointments.map(appointment => (
+                  <tr key={appointment.id} style={{ cursor: 'pointer' }} onClick={() => handleAppointmentClick(appointment)}>
+                    <td>{appointment.customer_name}</td>
+                    <td>{appointment.package_name}</td>
+                    <td>{new Date(appointment.appointment_date).toLocaleDateString()}</td>
+                    <td>{appointment.appointment_time}</td>
+                    <td>${parseFloat(String(appointment.total_price || 0)).toFixed(2)}</td>
+                    <td>{appointment.status}</td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                        <select 
+                          value={appointment.status} 
+                          onChange={(e) => handleAppointmentStatusUpdate(appointment.id, e.target.value)}
+                          style={{ padding: '0.25rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                        >
+                          <option value="pending">{t('adminCarWash.statusPending')}</option>
+                          <option value="confirmed">{t('adminCarWash.statusConfirmed')}</option>
+                          <option value="in_progress">{t('adminCarWash.statusInProgress')}</option>
+                          <option value="completed">{t('adminCarWash.statusCompleted')}</option>
+                          <option value="cancelled">{t('adminCarWash.statusCancelled')}</option>
+                        </select>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteAppointmentModal({ isOpen: true, appointmentId: appointment.id });
+                          }}
+                          className={styles.btnDelete}
+                          title={t('common.delete') || 'Sil'}
+                        >
+                          {t('common.delete') || 'Sil'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
+        </>
       )}
 
       <ConfirmModal
@@ -419,6 +756,72 @@ export default function CarWashPage() {
         cancelText={t('common.cancel')}
         type="danger"
       />
+
+      <ConfirmModal
+        isOpen={deleteAppointmentModal.isOpen}
+        onClose={() => setDeleteAppointmentModal({ isOpen: false, appointmentId: null })}
+        onConfirm={handleDeleteAppointment}
+        title={t('adminCarWash.confirmDeleteAppointmentTitle') || 'Randevuyu Sil'}
+        message={t('adminCarWash.confirmDeleteAppointment') || 'Bu randevuyu silmek istediğinizden emin misiniz?'}
+        confirmText={t('common.delete') || 'Sil'}
+        cancelText={t('common.cancel') || 'İptal'}
+        type="danger"
+      />
+
+      {showAppointmentDetail && selectedAppointment && (
+        <div className={styles.modal} onClick={() => setShowAppointmentDetail(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2>{t('adminCarWash.appointmentDetails') || 'Randevu Detayları'}</h2>
+              <button
+                type="button"
+                onClick={() => setShowAppointmentDetail(false)}
+                style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem' }}
+              >
+                ×
+              </button>
+            </div>
+            <div style={{ display: 'grid', gap: '1.5rem' }}>
+              <div>
+                <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.customerInfo') || 'Müşteri Bilgileri'}</h3>
+                <div style={{ display: 'grid', gap: '0.5rem' }}>
+                  <div><strong>{t('adminCarWash.name') || 'Ad'}:</strong> {selectedAppointment.customer_name}</div>
+                  <div><strong>{t('adminCarWash.email') || 'Email'}:</strong> {selectedAppointment.customer_email}</div>
+                  {selectedAppointment.customer_phone && (
+                    <div><strong>{t('adminCarWash.phone') || 'Telefon'}:</strong> {selectedAppointment.customer_phone}</div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.appointmentInfo') || 'Randevu Bilgileri'}</h3>
+                <div style={{ display: 'grid', gap: '0.5rem' }}>
+                  <div><strong>{t('adminCarWash.package') || 'Paket'}:</strong> {selectedAppointment.package_name}</div>
+                  <div><strong>{t('adminCarWash.date') || 'Tarih'}:</strong> {new Date(selectedAppointment.appointment_date).toLocaleDateString()}</div>
+                  <div><strong>{t('adminCarWash.time') || 'Saat'}:</strong> {selectedAppointment.appointment_time}</div>
+                  <div><strong>{t('adminCarWash.status') || 'Durum'}:</strong> {selectedAppointment.status}</div>
+                  <div><strong>{t('adminCarWash.total') || 'Toplam'}:</strong> ${parseFloat(String(selectedAppointment.total_price || 0)).toFixed(2)}</div>
+                </div>
+              </div>
+              {selectedAppointment.notes && (
+                <div>
+                  <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.notes') || 'Notlar'}</h3>
+                  <div style={{ padding: '0.75rem', background: '#f5f5f5', borderRadius: '4px', whiteSpace: 'pre-wrap' }}>
+                    {selectedAppointment.notes}
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'flex-end' }}>
+              <button onClick={handlePrintReceipt} className={styles.btnPrimary}>
+                🖨️ {t('adminCarWash.printReceipt') || 'Makbuz Yazdır'}
+              </button>
+              <button onClick={() => setShowAppointmentDetail(false)}>
+                {t('common.close') || 'Kapat'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

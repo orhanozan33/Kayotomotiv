@@ -126,13 +126,9 @@ export default function VehiclesPage() {
 
   useEffect(() => {
     loadVehicles();
-
-    const interval = setInterval(() => {
-      loadVehicles();
-    }, 30000);
-
-    return () => clearInterval(interval);
-  }, [loadVehicles]);
+    // Removed auto-refresh interval to prevent deleted vehicles from reappearing
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -367,17 +363,28 @@ export default function VehiclesPage() {
 
   const confirmDeleteVehicle = async () => {
     if (!deleteVehicleModal.vehicleId) return;
+    const vehicleIdToDelete = deleteVehicleModal.vehicleId;
+    const previousVehicles = [...vehicles]; // Backup for error case
+    
+    // Close modal first
+    setDeleteVehicleModal({ isOpen: false, vehicleId: null });
+    
+    // Immediately remove from UI (optimistic update)
+    setVehicles(prevVehicles => prevVehicles.filter(vehicle => vehicle.id !== vehicleIdToDelete));
+    
     try {
-      await vehiclesAPI.delete(deleteVehicleModal.vehicleId);
-      setDeleteVehicleModal({ isOpen: false, vehicleId: null });
-      loadVehicles();
+      // Perform hard delete on server - this will permanently delete from database
+      await vehiclesAPI.delete(vehicleIdToDelete);
+      showSuccess(t('vehicles.deletedSuccessfully') || 'Araç başarıyla silindi!');
+      // DO NOT reload - vehicle is already removed from state and permanently deleted from DB
     } catch (error: any) {
+      // Restore previous state on error (server delete failed)
+      setVehicles(previousVehicles);
       showError(
         (t('vehicles.errors.deleting') || 'Araç silinirken hata oluştu') +
           ': ' +
           (error.response?.data?.error || error.message)
       );
-      setDeleteVehicleModal({ isOpen: false, vehicleId: null });
     }
   };
 
@@ -530,7 +537,7 @@ export default function VehiclesPage() {
               />
 
               <div className={styles.formGroupImages}>
-                <label>{t('vehicles.images') || 'Resimler'}</label>
+                <label>{t('vehicles.images')}</label>
                 <input
                   type="file"
                   accept="image/*"
@@ -541,7 +548,7 @@ export default function VehiclesPage() {
 
                 {existingImages.length > 0 && (
                   <div className={styles.existingImagesSection}>
-                    <h4>{t('vehicles.existingImages') || 'Mevcut Resimler'}</h4>
+                    <h4>{t('vehicles.existingImages')}</h4>
                     <div className={styles.imagePreviewContainer}>
                       {[...existingImages]
                         .sort((a, b) => (a.display_order || 0) - (b.display_order || 0))
@@ -651,7 +658,7 @@ export default function VehiclesPage() {
                   checked={formData.featured}
                   onChange={handleInputChange}
                 />
-                {t('vehicles.featured') || 'Öne Çıkan'}
+                {t('vehicles.featured')}
               </label>
               <div className={styles.modalActions}>
                 <button type="submit">{t('common.save') || 'Kaydet'}</button>
@@ -702,7 +709,7 @@ export default function VehiclesPage() {
                   <td>${vehicle.price.toLocaleString()}</td>
                   <td>{vehicle.status}</td>
                   <td>
-                    <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit') || 'Düzenle'}</button>
+                    <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit')}</button>
                     <button
                       onClick={() => handleDelete(vehicle.id)}
                       className={styles.btnDanger}

@@ -26,8 +26,8 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await getPool().query(
-      `INSERT INTO contact_messages (name, email, phone, subject, message)
-       VALUES ($1, $2, $3, $4, $5)
+      `INSERT INTO contact_messages (name, email, phone, subject, message, status)
+       VALUES ($1, $2, $3, $4, $5, 'unread')
        RETURNING *`,
       [value.name, value.email, value.phone || null, value.subject, value.message]
     );

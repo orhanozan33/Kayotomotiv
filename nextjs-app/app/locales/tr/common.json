@@ -242,10 +242,10 @@
     "adminPanel": "Admin Paneli",
     "dashboard": "Kontrol Paneli",
     "vehicles": "Oto Galeri",
-    "customers": "Müşteriler",
+    "customers": "Müşteri Kayıt",
     "reservations": "Rezervasyonlar",
     "repairServices": "Oto Tamir Hizmetleri",
-    "repairQuotes": "Tamir Teklifleri",
+    "repairQuotes": "Oto Yıkama Kayıt",
     "carWash": "Oto Yıkama Hizmetleri",
     "pages": "Sayfalar",
     "messages": "Mesajlar",
@@ -266,9 +266,15 @@
     "totalVehicles": "Toplam Araçlar",
     "reservations": "Rezervasyonlar",
     "repairQuotes": "Tamir Teklifleri",
+    "carWashRecords": "Oto Yıkama Kayıt",
     "carWashAppointments": "Oto Yıkama Randevuları",
     "newNotifications": "Yeni Bildirimler!",
-    "pendingReservations": "rezervasyon talebi bekliyor",
+    "pendingReservations": "Rezervasyon",
+    "pendingReservation": "Rezervasyon",
+    "pendingTestDrives": "Test Sürüşü",
+    "pendingTestDrive": "Test Sürüşü",
+    "pendingMessages": "Mesaj",
+    "pendingMessage": "Mesaj",
     "pendingTestDrives": "test sürüşü talebi bekliyor",
     "revenue": {
       "title": "Gelir İstatistikleri",
@@ -285,6 +291,7 @@
     "title": "Oto Galeri",
     "addVehicle": "Araç Ekle",
     "editVehicle": "Araç Düzenle",
+    "edit": "Düzenle",
     "brand": "Marka",
     "model": "Model",
     "year": "Yıl",
@@ -315,6 +322,9 @@
     "fuelLpg": "LPG",
     "transmissionAutomatic": "Otomatik",
     "transmissionManual": "Manuel",
+    "images": "Resimler",
+    "existingImages": "Mevcut Resimler",
+    "featured": "Öne Çıkan",
     "colors": {
       "white": "Beyaz",
       "black": "Siyah",
@@ -430,9 +440,11 @@
     "statusAccepted": "Kabul Edildi",
     "statusRejected": "Reddedildi",
     "statusCompleted": "Tamamlandı",
+    "createdSuccessfully": "Araç başarıyla eklendi!",
     "updatedSuccessfully": "Durum başarıyla güncellendi!",
     "deletedSuccessfully": "Kayıt başarıyla silindi!",
     "serviceDeleted": "Hizmet silindi!",
+    "serviceAdded": "Hizmet eklendi!",
     "totalPrice": "Toplam Fiyat",
     "confirmDeleteTitle": "Kaydı Sil",
     "confirmDelete": "Bu kaydı silmek istediğinizden emin misiniz?",
@@ -455,6 +467,8 @@
       "total": "Toplam",
       "subtotal": "Ara Toplam",
       "remove": "Kaldır",
+      "selectedServices": "Seçilen Hizmetler",
+      "saveRecord": "Kaydet",
       "selectAtLeastOneService": "Lütfen en az bir hizmet seçin!"
     },
     "revenue": {
@@ -468,9 +482,14 @@
       "averagePrice": "Ortalama Fiyat"
     },
     "detail": {
-      "total": "Toplam",
+      "title": "Kayıt Detayları",
+      "vehicleInfo": "Araç Bilgileri",
       "services": "Hizmetler",
       "noServices": "Hizmet bulunamadı",
+      "addService": "Hizmet Ekle",
+      "selectService": "Hizmet Seçin",
+      "printReceipt": "Makbuz Yazdır",
+      "total": "Toplam",
       "delete": "Sil"
     },
     "errors": {
@@ -482,6 +501,7 @@
     }
   },
   "adminCarWash": {
+    "title": "Oto Yıkama Yönetimi",
     "management": "Oto Yıkama Yönetimi",
     "packages": "Paketler",
     "addons": "Ekstralar",
@@ -499,6 +519,7 @@
     "description": "Açıklama",
     "price": "Fiyat",
     "duration": "Süre",
+    "actions": "İşlemler",
     "durationMinutes": "Süre (Dakika)",
     "minutes": "dakika",
     "displayOrder": "Sıralama",
@@ -535,7 +556,7 @@
     }
   },
   "customers": {
-    "title": "Müşteriler",
+    "title": "Müşteri Kayıt",
     "addCustomer": "Müşteri Ekle",
     "search": "Müşteri ara (isim, e-posta veya telefon)...",
     "name": "İsim",
@@ -629,6 +650,12 @@
       "confirmDeleteService": "Bu hizmet kaydını silmek istediğinizden emin misiniz?",
       "confirmDeleteServiceTitle": "Hizmet Kaydını Sil",
       "deleteService": "Hizmeti Sil",
+      "printReceipt": "Yazdır",
+      "deleteServiceLabel": "Sil",
+      "errors": {
+        "deletingService": "Hizmet silinirken hata oluştu",
+        "printingReceipt": "Makbuz yazdırılırken hata oluştu"
+      },
       "type": "Tip",
       "repair": "Tamir",
       "carWash": "Oto Yıkama",
@@ -662,6 +689,7 @@
     "cancel": "İptal",
     "save": "Kaydet",
     "delete": "Sil",
+    "print": "Yazdır",
     "edit": "Düzenle",
     "close": "Kapat",
     "back": "Geri",
@@ -772,7 +800,30 @@
       "address": "Ankara, Türkiye",
       "hours": "Pazartesi - Cumartesi: 09:00 - 18:00"
     },
-    "copyright": "© 2025 KAY Oto Servis. Tüm hakları saklıdır."
+    "copyright": "KAY Oto Servis. Tüm hakları saklıdır."
+  },
+  "pages": {
+    "title": "Sayfa Yönetimi",
+    "addPage": "Sayfa Ekle",
+    "editPage": "Sayfayı Düzenle",
+    "deletePage": "Sayfayı Sil",
+    "slug": "Slug",
+    "slugPlaceholder": "Slug (örn: hakkimizda)",
+    "titlePlaceholder": "Başlık",
+    "metaDescriptionPlaceholder": "Meta Açıklama",
+    "contentPlaceholder": "İçerik",
+    "status": "Durum",
+    "active": "Aktif",
+    "inactive": "Pasif",
+    "noPages": "Sayfa bulunamadı",
+    "createdSuccessfully": "Sayfa başarıyla oluşturuldu!",
+    "updatedSuccessfully": "Sayfa başarıyla güncellendi!",
+    "deletedSuccessfully": "Sayfa başarıyla silindi!",
+    "deleteConfirm": "Bu sayfayı silmek istediğinizden emin misiniz?",
+    "errors": {
+      "saving": "Sayfa kaydedilirken hata oluştu",
+      "deleting": "Sayfa silinirken hata oluştu"
+    }
   },
   "settings": {
     "title": "Ayarlar",

@@ -9,6 +9,7 @@ import styles from './page.module.css';
 function ContactPage() {
   const { t } = useTranslation();
   const { showError, showSuccess } = useError();
+  const [isMounted, setIsMounted] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -18,33 +19,66 @@ function ContactPage() {
   });
   const [locations, setLocations] = useState([
     {
-      name: t('contact.locations.1.name') || 'Merkez Şube',
-      address: t('contact.locations.1.address') || 'Atatürk Bulvarı No:123, Çankaya, Ankara',
-      phone: t('contact.locations.1.phone') || '+90 312 123 45 67',
-      hours: t('contact.locations.1.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00',
+      name: 'Merkez Şube',
+      address: 'Atatürk Bulvarı No:123, Çankaya, Ankara',
+      phone: '+90 312 123 45 67',
+      hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
     },
     {
-      name: t('contact.locations.2.name') || 'Kuzey Şube',
-      address: t('contact.locations.2.address') || 'İnönü Caddesi No:456, Keçiören, Ankara',
-      phone: t('contact.locations.2.phone') || '+90 312 234 56 78',
-      hours: t('contact.locations.2.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00',
+      name: 'Kuzey Şube',
+      address: 'İnönü Caddesi No:456, Keçiören, Ankara',
+      phone: '+90 312 234 56 78',
+      hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
     },
     {
-      name: t('contact.locations.3.name') || 'Güney Şube',
-      address: t('contact.locations.3.address') || 'Cumhuriyet Mahallesi No:789, Etimesgut, Ankara',
-      phone: t('contact.locations.3.phone') || '+90 312 345 67 89',
-      hours: t('contact.locations.3.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00',
+      name: 'Güney Şube',
+      address: 'Cumhuriyet Mahallesi No:789, Etimesgut, Ankara',
+      phone: '+90 312 345 67 89',
+      hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
     },
   ]);
 
   useEffect(() => {
+    setIsMounted(true);
     loadContactLocations();
   }, []);
 
   const loadContactLocations = async () => {
     try {
-      // Try to load from API if available
-      // For now, use default locations
+      const response = await contactAPI.getLocations();
+      if (response.data?.locations) {
+        const apiLocations = response.data.locations;
+        // Merge API data with defaults - use API value if exists, otherwise use default
+        const defaultLocations = [
+          {
+            name: 'Merkez Şube',
+            address: 'Atatürk Bulvarı No:123, Çankaya, Ankara',
+            phone: '+90 312 123 45 67',
+            hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
+          },
+          {
+            name: 'Kuzey Şube',
+            address: 'İnönü Caddesi No:456, Keçiören, Ankara',
+            phone: '+90 312 234 56 78',
+            hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
+          },
+          {
+            name: 'Güney Şube',
+            address: 'Cumhuriyet Mahallesi No:789, Etimesgut, Ankara',
+            phone: '+90 312 345 67 89',
+            hours: 'Pazartesi - Cumartesi: 09:00 - 18:00',
+          },
+        ];
+        
+        const mergedLocations = apiLocations.map((apiLoc: any, index: number) => ({
+          name: apiLoc.name || defaultLocations[index]?.name || '',
+          address: apiLoc.address || defaultLocations[index]?.address || '',
+          phone: apiLoc.phone || defaultLocations[index]?.phone || '',
+          hours: apiLoc.hours || defaultLocations[index]?.hours || '',
+        }));
+        
+        setLocations(mergedLocations);
+      }
     } catch (error: any) {
       console.error('Error loading contact locations:', error);
       // Keep default locations if API fails
@@ -63,7 +97,7 @@ function ContactPage() {
     e.preventDefault();
     try {
       await contactAPI.createMessage(formData);
-      showSuccess(t('contact.form.success') || 'Mesajınız başarıyla gönderildi!');
+      showSuccess(isMounted ? t('contact.form.success') : 'Mesajınız başarıyla gönderildi!');
       setFormData({
         name: '',
         email: '',
@@ -73,8 +107,9 @@ function ContactPage() {
       });
     } catch (error: any) {
       showError(
-        t('contact.form.error') ||
-          'Mesaj gönderilirken hata oluştu: ' + (error.response?.data?.error || error.message)
+        (isMounted ? t('contact.form.error') : 'Mesaj gönderilirken hata oluştu') +
+          ': ' +
+          (error.response?.data?.error || error.message)
       );
     }
   };
@@ -84,17 +119,18 @@ function ContactPage() {
       <div className={styles.container}>
         <div className={styles.pageHeader}>
           <div className={styles.headerContent}>
-            <h1>{t('contact.title') || 'İletişim'}</h1>
+            <h1>{isMounted ? t('contact.title') : 'İletişim'}</h1>
             <p className={styles.intro}>
-              {t('contact.subtitle') ||
-                'Sorularınız, önerileriniz veya randevu talepleriniz için bizimle iletişime geçin.'}
+              {isMounted
+                ? t('contact.subtitle')
+                : 'Sorularınız, önerileriniz veya randevu talepleriniz için bizimle iletişime geçin.'}
             </p>
           </div>
         </div>
 
         <div className={styles.contactContent}>
           <div className={styles.locationsSection}>
-            <h2>{t('contact.locations.title') || 'Şubelerimiz'}</h2>
+            <h2>{isMounted ? t('contact.locations.title') : 'Şubelerimiz'}</h2>
             <div className={styles.locationsGrid}>
               {locations.map((location, index) => (
                 <div key={index} className={styles.locationCard}>
@@ -131,11 +167,11 @@ function ContactPage() {
           </div>
 
           <div className={styles.messageSection}>
-            <h2>{t('contact.form.title') || 'Bize Mesaj Gönderin'}</h2>
+            <h2>{isMounted ? t('contact.form.title') : 'Bize Mesaj Gönderin'}</h2>
             <form onSubmit={handleSubmit} className={styles.contactForm}>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label htmlFor="name">{t('contact.form.name') || 'Ad Soyad'}</label>
+                  <label htmlFor="name">{isMounted ? t('contact.form.name') : 'Ad Soyad'}</label>
                   <input
                     type="text"
                     id="name"
@@ -146,7 +182,7 @@ function ContactPage() {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="email">{t('contact.form.email') || 'E-posta'}</label>
+                  <label htmlFor="email">{isMounted ? t('contact.form.email') : 'E-posta'}</label>
                   <input
                     type="email"
                     id="email"
@@ -159,7 +195,7 @@ function ContactPage() {
               </div>
               <div className={styles.formRow}>
                 <div className={styles.formGroup}>
-                  <label htmlFor="phone">{t('contact.form.phone') || 'Telefon'}</label>
+                  <label htmlFor="phone">{isMounted ? t('contact.form.phone') : 'Telefon'}</label>
                   <input
                     type="tel"
                     id="phone"
@@ -170,7 +206,7 @@ function ContactPage() {
                   />
                 </div>
                 <div className={styles.formGroup}>
-                  <label htmlFor="subject">{t('contact.form.subject') || 'Konu'}</label>
+                  <label htmlFor="subject">{isMounted ? t('contact.form.subject') : 'Konu'}</label>
                   <input
                     type="text"
                     id="subject"
@@ -182,7 +218,7 @@ function ContactPage() {
                 </div>
               </div>
               <div className={styles.formGroup}>
-                <label htmlFor="message">{t('contact.form.message') || 'Mesajınız'}</label>
+                <label htmlFor="message">{isMounted ? t('contact.form.message') : 'Mesajınız'}</label>
                 <textarea
                   id="message"
                   name="message"
@@ -193,7 +229,7 @@ function ContactPage() {
                 ></textarea>
               </div>
               <button type="submit" className={styles.submitBtn}>
-                {t('contact.form.submit') || 'Gönder'}
+                {isMounted ? t('contact.form.submit') : 'Gönder'}
               </button>
             </form>
           </div>
