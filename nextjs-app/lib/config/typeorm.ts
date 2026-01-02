@@ -69,172 +69,60 @@ function getEnvConfig() {
   }
 }
 
-// Helper function to parse PostgreSQL connection string and remove SSL parameters
-function parseConnectionString(url: string): { host: string; port: number; database: string; username: string; password: string } | null {
+// Get database URL
+const databaseUrl = (() => {
   try {
-    // Parse postgresql://username:password@host:port/database format
-    // Example: postgresql://postgres.user:password@host:6543/postgres?pgbouncer=true&sslmode=require
-    const match = url.match(/^postgresql:\/\/([^:]+):([^@]+)@([^:]+):(\d+)\/([^?]+)/);
-    if (match) {
-      return {
-        username: match[1],
-        password: match[2],
-        host: match[3],
-        port: parseInt(match[4]),
-        database: match[5],
-      };
-    }
-    // Try without port: postgresql://username:password@host/database
-    const matchNoPort = url.match(/^postgresql:\/\/([^:]+):([^@]+)@([^\/]+)\/([^?]+)/);
-    if (matchNoPort) {
-      return {
-        username: matchNoPort[1],
-        password: matchNoPort[2],
-        host: matchNoPort[3],
-        port: 5432,
-        database: matchNoPort[4],
-      };
-    }
-    return null;
+    const envConfig = getEnvConfig();
+    return envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
   } catch {
-    return null;
+    return process.env.DATABASE_URL || process.env.POSTGRES_URL;
   }
-}
+})();
+
+// Check if localhost (disable SSL for localhost)
+const isLocalhost = !databaseUrl && (
+  process.env.DB_HOST === 'localhost' || 
+  process.env.DB_HOST === '127.0.0.1'
+) || (
+  databaseUrl && (
+    databaseUrl.includes('localhost') || 
+    databaseUrl.includes('127.0.0.1')
+  )
+);
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
-  ...(() => {
-    try {
-      const envConfig = getEnvConfig();
-      const databaseUrl = envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
-      
-      // If we have a connection string, check if it's Supabase
-      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
-      
-      // For Supabase, parse connection string to avoid SSL parameter conflicts
-      if (databaseUrl && isSupabase) {
-        const parsed = parseConnectionString(databaseUrl);
-        if (parsed) {
-          console.log('🔧 Parsing Supabase connection string to avoid SSL parameter conflicts');
+  // Use DATABASE_URL directly - TypeORM will handle it
+  // If DATABASE_URL is not set, use individual DB_* variables
+  ...(databaseUrl 
+    ? { url: databaseUrl }
+    : (() => {
+        try {
+          const envConfig = getEnvConfig();
           return {
-            host: parsed.host,
-            port: parsed.port,
-            database: parsed.database,
-            username: parsed.username,
-            password: parsed.password,
-          };
-        }
-      }
-      
-      // For non-Supabase or if parsing failed, use connection string as-is
-      return envConfig.database.url
-        ? { url: envConfig.database.url }
-        : {
             host: envConfig.database.host,
             port: envConfig.database.port,
             database: envConfig.database.name,
             username: envConfig.database.user,
             password: envConfig.database.password ? String(envConfig.database.password) : '',
           };
-    } catch {
-      // Fallback for development
-      const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
-      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
-      
-      // For Supabase, parse connection string to avoid SSL parameter conflicts
-      if (databaseUrl && isSupabase) {
-        const parsed = parseConnectionString(databaseUrl);
-        if (parsed) {
-          console.log('🔧 Parsing Supabase connection string to avoid SSL parameter conflicts');
+        } catch {
           return {
-            host: parsed.host,
-            port: parsed.port,
-            database: parsed.database,
-            username: parsed.username,
-            password: parsed.password,
+            host: process.env.DB_HOST || 'localhost',
+            port: Number(process.env.DB_PORT) || 5432,
+            database: process.env.DB_NAME || 'postgres',
+            username: process.env.DB_USER || 'postgres',
+            password: String(process.env.DB_PASSWORD || ''),
           };
         }
-      }
-      
-      if (databaseUrl) {
-        return { url: databaseUrl };
-      }
-      return {
-        host: process.env.DB_HOST || 'localhost',
-        port: Number(process.env.DB_PORT) || 5432,
-        database: process.env.DB_NAME || 'postgres',
-        username: process.env.DB_USER || 'postgres',
-        password: String(process.env.DB_PASSWORD || ''),
-      };
-    }
-  })(),
-  ssl: (() => {
-    try {
-      const envConfig = getEnvConfig();
-      const databaseUrl = (envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
-      
-      // Check if connection string contains sslmode=require or pgbouncer (Supabase)
-      const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
-      const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
-      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
-      
-      // Only enable SSL if explicitly set to true and not localhost
-      const isLocalhost = !envConfig.database.url && 
-        (!envConfig.database.host || envConfig.database.host === 'localhost' || envConfig.database.host === '127.0.0.1');
-      
-      if (isLocalhost) {
-        return false; // Disable SSL for localhost
-      }
-      
-      // For Supabase or connection strings with sslmode=require, always enable SSL with rejectUnauthorized: false
-      if (isSupabase || hasSslModeInUrl || hasPgBouncer || envConfig.database.ssl) {
-        // Supabase uses self-signed certificates, so we need to accept them
-        // CRITICAL: rejectUnauthorized: false is required for Supabase SSL certificates
-        return { 
-          rejectUnauthorized: false
-        };
-      }
-      
-      // In production, default to SSL enabled with rejectUnauthorized: false for safety
-      if (isProduction) {
-        return { 
-          rejectUnauthorized: false
-        };
-      }
-      
-      return false;
-    } catch {
-      // For development/fallback, check if it's localhost or Supabase
-      const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
-      const dbHost = process.env.DB_HOST?.trim() || 'localhost';
-      const isLocalhost = dbHost === 'localhost' || dbHost === '127.0.0.1';
-      const isSupabase = databaseUrl?.includes('supabase.co') || databaseUrl?.includes('pooler.supabase.com');
-      const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
-      const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
-      
-      if (isLocalhost) {
-        return false; // Disable SSL for localhost
-      }
-      
-      // For Supabase, always enable SSL with rejectUnauthorized: false
-      if (isSupabase || hasSslModeInUrl || hasPgBouncer || process.env.DB_SSL === 'true') {
-        // Supabase uses self-signed certificates, so we need to accept them
-        // CRITICAL: rejectUnauthorized: false is required for Supabase SSL certificates
-        return { 
-          rejectUnauthorized: false
-        };
-      }
-      
-      // In production, default to SSL enabled with rejectUnauthorized: false for safety
-      if (isProduction) {
-        return { 
-          rejectUnauthorized: false
-        };
-      }
-      
-      return false;
-    }
-  })(),
+      })()
+  ),
+  
+  // 🔴 KRİTİK: Supabase self-signed sertifikaları için rejectUnauthorized: false ZORUNLU
+  // Localhost için SSL'i kapat
+  ssl: isLocalhost ? false : {
+    rejectUnauthorized: false
+  },
   synchronize: false, // Disabled - tables already exist. Use migrations for schema changes.
   logging: process.env.NODE_ENV === 'development',
   entities: [
