@@ -722,7 +722,7 @@ export default function ReservationsPage() {
               <div className={styles.reservationCardActions}>
                 {quote.status === 'pending' && (
                   <button className={styles.btnAccept} onClick={() => handleRepairQuoteStatusUpdate(quote.id, 'quoted')}>
-                    Teklif Ver
+                    {t('repairQuotes.giveOffer') || 'Teklif Ver'}
                   </button>
                 )}
                 <button className={styles.btnDelete} onClick={() => handleRepairQuoteDelete(quote.id)}>

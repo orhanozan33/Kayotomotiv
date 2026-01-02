@@ -455,6 +455,7 @@
     "serviceDeleted": "Hizmet silindi!",
     "serviceAdded": "Hizmet eklendi!",
     "totalPrice": "Toplam Fiyat",
+    "giveOffer": "Teklif Ver",
     "confirmDeleteTitle": "Kaydı Sil",
     "confirmDelete": "Bu kaydı silmek istediğinizden emin misiniz?",
     "tableHeaders": {

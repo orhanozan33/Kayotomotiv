@@ -589,6 +589,7 @@
     "serviceDeleted": "Service deleted!",
     "serviceAdded": "Service added!",
     "totalPrice": "Total Price",
+    "giveOffer": "Give Offer",
     "confirmDeleteTitle": "Delete Record",
     "confirmDelete": "Are you sure you want to delete this record?",
     "tableHeaders": {

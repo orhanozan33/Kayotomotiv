@@ -723,6 +723,7 @@
     "serviceDeleted": "Service supprimé!",
     "serviceAdded": "Service ajouté!",
     "totalPrice": "Prix Total",
+    "giveOffer": "Faire une Offre",
     "confirmDeleteTitle": "Supprimer l'Enregistrement",
     "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet enregistrement?",
     "tableHeaders": {
