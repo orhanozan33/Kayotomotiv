@@ -94,38 +94,71 @@ let envConfig: EnvConfig;
 try {
   envConfig = getEnvConfig();
 } catch (error: any) {
-  console.error('❌ Environment configuration error:', error.message);
-  // During build time, don't fail - allow build to complete
-  // Environment variables will be validated at runtime
-  if (process.env.NODE_ENV === 'production') {
-    // Only fail in production runtime, not during build
-    throw error;
+  // Check if we're in build time (Next.js build process)
+  const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                      process.env.NEXT_PHASE === 'phase-development-build' ||
+                      !process.env.VERCEL && process.env.NODE_ENV === 'production';
+  
+  if (isBuildTime) {
+    // During build time, don't fail - allow build to complete
+    // Environment variables will be validated at runtime
+    console.warn('⚠️  Build time: Using minimal config. Environment variables will be validated at runtime.');
+    // Create a minimal config with defaults
+    const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+    envConfig = {
+      database: {
+        url: databaseUrl,
+        host: process.env.DB_HOST?.trim(),
+        port: process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined,
+        name: process.env.DB_NAME?.trim(),
+        user: process.env.DB_USER?.trim(),
+        password: process.env.DB_PASSWORD?.trim(),
+        ssl: process.env.DB_SSL !== 'false',
+      },
+      jwt: {
+        secret: process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars',
+      },
+      backend: {
+        passwordHash: process.env.BACKEND_PASSWORD_HASH || '',
+      },
+      frontend: {
+        url: process.env.FRONTEND_URL || 'http://localhost:3000',
+      },
+      nodeEnv: (process.env.NODE_ENV || 'development') as EnvConfig['nodeEnv'],
+    };
   } else {
-    console.warn('⚠️  Continuing with minimal config');
+    // Runtime error - log but don't throw during development
+    console.error('❌ Environment configuration error:', error.message);
+    if (process.env.NODE_ENV === 'production' && process.env.VERCEL) {
+      // Only fail in production runtime on Vercel
+      throw error;
+    } else {
+      console.warn('⚠️  Continuing with minimal config');
+      // Create a minimal config with defaults
+      const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
+      envConfig = {
+        database: {
+          url: databaseUrl,
+          host: process.env.DB_HOST?.trim(),
+          port: process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined,
+          name: process.env.DB_NAME?.trim(),
+          user: process.env.DB_USER?.trim(),
+          password: process.env.DB_PASSWORD?.trim(),
+          ssl: process.env.DB_SSL !== 'false',
+        },
+        jwt: {
+          secret: process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars',
+        },
+        backend: {
+          passwordHash: process.env.BACKEND_PASSWORD_HASH || '',
+        },
+        frontend: {
+          url: process.env.FRONTEND_URL || 'http://localhost:3000',
+        },
+        nodeEnv: (process.env.NODE_ENV || 'development') as EnvConfig['nodeEnv'],
+      };
+    }
   }
-  // Create a minimal config with defaults
-  const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
-  envConfig = {
-    database: {
-      url: databaseUrl,
-      host: process.env.DB_HOST?.trim(),
-      port: process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined,
-      name: process.env.DB_NAME?.trim(),
-      user: process.env.DB_USER?.trim(),
-      password: process.env.DB_PASSWORD?.trim(),
-      ssl: process.env.DB_SSL !== 'false',
-    },
-    jwt: {
-      secret: process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars',
-    },
-    backend: {
-      passwordHash: process.env.BACKEND_PASSWORD_HASH || '',
-    },
-    frontend: {
-      url: process.env.FRONTEND_URL || 'http://localhost:3000',
-    },
-    nodeEnv: (process.env.NODE_ENV || 'development') as EnvConfig['nodeEnv'],
-  };
 }
 
 export default envConfig;
