@@ -120,8 +120,7 @@ export const AppDataSource = new DataSource({
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || envConfig.database.ssl) {
         // Supabase uses self-signed certificates, so we need to accept them
         return { 
-          rejectUnauthorized: false,
-          require: true
+          rejectUnauthorized: false
         };
       }
       
@@ -143,8 +142,7 @@ export const AppDataSource = new DataSource({
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || process.env.DB_SSL === 'true') {
         // Supabase uses self-signed certificates, so we need to accept them
         return { 
-          rejectUnauthorized: false,
-          require: true
+          rejectUnauthorized: false
         };
       }
       
