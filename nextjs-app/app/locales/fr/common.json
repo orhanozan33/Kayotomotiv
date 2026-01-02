@@ -616,7 +616,8 @@
     "errors": {
       "updating": "Erreur lors de la mise à jour du statut",
       "deleting": "Erreur lors de la suppression de la réservation",
-      "loading": "Erreur lors du chargement des réservations"
+      "loading": "Erreur lors du chargement des données",
+      "cannotUpdateSynthetic": "Impossible de mettre à jour le statut pour les réservations synthétiques."
     }
   },
   "adminMessages": {
@@ -969,7 +970,8 @@
     "tax": "Taxe",
     "subtotal": "Sous-total",
     "total": "Total",
-    "price": "Prix"
+    "price": "Prix",
+    "popupBlocked": "Popup bloqué. Veuillez désactiver le bloqueur de fenêtres pop-up."
   }
 }
 

@@ -543,7 +543,8 @@
     "errors": {
       "updating": "Error updating status",
       "deleting": "Error deleting reservation",
-      "loading": "Error loading reservations"
+      "loading": "Error loading data",
+      "cannotUpdateSynthetic": "Cannot update status for synthetic reservations."
     }
   },
   "repairServices": {
@@ -843,7 +844,8 @@
     "tax": "Tax",
     "subtotal": "Subtotal",
     "total": "Total",
-    "price": "Price"
+    "price": "Price",
+    "popupBlocked": "Popup blocked. Please disable popup blocker."
   },
   "settings": {
     "title": "Settings",

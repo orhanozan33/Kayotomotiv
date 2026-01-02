@@ -409,7 +409,8 @@
     "errors": {
       "updating": "Durum güncellenirken hata oluştu",
       "deleting": "Rezervasyon silinirken hata oluştu",
-      "loading": "Rezervasyonlar yüklenirken hata oluştu"
+      "loading": "Veri yüklenirken hata oluştu",
+      "cannotUpdateSynthetic": "Sentetik rezervasyonlar için durum güncellemesi yapılamaz."
     }
   },
   "repairServices": {
@@ -715,7 +716,8 @@
     "tax": "Vergi",
     "subtotal": "Ara Toplam",
     "total": "Toplam",
-    "price": "Fiyat"
+    "price": "Fiyat",
+    "popupBlocked": "Popup engellendi. Lütfen popup blocker'ı kapatın."
   },
   "autoBodyShop": {
     "title": "Oto Kaporta Hizmetleri",

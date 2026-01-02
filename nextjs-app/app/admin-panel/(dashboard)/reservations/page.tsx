@@ -288,7 +288,7 @@ export default function ReservationsPage() {
       setCarWashAppointments(carWashWithImages);
     } catch (error: any) {
       console.error('Error loading data:', error);
-      showError('Veri yüklenirken hata oluştu: ' + (error.response?.data?.error || error.message));
+      showError((t('reservations.errors.loading') || 'Veri yüklenirken hata oluştu') + ': ' + (error.response?.data?.error || error.message));
       setReservations([]);
       setTestDrives([]);
       setRepairQuotes([]);
@@ -306,7 +306,7 @@ export default function ReservationsPage() {
     try {
       const isSynthetic = id && id.toString().startsWith('vehicle-');
       if (isSynthetic) {
-        showError('Sentetik rezervasyonlar için durum güncellemesi yapılamaz.');
+        showError(t('reservations.errors.cannotUpdateSynthetic') || 'Sentetik rezervasyonlar için durum güncellemesi yapılamaz.');
         return;
       }
       await adminReservationsAPI.updateStatus(String(id), status);
@@ -1062,7 +1062,7 @@ export default function ReservationsPage() {
           printWindow.close();
         }
       } else {
-        showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+        showError(t('common.popupBlocked') || 'Popup engellendi. Lütfen popup blocker\'ı kapatın.');
       }
     } catch (error: unknown) {
       console.error('Error printing receipt:', error);
