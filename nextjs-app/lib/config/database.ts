@@ -61,13 +61,18 @@ if (isBuildTime && missingDb.length > 0) {
 // Also check for pgbouncer mode (connection pooler)
 const hasSslModeInUrl = connectionString?.includes('sslmode=require');
 const hasPgBouncer = connectionString?.includes('pgbouncer=true');
+const isSupabase = connectionString?.includes('supabase.co') || connectionString?.includes('supabase.in');
 
 // Determine if SSL should be enabled
-const isLocalhost = !connectionString && dbHost && (dbHost === 'localhost' || dbHost === '127.0.0.1');
-// For localhost, disable SSL. For production, always enable SSL. Otherwise use DB_SSL setting.
+// Check if it's localhost (either in connectionString or dbHost)
+const isLocalhost = connectionString 
+  ? (connectionString.includes('localhost') || connectionString.includes('127.0.0.1'))
+  : (dbHost && (dbHost === 'localhost' || dbHost === '127.0.0.1'));
+
+// For localhost, disable SSL. For Supabase/production, always enable SSL. Otherwise use DB_SSL setting.
 const sslEnabled = isLocalhost 
   ? false 
-  : (hasSslModeInUrl || hasPgBouncer || isProduction ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
+  : (hasSslModeInUrl || hasPgBouncer || isSupabase || isProduction ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
 // Create pool config - use minimal config during build time if env vars are missing
 const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
@@ -96,6 +101,8 @@ const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
       // Avoid noisy prepared statement issues when using pgBouncer/poolers.
       statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
       query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
+      // SSL configuration: For Supabase and production, always use SSL with rejectUnauthorized: false
+      // This allows self-signed certificates from Supabase
       ssl: sslEnabled ? { 
         rejectUnauthorized: false
       } : false,
@@ -110,7 +117,11 @@ console.log('🔍 Database Connection Config:', {
   database: connectionString ? '[from DATABASE_URL]' : poolConfig.database,
   user: connectionString ? '[from DATABASE_URL]' : poolConfig.user,
   password: dbPassword ? '[SET]' : '[NOT SET]',
-  ssl: poolConfig.ssl ? 'Enabled' : 'Disabled',
+  ssl: poolConfig.ssl ? (typeof poolConfig.ssl === 'object' ? `Enabled (rejectUnauthorized: ${poolConfig.ssl.rejectUnauthorized})` : 'Enabled') : 'Disabled',
+  isSupabase,
+  isLocalhost,
+  hasSslModeInUrl,
+  hasPgBouncer,
   poolMax: poolConfig.max,
   isProduction,
   isVercel: Boolean(process.env.VERCEL),
