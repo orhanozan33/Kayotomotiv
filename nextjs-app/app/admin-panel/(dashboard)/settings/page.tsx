@@ -802,7 +802,17 @@ export default function SettingsPage() {
       {showSocialMediaModal && (
         <div className={styles.modal} onClick={() => setShowSocialMediaModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2>{t('settings.socialMediaLinks')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{t('settings.socialMediaLinks')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowSocialMediaModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <div className={styles.formGroup}>
               <label>{t('settings.phone')}</label>
               <input
@@ -851,7 +861,17 @@ export default function SettingsPage() {
       {showCompanyModal && (
         <div className={styles.modal} onClick={() => setShowCompanyModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2>{t('settings.companyInfoForReceipt')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{t('settings.companyInfoForReceipt')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowCompanyModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <div className={styles.formGroup}>
               <label>{t('settings.companyName')}</label>
               <input
@@ -949,7 +969,17 @@ export default function SettingsPage() {
       {showTaxModal && (
         <div className={styles.modal} onClick={() => setShowTaxModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2>{t('settings.taxSettingsCanada')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{t('settings.taxSettingsCanada')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowTaxModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <div className={styles.formGroup}>
               <label>{t('settings.federalTax')}</label>
               <input
@@ -991,7 +1021,17 @@ export default function SettingsPage() {
       {showContactLocationsModal && (
         <div className={styles.modal} onClick={() => setShowContactLocationsModal(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2>{t('settings.contactInfoBranches')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{t('settings.contactInfoBranches')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowContactLocationsModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             {contactLocations.map((location, index) => (
               <div key={index} className={styles.locationSection}>
                 <h3>{t('settings.branch')} {index + 1}</h3>
@@ -1061,7 +1101,17 @@ export default function SettingsPage() {
       {showUserForm && (
         <div className={styles.modal} onClick={() => setShowUserForm(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <h2>{editingUser ? t('settings.editUser') : t('settings.addUser')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{editingUser ? t('settings.editUser') : t('settings.addUser')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowUserForm(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <form onSubmit={handleSubmit}>
               <input
                 name="email"
@@ -1210,7 +1260,17 @@ export default function SettingsPage() {
       {showPermissionsModal && selectedUser && (
         <div className={styles.modal} onClick={() => setShowPermissionsModal(false)}>
           <div className={`${styles.modalContent} ${styles.largeModal}`} onClick={(e) => e.stopPropagation()}>
-            <h2>{selectedUser.email} - {t('settings.permissionsSettings')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{selectedUser.email} - {t('settings.permissionsSettings')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowPermissionsModal(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <div className={styles.permissionsContainer}>
               {AVAILABLE_PAGES.map((page, idx) => {
                 const perm = permissions[idx] || {

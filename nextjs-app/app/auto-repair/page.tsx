@@ -243,7 +243,29 @@ function AutoRepairPage() {
         {showQuoteForm && (
           <div className={styles.modal}>
             <div className={styles.modalContent}>
-              <h2>{t('autoRepair.quoteForm.title') || 'Fiyat Teklifi Al'}</h2>
+              <div className={styles.modalHeader}>
+                <h2>{t('autoRepair.quoteForm.title') || 'Fiyat Teklifi Al'}</h2>
+                <button
+                  type="button"
+                  className={styles.modalClose}
+                  onClick={() => {
+                    setShowQuoteForm(false);
+                    setSelectedServices([]);
+                    setFormData({
+                      vehicle_brand: '',
+                      vehicle_model: '',
+                      vehicle_year: '',
+                      customer_name: '',
+                      customer_email: '',
+                      customer_phone: '',
+                    });
+                    setAvailableModels([]);
+                  }}
+                  aria-label="Close"
+                >
+                  ×
+                </button>
+              </div>
               <form onSubmit={handleQuoteSubmit}>
                 <div className={styles.formSection}>
                   <h3>{t('autoRepair.quoteForm.vehicleInfo') || 'Araç Bilgileri'}</h3>

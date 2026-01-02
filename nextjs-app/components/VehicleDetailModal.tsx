@@ -347,7 +347,17 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
       {showReservationForm && (
         <div className={styles.modal}>
           <div className={styles.modalContent}>
-            <h2>{String(t('autoSales.forms.reservation.title') || '')}</h2>
+            <div className={styles.modalHeader}>
+              <h2>{String(t('autoSales.forms.reservation.title') || '')}</h2>
+              <button
+                type="button"
+                className={styles.modalClose}
+                onClick={() => setShowReservationForm(false)}
+                aria-label="Close"
+              >
+                ×
+              </button>
+            </div>
             <form onSubmit={handleReservationSubmit}>
               <input
                 type="text"
