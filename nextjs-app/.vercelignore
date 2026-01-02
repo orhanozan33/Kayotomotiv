@@ -10,4 +10,4 @@ node_modules
 scripts
 backup.ps1
 *.zip
-
+.vercel
