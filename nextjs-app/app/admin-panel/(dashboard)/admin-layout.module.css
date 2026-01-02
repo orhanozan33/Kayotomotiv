@@ -103,26 +103,26 @@
   padding: 2rem;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 100vh;
+  min-height: 100vh;
   width: calc(100% - 250px);
   max-width: none;
   box-sizing: border-box;
 }
 
 .adminContent::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 .adminContent::-webkit-scrollbar-track {
   background: #f1f1f1;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 .adminContent::-webkit-scrollbar-thumb {
   background: #888;
-  border-radius: 4px;
-  min-height: 30px; /* Minimum height for scrollbar thumb - 40% shorter than default */
+  border-radius: 3px;
+  min-height: 20px; /* Shorter scrollbar thumb */
 }
 
 .adminContent::-webkit-scrollbar-thumb:hover {
