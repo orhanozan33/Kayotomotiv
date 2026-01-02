@@ -5,6 +5,10 @@ import fs from 'fs/promises';
 import path from 'path';
 import Joi from 'joi';
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const fileWriteSchema = Joi.object({

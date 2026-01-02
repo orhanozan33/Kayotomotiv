@@ -33,22 +33,38 @@ function getEnvConfig() {
     // Lazy import to avoid circular dependency and allow graceful failure
     const envConfig = require('./env').default;
     return envConfig;
-  } catch (error) {
-    // In development, return a minimal config
-    if (process.env.NODE_ENV === 'development') {
-      const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
+  } catch (error: any) {
+    // Check if we're in build time (Next.js build process)
+    const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                        process.env.NEXT_PHASE === 'phase-development-build' ||
+                        (!process.env.VERCEL && process.env.NODE_ENV === 'production');
+    
+    // In build time or development, return a minimal config
+    if (isBuildTime || process.env.NODE_ENV === 'development') {
+      const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
       return {
         database: {
           url: databaseUrl,
-          host: process.env.DB_HOST,
-          port: process.env.DB_PORT ? Number(process.env.DB_PORT) : undefined,
-          name: process.env.DB_NAME,
-          user: process.env.DB_USER,
-          password: process.env.DB_PASSWORD ? String(process.env.DB_PASSWORD) : '',
+          host: process.env.DB_HOST?.trim(),
+          port: process.env.DB_PORT ? Number(process.env.DB_PORT.trim()) : undefined,
+          name: process.env.DB_NAME?.trim(),
+          user: process.env.DB_USER?.trim(),
+          password: process.env.DB_PASSWORD ? String(process.env.DB_PASSWORD.trim()) : '',
           ssl: process.env.DB_SSL !== 'false',
         },
+        jwt: {
+          secret: process.env.JWT_SECRET || 'dev-secret-key-change-in-production-min-32-chars',
+        },
+        backend: {
+          passwordHash: process.env.BACKEND_PASSWORD_HASH || '',
+        },
+        frontend: {
+          url: process.env.FRONTEND_URL || 'http://localhost:3000',
+        },
+        nodeEnv: (process.env.NODE_ENV || 'development') as 'development' | 'production' | 'test',
       };
     }
+    // Only throw in production runtime (not build time)
     throw error;
   }
 }
