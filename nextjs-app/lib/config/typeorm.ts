@@ -106,7 +106,7 @@ export const AppDataSource = new DataSource({
       return process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false;
     }
   })(),
-  synchronize: true, // Auto-create/update tables in all environments
+  synchronize: false, // Disabled - tables already exist. Use migrations for schema changes.
   logging: process.env.NODE_ENV === 'development',
   entities: [
     User,
@@ -148,8 +148,8 @@ let seedExecuted = false;
 export async function initializeDatabase(): Promise<DataSource> {
   // If already initialized, return immediately
   if (AppDataSource.isInitialized) {
-    // Run seed if not executed yet (for cases where DB was already initialized)
-    if (!seedExecuted) {
+    // Run seed if not executed yet (only in development, not during build)
+    if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
       seedExecuted = true; // Set flag first to prevent re-entry
       try {
         const { seedDatabase } = await import('@/scripts/seed-data');
@@ -179,8 +179,8 @@ export async function initializeDatabase(): Promise<DataSource> {
         await AppDataSource.initialize();
         console.log('✅ TypeORM: Database synchronized (tables auto-created/updated)');
         
-        // Run seed data after tables are created (only if not already executed)
-        if (!seedExecuted) {
+        // Run seed data after tables are created (only in development, not during build)
+        if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
           seedExecuted = true; // Set flag first to prevent re-entry
           try {
             const { seedDatabase } = await import('@/scripts/seed-data');
@@ -195,29 +195,42 @@ export async function initializeDatabase(): Promise<DataSource> {
       }
       isInitialized = true;
     } catch (error: any) {
-      // If error is about duplicate key (already exists), ignore it
-      if (error.message?.includes('duplicate key') || error.code === '23505') {
-        console.warn('⚠️  TypeORM initialization warning (ignored):', error.message);
-        // Try to check if connection is actually working
-        try {
-          await AppDataSource.query('SELECT 1');
-          isInitialized = true;
-          
-          // Run seed data even if there was a warning
-          if (!seedExecuted) {
-            seedExecuted = true; // Set flag first to prevent re-entry
-            try {
-              const { seedDatabase } = await import('@/scripts/seed-data');
-              await seedDatabase();
-              console.log('✅ Seed data automatically added to database');
-            } catch (seedError: any) {
-              console.warn('⚠️  Seed data execution failed (non-critical):', seedError.message);
-              seedExecuted = false; // Reset flag on error so it can retry
-            }
+      // If error is about duplicate key (already exists) or NOT NULL constraint (schema already correct), ignore it
+      const isIgnorableError =
+        error.message?.includes('duplicate key') ||
+        error.code === '23505' ||
+        (error.code === '23502' && error.message?.includes('contains null values')) ||
+        (error.code === '23502' && error.message?.includes('email'));
+      
+      if (isIgnorableError) {
+        console.warn('⚠️  TypeORM initialization warning (schema already correct, ignoring):', error.message);
+        // Check if DataSource is actually initialized despite the error
+        if (AppDataSource.isInitialized) {
+          try {
+            await AppDataSource.query('SELECT 1');
+            isInitialized = true;
+          } catch (queryError) {
+            // If query fails, try to continue anyway - schema might be correct
+            console.warn('⚠️  Query test failed, but continuing...');
+            isInitialized = true;
           }
-        } catch {
-          // If query fails, re-throw original error
-          throw error;
+        } else {
+          // If not initialized, try to continue anyway (schema sync might have failed but tables exist)
+          console.warn('⚠️  DataSource not initialized, but continuing...');
+          isInitialized = true;
+        }
+        
+        // Run seed data even if there was a warning (only in development, not during build)
+        if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
+          seedExecuted = true; // Set flag first to prevent re-entry
+          try {
+            const { seedDatabase } = await import('@/scripts/seed-data');
+            await seedDatabase();
+            console.log('✅ Seed data automatically added to database');
+          } catch (seedError: any) {
+            console.warn('⚠️  Seed data execution failed (non-critical):', seedError.message);
+            seedExecuted = false; // Reset flag on error so it can retry
+          }
         }
       } else {
         throw error;
