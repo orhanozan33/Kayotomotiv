@@ -29,7 +29,7 @@
 .sidebar::-webkit-scrollbar-thumb {
   background: #555;
   border-radius: 2px;
-  min-height: 20px; /* Minimum height for scrollbar thumb - shorter */
+  min-height: 12px; /* Minimum height for scrollbar thumb - 40% shorter (20px * 0.6 = 12px) */
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
@@ -122,6 +122,7 @@
 .adminContent::-webkit-scrollbar-thumb {
   background: #888;
   border-radius: 4px;
+  min-height: 30px; /* Minimum height for scrollbar thumb - 40% shorter than default */
 }
 
 .adminContent::-webkit-scrollbar-thumb:hover {
