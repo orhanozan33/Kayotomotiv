@@ -96,7 +96,10 @@ const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
       // Avoid noisy prepared statement issues when using pgBouncer/poolers.
       statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
       query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
-      ssl: sslEnabled ? { rejectUnauthorized: false } : false,
+      ssl: sslEnabled ? { 
+        rejectUnauthorized: false,
+        require: true
+      } : false,
       keepAlive: true,
     };
 

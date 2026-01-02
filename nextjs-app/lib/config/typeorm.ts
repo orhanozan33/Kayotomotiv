@@ -118,7 +118,11 @@ export const AppDataSource = new DataSource({
       
       // For Supabase or connection strings with sslmode=require, always enable SSL
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || envConfig.database.ssl) {
-        return { rejectUnauthorized: false };
+        // Supabase uses self-signed certificates, so we need to accept them
+        return { 
+          rejectUnauthorized: false,
+          require: true
+        };
       }
       
       return false;
@@ -137,7 +141,11 @@ export const AppDataSource = new DataSource({
       
       // For Supabase, always enable SSL
       if (isSupabase || hasSslModeInUrl || hasPgBouncer || process.env.DB_SSL === 'true') {
-        return { rejectUnauthorized: false };
+        // Supabase uses self-signed certificates, so we need to accept them
+        return { 
+          rejectUnauthorized: false,
+          require: true
+        };
       }
       
       return false;
