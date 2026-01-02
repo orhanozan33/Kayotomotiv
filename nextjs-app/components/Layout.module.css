@@ -551,4 +551,19 @@
     align-items: center;
     gap: 1rem;
   }
+
+  .copyright {
+    position: static;
+    transform: none;
+    order: 2;
+    width: 100%;
+    text-align: center;
+  }
+
+  .socialLinks {
+    order: 1;
+    justify-content: center;
+    margin-left: 0;
+    margin-bottom: 0.5rem;
+  }
 }
