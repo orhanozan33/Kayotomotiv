@@ -72,6 +72,19 @@ function getEnvConfig() {
 // Get database URL - DIRECT from env, bypass env.ts validation
 const databaseUrl = (process.env.DATABASE_URL || process.env.POSTGRES_URL)?.trim();
 
+// Debug: Vercel'de connection string'i logla (password hariç)
+if (process.env.VERCEL && databaseUrl) {
+  const maskedUrl = databaseUrl.replace(/:([^:@]+)@/, ':***@'); // Password'ü maskele
+  console.log('🔍 Vercel DATABASE_URL:', {
+    hasUrl: Boolean(databaseUrl),
+    urlLength: databaseUrl.length,
+    urlPreview: maskedUrl.substring(0, 80) + '...',
+    isSupabase: databaseUrl.includes('supabase'),
+    hasSslMode: databaseUrl.includes('sslmode'),
+    hasPgBouncer: databaseUrl.includes('pgbouncer'),
+  });
+}
+
 // Check if localhost (disable SSL for localhost only)
 const isLocalhost = databaseUrl ? (
   databaseUrl.includes('localhost') || 
@@ -121,7 +134,12 @@ export const AppDataSource = new DataSource({
   extra: {
     max: isProduction ? 1 : 20,
     idleTimeoutMillis: isProduction ? 10000 : 30000,
-    connectionTimeoutMillis: 15000,
+    connectionTimeoutMillis: isProduction ? 30000 : 15000, // Vercel için daha uzun timeout
+    // Vercel serverless için optimize edilmiş ayarlar
+    ...(isProduction ? {
+      statement_timeout: 0,
+      query_timeout: 0,
+    } : {}),
   },
 });
 

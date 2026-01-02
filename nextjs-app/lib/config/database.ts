@@ -92,7 +92,7 @@ const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
       // In production environments, keep pool size small to avoid exhausting DB connections.
       max: isProduction ? Number(process.env.DB_POOL_MAX || 1) : Number(process.env.DB_POOL_MAX || 20),
       idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || (isProduction ? 10000 : 30000)),
-      connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT_MS || 15000),
+      connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT_MS || (isProduction ? 30000 : 15000)), // Vercel için daha uzun timeout
       // Avoid noisy prepared statement issues when using pgBouncer/poolers.
       statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
       query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
@@ -113,7 +113,11 @@ console.log('🔍 Database Connection Config:', {
   ssl: poolConfig.ssl ? 'Enabled' : 'Disabled',
   poolMax: poolConfig.max,
   isProduction,
+  isVercel: Boolean(process.env.VERCEL),
+  connectionTimeout: poolConfig.connectionTimeoutMillis,
   dns: 'ipv4first',
+  // Connection string'in ilk 50 karakterini göster (password hariç)
+  connectionStringPreview: connectionString ? connectionString.substring(0, 50) + '...' : 'N/A',
 });
 
 const pool = new Pool(poolConfig);
