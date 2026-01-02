@@ -37,31 +37,32 @@
 }
 
 .sidebarHeader {
-  padding: 1rem;
+  padding: 0.7rem;
   border-bottom: 1px solid #333;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .sidebarHeader h2 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 0.875rem; /* 1.25rem * 0.7 = 0.875rem (30% smaller) */
   color: white;
 }
 
 .sidebarNav {
   flex: 1;
-  padding: 1rem 0;
+  padding: 0.7rem 0;
 }
 
 .sidebarNav a {
   display: block;
-  padding: 1rem 2rem;
+  padding: 0.7rem 1.4rem; /* 1rem * 0.7 = 0.7rem, 2rem * 0.7 = 1.4rem (30% smaller) */
   color: white;
   text-decoration: none;
   transition: background 0.3s;
+  font-size: 0.875rem; /* Default font size reduced by 30% */
 }
 
 .sidebarNav a:hover,
@@ -70,7 +71,7 @@
 }
 
 .sidebarFooter {
-  padding: 1rem;
+  padding: 0.7rem;
   border-top: 1px solid #333;
   margin-top: auto;
   position: sticky;
@@ -81,13 +82,13 @@
 
 .logoutBtn {
   flex: 1;
-  padding: 0.75rem;
+  padding: 0.525rem; /* 0.75rem * 0.7 = 0.525rem (30% smaller) */
   background: #d32f2f;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.875rem; /* 1rem * 0.7 = 0.875rem (30% smaller) */
   font-weight: 600;
   transition: background 0.3s;
   white-space: nowrap;
