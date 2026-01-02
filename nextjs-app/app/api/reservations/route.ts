@@ -61,6 +61,28 @@ export async function POST(request: NextRequest) {
         throw new Error('Table vehicle_reservations does not exist. Please run database migrations.');
       }
       console.log('✅ Table vehicle_reservations exists');
+      
+      // Check if required columns exist
+      const columnsCheck = await pool.query(`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+        AND table_name = 'vehicle_reservations'
+        AND column_name IN ('customer_name', 'customer_email', 'customer_phone', 'preferred_date', 'preferred_time', 'message', 'user_id');
+      `);
+      
+      const existingColumns = columnsCheck.rows.map((row: any) => row.column_name);
+      const requiredColumns = ['customer_name', 'customer_email', 'customer_phone', 'preferred_date', 'preferred_time', 'message', 'user_id'];
+      const missingColumns = requiredColumns.filter(col => !existingColumns.includes(col));
+      
+      if (missingColumns.length > 0) {
+        console.error('❌ Missing columns in vehicle_reservations table:', missingColumns);
+        throw new Error(
+          `Table vehicle_reservations is missing required columns: ${missingColumns.join(', ')}. ` +
+          `Please run the SQL script from fix-vehicle-reservations-table.sql in Supabase SQL Editor.`
+        );
+      }
+      console.log('✅ All required columns exist in vehicle_reservations table');
     } catch (testError: any) {
       console.error('❌ Database connection/table check failed:', {
         message: testError.message,
