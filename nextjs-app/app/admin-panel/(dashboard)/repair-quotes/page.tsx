@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useError } from '@/contexts/ErrorContext';
 import { adminRepairAPI as repairAPI, adminCarWashAPI as carWashAPI, adminSettingsAPI as settingsAPI, adminReceiptsAPI as receiptsAPI } from '@/lib/services/adminApi';
@@ -72,6 +72,7 @@ export default function RepairQuotesPage() {
   const [federalTaxRate, setFederalTaxRate] = useState(0);
   const [provincialTaxRate, setProvincialTaxRate] = useState(0);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, quoteId: null as string | null });
+  const [showServiceForm, setShowServiceForm] = useState(false);
   
   const [formData, setFormData] = useState({
     vehicle_brand: '',
@@ -155,12 +156,8 @@ export default function RepairQuotesPage() {
     }
   }, []);
 
-  useEffect(() => {
-    loadCarWashServices();
-    loadTaxRate();
-  }, [loadCarWashServices]);
 
-  const loadTaxRate = async () => {
+  const loadTaxRate = useCallback(async () => {
     try {
       const response = await settingsAPI.getSettings();
       if (response.data?.settings) {
@@ -172,7 +169,12 @@ export default function RepairQuotesPage() {
     } catch (error) {
       console.error('Error loading tax rate:', error);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadCarWashServices();
+    loadTaxRate();
+  }, [loadCarWashServices, loadTaxRate]);
 
   useEffect(() => {
     const delay = searchTerm ? 500 : 0;
@@ -187,30 +189,30 @@ export default function RepairQuotesPage() {
     loadRevenueStats();
   }, [loadRevenueStats]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     if (name === 'vehicle_brand') {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         vehicle_brand: value,
         vehicle_model: ''
-      });
+      }));
       setAvailableModels(value ? (carBrandsAndModels[value] || []) : []);
     } else {
-      setFormData({
-        ...formData,
+      setFormData(prev => ({
+        ...prev,
         [name]: value
-      });
+      }));
     }
-  };
+  }, []);
 
-  const calculatePriceWithTax = (basePrice: number) => {
+  const calculatePriceWithTax = useCallback((basePrice: number) => {
     const price = parseFloat(String(basePrice));
     if (isNaN(price) || taxRate === 0) return price;
     return price * (1 + taxRate / 100);
-  };
+  }, [taxRate]);
 
-  const handleAddService = (service: Package | Addon, type: 'package' | 'addon') => {
+  const handleAddService = useCallback((service: Package | Addon, type: 'package' | 'addon') => {
     const basePrice = type === 'package' ? (service as Package).base_price : (service as Addon).price;
     const serviceItem: ServiceItem = {
       id: service.id,
@@ -219,52 +221,55 @@ export default function RepairQuotesPage() {
       price: basePrice,
       priceWithTax: calculatePriceWithTax(basePrice)
     };
-    setSelectedServices([...selectedServices, serviceItem]);
-  };
+    setSelectedServices(prev => [...prev, serviceItem]);
+  }, [calculatePriceWithTax]);
 
-  const handleRemoveService = (index: number) => {
-    setSelectedServices(selectedServices.filter((_, i) => i !== index));
-  };
+  const handleRemoveService = useCallback((index: number) => {
+    setSelectedServices(prev => prev.filter((_, i) => i !== index));
+  }, []);
 
-  const calculateSubtotal = () => {
+  const calculateSubtotal = useMemo(() => {
     return selectedServices.reduce((sum, service) => sum + parseFloat(String(service.price || 0)), 0);
-  };
+  }, [selectedServices]);
 
-  const calculateTaxAmount = () => {
-    return calculateTotal() - calculateSubtotal();
-  };
-
-  const calculateTotal = () => {
+  const calculateTotal = useMemo(() => {
     return selectedServices.reduce((sum, service) => {
       const itemPrice = parseFloat(String(service.price || 0));
       const itemTotal = calculatePriceWithTax(itemPrice);
       return sum + itemTotal;
     }, 0);
-  };
+  }, [selectedServices, calculatePriceWithTax]);
+
+  const calculateTaxAmount = useMemo(() => {
+    return calculateTotal - calculateSubtotal;
+  }, [calculateTotal, calculateSubtotal]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       if (selectedServices.length === 0) {
-        showError(t('repairQuotes.form.selectAtLeastOneService') || 'Lütfen en az bir hizmet seçin!');
+        showError(t('repairQuotes.form.selectAtLeastOneService'));
         return;
       }
 
+      // Map services to match API schema (id, type, name, price only)
       const servicesWithTax = selectedServices.map(service => ({
-        ...service,
+        id: service.id,
+        type: service.type,
+        name: service.name,
         price: calculatePriceWithTax(service.price)
       }));
 
       const vehicleData = {
         vehicle_brand: formData.vehicle_brand.trim(),
         vehicle_model: formData.vehicle_model.trim(),
-        license_plate: formData.license_plate.trim(),
+        license_plate: formData.license_plate.trim() || null,
         selected_services: servicesWithTax,
-        total_price: calculateTotal()
+        total_price: calculateTotal
       };
 
       await repairAPI.createVehicleRecord(vehicleData);
-      showSuccess(t('repairQuotes.createdSuccessfully') || 'Araç başarıyla eklendi!');
+      showSuccess(t('repairQuotes.createdSuccessfully'));
       setShowModal(false);
       setFormData({
         vehicle_brand: '',
@@ -275,9 +280,10 @@ export default function RepairQuotesPage() {
       setSelectedServices([]);
       loadData();
       loadRevenueStats();
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.error || error.message;
-      showError(t('repairQuotes.errors.creating') || 'Araç eklenirken hata oluştu: ' + errorMessage);
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      const errorMessage = err.response?.data?.error || err.message || 'Unknown error';
+      showError(t('repairQuotes.errors.creating') + ': ' + errorMessage);
     }
   };
 
@@ -297,6 +303,7 @@ export default function RepairQuotesPage() {
   const handleRowClick = (quote: Quote) => {
     setSelectedQuote(quote);
     setShowDetailModal(true);
+    setShowServiceForm(false);
   };
 
   const handleDeleteRecord = (quoteId: string, e: React.MouseEvent) => {
@@ -307,13 +314,14 @@ export default function RepairQuotesPage() {
   const confirmDeleteRecord = async () => {
     if (!deleteModal.quoteId) return;
     try {
-      await repairAPI.deleteQuote(deleteModal.quoteId);
-      showSuccess(t('repairQuotes.deletedSuccessfully') || 'Kayıt başarıyla silindi!');
+      await repairAPI.deleteVehicleRecord(deleteModal.quoteId);
+      showSuccess(t('repairQuotes.deletedSuccessfully'));
       setDeleteModal({ isOpen: false, quoteId: null });
       loadData();
       loadRevenueStats();
-    } catch (error: any) {
-      showError(error.response?.data?.error || 'Kayıt silinirken hata oluştu');
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } } };
+      showError(err.response?.data?.error || t('repairQuotes.errors.deletingService'));
     }
   };
 
@@ -339,9 +347,45 @@ export default function RepairQuotesPage() {
       });
       
       await loadData();
-      showSuccess(t('repairQuotes.serviceDeleted') || 'Hizmet silindi!');
-    } catch (error: any) {
-      showError(t('repairQuotes.errors.deletingService') || 'Hizmet silinirken hata oluştu: ' + (error.response?.data?.error || error.message));
+      showSuccess(t('repairQuotes.serviceDeleted'));
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError(t('repairQuotes.errors.deletingService') + ': ' + (err.response?.data?.error || err.message || 'Unknown error'));
+    }
+  };
+
+  const handleAddServiceToQuote = async (service: any) => {
+    if (!selectedQuote) return;
+    
+    try {
+      const services = selectedQuote.parsed_services || [];
+      const priceWithTax = calculatePriceWithTax(service.base_price || service.price || 0);
+      const newService = {
+        name: service.name,
+        price: priceWithTax
+      };
+      const updatedServices = [...services, newService];
+      const newTotal = updatedServices.reduce((sum, s) => sum + parseFloat(String(s.price || 0)), 0);
+      
+      const notesData = {
+        license_plate: selectedQuote.license_plate || '',
+        services: updatedServices
+      };
+      
+      await repairAPI.updateQuoteStatus(selectedQuote.id, 'completed', JSON.stringify(notesData), newTotal);
+      
+      setSelectedQuote({
+        ...selectedQuote,
+        parsed_services: updatedServices,
+        total_price: newTotal
+      });
+      
+      await loadData();
+      setShowServiceForm(false);
+      showSuccess(t('repairQuotes.serviceAdded'));
+    } catch (error: unknown) {
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError(t('repairQuotes.errors.addingService') + ': ' + (err.response?.data?.error || err.message || 'Unknown error'));
     }
   };
 
@@ -358,24 +402,48 @@ export default function RepairQuotesPage() {
       }
 
       const services = selectedQuote.parsed_services || [];
-      const servicesList = services.map(s => `${s.name} - $${parseFloat(String(s.price || 0)).toFixed(2)}`).join(', ');
 
       const effectiveFederalRate = federalTaxRate > 0 ? federalTaxRate : (taxRate / 2);
       const effectiveProvincialRate = provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2);
       const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
       
       const totalPrice = parseFloat(String(selectedQuote.total_price || 0));
-      let basePrice = totalPrice;
+      
+      // Calculate base prices for each service (tax excluded)
+      let servicesSubtotal = 0;
+      const servicesWithBasePrice = services.map((s: any) => {
+        const servicePrice = parseFloat(String(s.price || 0));
+        let baseServicePrice = servicePrice;
+        
+        // If tax rate > 0, service price is likely tax-inclusive, so extract base price
+        if (totalTaxRate > 0) {
+          baseServicePrice = servicePrice / (1 + totalTaxRate / 100);
+        }
+        
+        servicesSubtotal += baseServicePrice;
+        return {
+          ...s,
+          basePrice: baseServicePrice,
+          taxIncludedPrice: servicePrice
+        };
+      });
+      
+      // Calculate base price (subtotal) - sum of all service base prices
+      const basePrice = servicesSubtotal > 0 ? servicesSubtotal : (totalTaxRate > 0 ? totalPrice / (1 + totalTaxRate / 100) : totalPrice);
+      
+      // Calculate taxes from base price (subtotal)
       let federalTaxAmount = 0;
       let provincialTaxAmount = 0;
-      let totalTaxAmount = 0;
+      let calculatedTotal = basePrice;
       
-      if (totalTaxRate > 0) {
-        basePrice = totalPrice / (1 + totalTaxRate / 100);
-        totalTaxAmount = totalPrice - basePrice;
+      if (totalTaxRate > 0 && basePrice > 0) {
         federalTaxAmount = basePrice * (effectiveFederalRate / 100);
         provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+        calculatedTotal = basePrice + federalTaxAmount + provincialTaxAmount;
       }
+      
+      // Use calculated total to ensure accuracy
+      const finalTotal = calculatedTotal > 0 ? calculatedTotal : totalPrice;
 
       const receiptHTML = `
 <!DOCTYPE html>
@@ -505,10 +573,10 @@ export default function RepairQuotesPage() {
 
     <div class="section-divider">
       <div class="service-title">SERVICES EFFECTUÉS</div>
-      ${services.map(s => `
+      ${servicesWithBasePrice.map((s: any) => `
       <div class="service-row">
         <span>${s.name}</span>
-        <span>$${parseFloat(String(s.price)).toFixed(2)}</span>
+        <span>$${s.basePrice.toFixed(2)}</span>
       </div>
       `).join('')}
     </div>
@@ -536,7 +604,7 @@ export default function RepairQuotesPage() {
 
     <div class="total-row">
       <span>TOTAL:</span>
-      <span>$${totalPrice.toFixed(2)}</span>
+      <span>$${finalTotal.toFixed(2)}</span>
     </div>
 
     <div class="date-info">
@@ -564,28 +632,28 @@ export default function RepairQuotesPage() {
           }, 1000);
         } catch (error) {
           console.error('Error writing to print window:', error);
-          showError(t('repairQuotes.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu');
+          showError(t('repairQuotes.errors.printingReceipt'));
           printWindow.close();
         }
       } else {
-        showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+        showError(t('repairQuotes.errors.popupBlocked'));
       }
     } catch (error: any) {
       console.error('Error printing receipt:', error);
-      showError(t('repairQuotes.errors.printingReceipt') || 'Makbuz yazdırılırken hata oluştu: ' + (error.response?.data?.error || error.message));
+      showError(t('repairQuotes.errors.printingReceipt') + ': ' + (error.response?.data?.error || error.message || 'Unknown error'));
     }
   };
 
   const currentRevenue = getCurrentRevenue();
 
-  if (loading) return <div className={styles.loading}>{t('common.loading') || 'Loading...'}</div>;
+  if (loading) return <div className={styles.loading}>{t('common.loading')}</div>;
 
   return (
     <div className={styles.repairQuotesPage}>
       <div className={styles.pageHeader}>
-        <h1>{t('repairQuotes.title') || 'Oto Yıkama Kayıt'}</h1>
+        <h1>{t('repairQuotes.title')}</h1>
         <button className={styles.btnAdd} onClick={() => setShowModal(true)}>
-          {t('repairQuotes.addVehicle') || 'Araç Ekle'}
+          {t('repairQuotes.addVehicle')}
         </button>
       </div>
 
@@ -597,25 +665,25 @@ export default function RepairQuotesPage() {
               className={revenuePeriod === 'daily' ? styles.active : ''} 
               onClick={() => setRevenuePeriod('daily')}
             >
-              {t('repairQuotes.revenue.daily') || 'Günlük'}
+              {t('repairQuotes.revenue.daily')}
             </button>
             <button 
               className={revenuePeriod === 'monthly' ? styles.active : ''} 
               onClick={() => setRevenuePeriod('monthly')}
             >
-              {t('repairQuotes.revenue.monthly') || 'Aylık'}
+              {t('repairQuotes.revenue.monthly')}
             </button>
             <button 
               className={revenuePeriod === 'yearly' ? styles.active : ''} 
               onClick={() => setRevenuePeriod('yearly')}
             >
-              {t('repairQuotes.revenue.yearly') || 'Yıllık'}
+              {t('repairQuotes.revenue.yearly')}
             </button>
             <button 
               className={revenuePeriod === 'custom' ? styles.active : ''} 
               onClick={() => setRevenuePeriod('custom')}
             >
-              {t('repairQuotes.revenue.dateRange') || 'Tarih Aralığı'}
+              {t('repairQuotes.revenue.dateRange')}
             </button>
           </div>
           {revenuePeriod === 'custom' && (
@@ -634,22 +702,22 @@ export default function RepairQuotesPage() {
                 className={styles.dateInput}
               />
               <button onClick={handleCustomDateChange} className={styles.btnApply}>
-                {t('repairQuotes.revenue.apply') || 'Uygula'}
+                {t('repairQuotes.revenue.apply')}
               </button>
             </div>
           )}
         </div>
         <div className={styles.revenueStats}>
           <div className={styles.revenueStatCard}>
-            <h3>{t('repairQuotes.revenue.totalRecords') || 'Toplam Kayıt'}</h3>
+            <h3>{t('repairQuotes.revenue.totalRecords')}</h3>
             <p className={styles.statNumber}>{currentRevenue.count}</p>
           </div>
           <div className={styles.revenueStatCard}>
-            <h3>{t('repairQuotes.revenue.totalRevenue') || 'Toplam Gelir'}</h3>
+            <h3>{t('repairQuotes.revenue.totalRevenue')}</h3>
             <p className={styles.statNumber}>${currentRevenue.totalRevenue.toFixed(2)}</p>
           </div>
           <div className={styles.revenueStatCard}>
-            <h3>{t('repairQuotes.revenue.averagePrice') || 'Ortalama Fiyat'}</h3>
+            <h3>{t('repairQuotes.revenue.averagePrice')}</h3>
             <p className={styles.statNumber}>${currentRevenue.avgPrice.toFixed(2)}</p>
           </div>
         </div>
@@ -658,7 +726,7 @@ export default function RepairQuotesPage() {
       <div className={styles.searchContainer}>
         <input
           type="text"
-          placeholder={t('repairQuotes.search') || 'Marka, model veya plaka ile ara...'}
+          placeholder={t('repairQuotes.search')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={styles.searchInput}
@@ -669,19 +737,19 @@ export default function RepairQuotesPage() {
         <table className={styles.dataTable}>
           <thead>
             <tr>
-              <th>{t('repairQuotes.tableHeaders.date') || 'Tarih'}</th>
-              <th>{t('repairQuotes.tableHeaders.brand') || 'Marka'}</th>
-              <th>{t('repairQuotes.tableHeaders.model') || 'Model'}</th>
-              <th>{t('repairQuotes.tableHeaders.licensePlate') || 'Plaka'}</th>
-              <th>{t('repairQuotes.tableHeaders.services') || 'Hizmetler'}</th>
-              <th>{t('repairQuotes.tableHeaders.totalPrice') || 'Toplam'}</th>
+              <th>{t('repairQuotes.tableHeaders.date')}</th>
+              <th>{t('repairQuotes.tableHeaders.brand')}</th>
+              <th>{t('repairQuotes.tableHeaders.model')}</th>
+              <th>{t('repairQuotes.tableHeaders.licensePlate')}</th>
+              <th>{t('repairQuotes.tableHeaders.services')}</th>
+              <th>{t('repairQuotes.tableHeaders.totalPrice')}</th>
             </tr>
           </thead>
           <tbody>
             {quotes.length === 0 ? (
               <tr>
                 <td colSpan={6} className={styles.noDataCell}>
-                  {t('repairQuotes.noData') || 'Kayıt bulunamadı'}
+                  {t('repairQuotes.noData')}
                 </td>
               </tr>
             ) : (
@@ -698,7 +766,7 @@ export default function RepairQuotesPage() {
                       {services.length > 0 ? (
                         <ul className={styles.servicesList}>
                           {services.map((service, idx) => (
-                            <li key={idx}>{service.name} (${service.price})</li>
+                            <li key={idx}>{service.name} (${parseFloat(String(service.price || 0)).toFixed(2)})</li>
                           ))}
                         </ul>
                       ) : '-'}
@@ -709,9 +777,9 @@ export default function RepairQuotesPage() {
                         <button
                           className={styles.btnDelete}
                           onClick={(e) => handleDeleteRecord(quote.id, e)}
-                          title={t('common.delete') || 'Sil'}
+                          title={t('common.delete')}
                         >
-                          {t('common.delete') || 'Sil'}
+                          {t('common.delete')}
                         </button>
                       </div>
                     </td>
@@ -728,7 +796,7 @@ export default function RepairQuotesPage() {
         <div className={styles.modalOverlay} onClick={() => setShowModal(false)}>
           <div className={`${styles.modalContent} ${styles.largeModal}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>{t('repairQuotes.addVehicle') || 'Araç Ekle'}</h2>
+              <h2>{t('repairQuotes.addVehicle')}</h2>
               <button
                 type="button"
                 className={styles.modalClose}
@@ -782,7 +850,7 @@ export default function RepairQuotesPage() {
                       name="license_plate"
                       value={formData.license_plate}
                       onChange={handleInputChange}
-                      placeholder={t('repairQuotes.tableHeaders.licensePlate') || 'Plaka'}
+                      placeholder={t('repairQuotes.tableHeaders.licensePlate')}
                       required
                     />
                   </div>
@@ -790,11 +858,11 @@ export default function RepairQuotesPage() {
               </div>
 
               <div className={styles.formSection}>
-                <h3>{t('repairQuotes.form.carWashServices') || 'Oto Yıkama Hizmetleri'}</h3>
+                <h3>{t('repairQuotes.form.carWashServices')}</h3>
                 
                 {/* Packages */}
                 <div className={styles.servicesGroup}>
-                  <h4>{t('repairQuotes.form.packages') || 'Paketler'}</h4>
+                  <h4>{t('repairQuotes.form.packages')}</h4>
                   <div className={styles.servicesGrid}>
                     {packages.filter(pkg => pkg.is_active).map(pkg => (
                       <div key={pkg.id} className={styles.serviceCard}>
@@ -807,7 +875,7 @@ export default function RepairQuotesPage() {
                           onClick={() => handleAddService(pkg, 'package')}
                           className={styles.btnAddService}
                         >
-                          {t('repairQuotes.form.addToCart') || 'Sepete Ekle'}
+                          {t('repairQuotes.form.addToCart')}
                         </button>
                       </div>
                     ))}
@@ -816,7 +884,7 @@ export default function RepairQuotesPage() {
 
                 {/* Addons */}
                 <div className={styles.servicesGroup}>
-                  <h4>{t('repairQuotes.form.addons') || 'Ekstralar'}</h4>
+                  <h4>{t('repairQuotes.form.addons')}</h4>
                   <div className={styles.servicesGrid}>
                     {addons.filter(addon => addon.is_active).map(addon => (
                       <div key={addon.id} className={styles.serviceCard}>
@@ -829,7 +897,7 @@ export default function RepairQuotesPage() {
                           onClick={() => handleAddService(addon, 'addon')}
                           className={styles.btnAddService}
                         >
-                          {t('repairQuotes.form.addToCart') || 'Sepete Ekle'}
+                          {t('repairQuotes.form.addToCart')}
                         </button>
                       </div>
                     ))}
@@ -839,12 +907,12 @@ export default function RepairQuotesPage() {
                 {/* Selected Services Cart */}
                 {selectedServices.length > 0 && (
                   <div className={styles.selectedServicesSection}>
-                    <h4>{t('repairQuotes.form.selectedServices') || 'Seçilen Hizmetler'}</h4>
+                    <h4>{t('repairQuotes.form.selectedServices')}</h4>
                     <div className={styles.selectedServicesList}>
                       {selectedServices.map((service, idx) => (
                         <div key={idx} className={styles.selectedServiceItem}>
                           <span>{service.name}</span>
-                          <span>${service.price.toFixed(2)}</span>
+                          <span>${parseFloat(String(service.price || 0)).toFixed(2)}</span>
                           <button
                             type="button"
                             onClick={() => handleRemoveService(idx)}
@@ -857,18 +925,18 @@ export default function RepairQuotesPage() {
                     </div>
                     <div className={styles.cartSummary}>
                       <div className={styles.summaryRow}>
-                        <span>{t('repairQuotes.form.subtotal') || 'Ara Toplam'}:</span>
-                        <span>${calculateSubtotal().toFixed(2)}</span>
+                        <span>{t('repairQuotes.form.subtotal')}:</span>
+                        <span>${calculateSubtotal.toFixed(2)}</span>
                       </div>
                       {taxRate > 0 && (
                         <div className={styles.summaryRow}>
-                          <span>{t('repairQuotes.form.tax') || 'Vergi'} ({taxRate}%):</span>
-                          <span>${calculateTaxAmount().toFixed(2)}</span>
+                          <span>{t('repairQuotes.form.tax')} ({taxRate}%):</span>
+                          <span>${calculateTaxAmount.toFixed(2)}</span>
                         </div>
                       )}
                       <div className={`${styles.summaryRow} ${styles.totalRow}`}>
-                        <span>{t('repairQuotes.form.total') || 'Toplam'}:</span>
-                        <span>${calculateTotal().toFixed(2)}</span>
+                        <span>{t('repairQuotes.form.total')}:</span>
+                        <span>${calculateTotal.toFixed(2)}</span>
                       </div>
                     </div>
                   </div>
@@ -877,13 +945,13 @@ export default function RepairQuotesPage() {
 
               <div className={styles.modalActions}>
                 <button type="submit" className={styles.btnPrimary}>
-                  {t('repairQuotes.form.saveRecord') || 'Kaydet'}
+                  {t('repairQuotes.form.saveRecord')}
                 </button>
                 <button type="button" onClick={() => {
                   setShowModal(false);
                   setSelectedServices([]);
                 }}>
-                  {t('common.cancel') || 'İptal'}
+                  {t('common.cancel')}
                 </button>
               </div>
             </form>
@@ -893,33 +961,39 @@ export default function RepairQuotesPage() {
 
       {/* Detail Modal */}
       {showDetailModal && selectedQuote && (
-        <div className={styles.modalOverlay} onClick={() => setShowDetailModal(false)}>
+        <div className={styles.modalOverlay} onClick={() => {
+          setShowDetailModal(false);
+          setShowServiceForm(false);
+        }}>
           <div className={`${styles.modalContent} ${styles.largeModal}`} onClick={(e) => e.stopPropagation()}>
             <div className={styles.modalHeader}>
-              <h2>{t('repairQuotes.detail.title') || 'Kayıt Detayları'}</h2>
+              <h2>{t('repairQuotes.detail.title')}</h2>
               <button
                 type="button"
                 className={styles.modalClose}
-                onClick={() => setShowDetailModal(false)}
+                onClick={() => {
+                  setShowDetailModal(false);
+                  setShowServiceForm(false);
+                }}
               >
                 ×
               </button>
             </div>
             <div className={styles.modalBody}>
               <div className={styles.detailSection}>
-                <h3>{t('repairQuotes.detail.vehicleInfo') || 'Araç Bilgileri'}</h3>
+                <h3>{t('repairQuotes.detail.vehicleInfo')}</h3>
                 <div className={styles.detailGrid}>
                   <div className={styles.detailItem}>
-                    <label>{t('repairQuotes.tableHeaders.brand') || 'Marka'}:</label>
+                    <label>{t('repairQuotes.tableHeaders.brand')}:</label>
                     <span>{selectedQuote.vehicle_brand}</span>
                   </div>
                   <div className={styles.detailItem}>
-                    <label>{t('repairQuotes.tableHeaders.model') || 'Model'}:</label>
+                    <label>{t('repairQuotes.tableHeaders.model')}:</label>
                     <span>{selectedQuote.vehicle_model}</span>
                   </div>
                   {selectedQuote.license_plate && (
                     <div className={styles.detailItem}>
-                      <label>{t('repairQuotes.tableHeaders.licensePlate') || 'Plaka'}:</label>
+                      <label>{t('repairQuotes.tableHeaders.licensePlate')}:</label>
                       <span>{selectedQuote.license_plate}</span>
                     </div>
                   )}
@@ -927,17 +1001,93 @@ export default function RepairQuotesPage() {
               </div>
 
               <div className={styles.detailSection}>
-                <h3>{t('repairQuotes.detail.services') || 'Hizmetler'}</h3>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+                  <h3 style={{ margin: 0 }}>{t('repairQuotes.detail.services')}</h3>
+                  <button
+                    onClick={() => setShowServiceForm(!showServiceForm)}
+                    className={styles.btnPrimary}
+                    style={{ padding: '0.5rem 1rem', fontSize: '0.875rem' }}
+                  >
+                    {showServiceForm ? t('common.cancel') : t('repairQuotes.detail.addService')}
+                  </button>
+                </div>
+                
+                {showServiceForm && (
+                  <div style={{ marginBottom: '1.5rem', padding: '1rem', background: '#f9f9f9', borderRadius: '8px', border: '2px solid #e0e0e0' }}>
+                    <h4 style={{ margin: '0 0 1rem 0', fontSize: '1rem' }}>{t('repairQuotes.detail.selectService')}</h4>
+                    
+                    {/* Packages */}
+                    <div style={{ marginBottom: '1.5rem' }}>
+                      <h5 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9375rem', fontWeight: 600, color: '#333' }}>{t('repairQuotes.form.packages')}</h5>
+                      <div className={styles.servicesGrid}>
+                        {packages.filter((pkg: any) => pkg.is_active).map((pkg: any) => (
+                          <div key={pkg.id} className={styles.serviceCard}>
+                            <div className={styles.serviceInfo}>
+                              <strong>{pkg.name}</strong>
+                              {pkg.description && <div style={{ fontSize: '0.875rem', color: '#666', marginTop: '0.25rem' }}>{pkg.description}</div>}
+                              <span className={styles.servicePrice}>
+                                ${parseFloat(String(pkg.base_price || 0)).toFixed(2)}
+                                {taxRate > 0 && (
+                                  <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '0.5rem' }}>
+                                    (${calculatePriceWithTax(pkg.base_price || 0).toFixed(2)} vergi ile)
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleAddServiceToQuote({ ...pkg, type: 'package', base_price: pkg.base_price })}
+                              className={styles.btnAddService}
+                            >
+                              {t('repairQuotes.form.addToCart')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Addons */}
+                    <div>
+                      <h5 style={{ margin: '0 0 0.75rem 0', fontSize: '0.9375rem', fontWeight: 600, color: '#333' }}>{t('repairQuotes.form.addons')}</h5>
+                      <div className={styles.servicesGrid}>
+                        {addons.filter((addon: any) => addon.is_active).map((addon: any) => (
+                          <div key={addon.id} className={styles.serviceCard}>
+                            <div className={styles.serviceInfo}>
+                              <strong>{addon.name}</strong>
+                              {addon.description && <div style={{ fontSize: '0.875rem', color: '#666', marginTop: '0.25rem' }}>{addon.description}</div>}
+                              <span className={styles.servicePrice}>
+                                ${parseFloat(String(addon.price || 0)).toFixed(2)}
+                                {taxRate > 0 && (
+                                  <span style={{ fontSize: '0.75rem', color: '#666', marginLeft: '0.5rem' }}>
+                                    (${calculatePriceWithTax(addon.price || 0).toFixed(2)} vergi ile)
+                                  </span>
+                                )}
+                              </span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => handleAddServiceToQuote({ ...addon, type: 'addon', base_price: addon.price })}
+                              className={styles.btnAddService}
+                            >
+                              {t('repairQuotes.form.addToCart')}
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
                 {selectedQuote.parsed_services && selectedQuote.parsed_services.length > 0 ? (
                   <div className={styles.servicesList}>
                     {selectedQuote.parsed_services.map((service, idx) => (
                       <div key={idx} className={styles.serviceItem}>
                         <span>{service.name}</span>
-                        <span>${parseFloat(String(service.price)).toFixed(2)}</span>
+                        <span>${parseFloat(String(service.price || 0)).toFixed(2)}</span>
                         <button
                           onClick={() => handleDeleteService(idx)}
                           className={styles.btnDeleteService}
-                          title={t('common.delete') || 'Sil'}
+                          title={t('common.delete')}
                         >
                           ×
                         </button>
@@ -945,23 +1095,23 @@ export default function RepairQuotesPage() {
                     ))}
                   </div>
                 ) : (
-                  <p>{t('repairQuotes.detail.noServices') || 'Hizmet bulunamadı'}</p>
+                  <p>{t('repairQuotes.detail.noServices')}</p>
                 )}
               </div>
 
               <div className={styles.detailSection}>
                 <div className={`${styles.detailItem} ${styles.totalPrice}`}>
-                  <label>{t('repairQuotes.tableHeaders.totalPrice') || 'Toplam Tutar'}:</label>
+                  <label>{t('repairQuotes.tableHeaders.totalPrice')}:</label>
                   <span>${parseFloat(String(selectedQuote.total_price || 0)).toFixed(2)}</span>
                 </div>
               </div>
             </div>
             <div className={styles.modalActions}>
               <button onClick={handlePrintReceipt} className={styles.btnPrimary}>
-                🖨️ {t('repairQuotes.detail.printReceipt') || 'Makbuz Yazdır'}
+                🖨️ {t('repairQuotes.detail.printReceipt')}
               </button>
               <button onClick={() => setShowDetailModal(false)}>
-                {t('common.close') || 'Kapat'}
+                {t('common.close')}
               </button>
             </div>
           </div>
@@ -973,10 +1123,10 @@ export default function RepairQuotesPage() {
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, quoteId: null })}
         onConfirm={confirmDeleteRecord}
-        title={t('repairQuotes.deleteTitle') || 'Kaydı Sil'}
-        message={t('repairQuotes.deleteConfirm') || 'Bu kaydı silmek istediğinizden emin misiniz?'}
-        confirmText={t('common.delete') || 'Sil'}
-        cancelText={t('common.cancel') || 'İptal'}
+        title={t('repairQuotes.confirmDeleteTitle')}
+        message={t('repairQuotes.confirmDelete')}
+        confirmText={t('common.delete')}
+        cancelText={t('common.cancel')}
         type="danger"
       />
     </div>
