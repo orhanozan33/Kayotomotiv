@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import path from "path";
 
 const nextConfig: NextConfig = {
   // Turbopack config (Next.js 16+)
@@ -7,6 +8,8 @@ const nextConfig: NextConfig = {
   
   // Production optimizations
   output: 'standalone',
+  // Fix lockfile warning by setting the root directory
+  outputFileTracingRoot: path.join(__dirname),
   
   // Image optimization
   images: {
