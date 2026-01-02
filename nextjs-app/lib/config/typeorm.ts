@@ -101,6 +101,13 @@ export const AppDataSource = new DataSource({
   ssl: (() => {
     try {
       const envConfig = getEnvConfig();
+      const databaseUrl = envConfig.database.url || process.env.DATABASE_URL || process.env.POSTGRES_URL;
+      
+      // Check if connection string contains sslmode=require or pgbouncer (Supabase)
+      const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
+      const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
+      const isSupabase = databaseUrl?.includes('supabase.co');
+      
       // Only enable SSL if explicitly set to true and not localhost
       const isLocalhost = !envConfig.database.url && 
         (!envConfig.database.host || envConfig.database.host === 'localhost' || envConfig.database.host === '127.0.0.1');
@@ -109,17 +116,31 @@ export const AppDataSource = new DataSource({
         return false; // Disable SSL for localhost
       }
       
-      return envConfig.database.ssl ? { rejectUnauthorized: false } : false;
+      // For Supabase or connection strings with sslmode=require, always enable SSL
+      if (isSupabase || hasSslModeInUrl || hasPgBouncer || envConfig.database.ssl) {
+        return { rejectUnauthorized: false };
+      }
+      
+      return false;
     } catch {
-      // For development/fallback, check if it's localhost
+      // For development/fallback, check if it's localhost or Supabase
+      const databaseUrl = process.env.DATABASE_URL || process.env.POSTGRES_URL;
       const dbHost = process.env.DB_HOST || 'localhost';
       const isLocalhost = dbHost === 'localhost' || dbHost === '127.0.0.1';
+      const isSupabase = databaseUrl?.includes('supabase.co');
+      const hasSslModeInUrl = databaseUrl?.includes('sslmode=require');
+      const hasPgBouncer = databaseUrl?.includes('pgbouncer=true');
       
       if (isLocalhost) {
         return false; // Disable SSL for localhost
       }
       
-      return process.env.DB_SSL === 'true' ? { rejectUnauthorized: false } : false;
+      // For Supabase, always enable SSL
+      if (isSupabase || hasSslModeInUrl || hasPgBouncer || process.env.DB_SSL === 'true') {
+        return { rejectUnauthorized: false };
+      }
+      
+      return false;
     }
   })(),
   synchronize: false, // Disabled - tables already exist. Use migrations for schema changes.
