@@ -23,11 +23,6 @@ const nextConfig: NextConfig = {
     unoptimized: false,
   },
   
-  // Environment variables that should be available at build time
-  env: {
-    NODE_ENV: process.env.NODE_ENV || 'production',
-  },
-  
   // Experimental features for better performance
   experimental: {
     serverActions: {
