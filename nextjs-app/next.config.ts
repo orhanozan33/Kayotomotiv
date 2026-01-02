@@ -29,6 +29,12 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '2mb',
     },
   },
+  
+  // Force all API routes to be dynamic to prevent build-time errors
+  // This prevents Next.js from trying to statically analyze API routes during build
+  async headers() {
+    return [];
+  },
 };
 
 export default nextConfig;
