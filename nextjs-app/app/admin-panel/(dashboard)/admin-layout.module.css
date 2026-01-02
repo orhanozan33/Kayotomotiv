@@ -15,7 +15,7 @@
   flex-direction: column;
   position: fixed;
   height: 100vh;
-  overflow-y: auto;
+  overflow: hidden; /* Prevent double scrollbar */
 }
 
 .sidebar::-webkit-scrollbar {
@@ -54,6 +54,9 @@
 .sidebarNav {
   flex: 1;
   padding: 0.7rem 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  min-height: 0; /* Allow flex item to shrink */
 }
 
 .sidebarNav a {
@@ -73,9 +76,7 @@
 .sidebarFooter {
   padding: 0.7rem;
   border-top: 1px solid #333;
-  margin-top: auto;
-  position: sticky;
-  bottom: 0;
+  flex-shrink: 0; /* Prevent footer from shrinking */
   background: #1a1a1a;
   z-index: 10;
 }
