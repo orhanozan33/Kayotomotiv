@@ -16,15 +16,32 @@ i18n
       escapeValue: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage'], // Only use localStorage, ignore browser language
       caches: ['localStorage'],
       lookupLocalStorage: 'i18nextLng',
+      checkWhitelist: true, // Only allow whitelisted languages
     },
     react: {
       useSuspense: false,
     },
     debug: process.env.NODE_ENV === 'development',
   });
+
+// Ensure language is persisted on change
+if (typeof window !== 'undefined') {
+  i18n.on('languageChanged', (lng) => {
+    localStorage.setItem('i18nextLng', lng);
+  });
+  
+  // Load saved language on initialization
+  const savedLang = localStorage.getItem('i18nextLng');
+  if (savedLang && ['tr', 'en', 'fr'].includes(savedLang)) {
+    i18n.changeLanguage(savedLang);
+  } else {
+    i18n.changeLanguage('fr');
+    localStorage.setItem('i18nextLng', 'fr');
+  }
+}
 
 export default i18n;
 
