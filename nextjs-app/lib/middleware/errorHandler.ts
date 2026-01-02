@@ -112,6 +112,9 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
 
   // Default error
   const statusCode = error.statusCode || 500;
+  
+  // In production, always show details for database/connection errors
+  // This helps debugging Vercel deployment issues
   const showDetails =
     !isProduction ||
     error.message?.includes('Database') ||
@@ -119,25 +122,34 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
     error.message?.includes('connection') ||
     error.message?.includes('SSL') ||
     error.message?.includes('certificate') ||
+    error.message?.includes('query') ||
+    error.message?.includes('syntax') ||
     error.code === '42P01' ||
     error.code === 'ECONNREFUSED' ||
     error.code === 'ENOTFOUND' ||
     error.code === 'SELF_SIGNED_CERT_IN_CHAIN' ||
+    error.code === '23505' ||
+    error.code === '23503' ||
     error.name?.includes('Database') ||
-    error.name?.includes('Connection');
+    error.name?.includes('Connection') ||
+    error.name?.includes('Query') ||
+    // Always show error code and name in production for debugging
+    Boolean(error.code) ||
+    Boolean(error.name);
 
-  const message =
-    isProduction && !showDetails
-      ? statusCode === 500
-        ? 'Internal server error'
-        : error.message
-      : error.message;
+  const message = error.message || 'Internal server error';
 
   return NextResponse.json(
     {
-      error: message || 'Internal server error',
-      ...(showDetails ? { code: error.code, details: error.message, name: error.name } : {}),
-      ...(isProduction ? {} : { stack: error.stack }),
+      error: message,
+      ...(showDetails ? { 
+        code: error.code, 
+        name: error.name,
+        details: error.message,
+        // Show stack in production for debugging (Vercel logs will show it anyway)
+        ...(isProduction && error.stack ? { stack: error.stack.split('\n').slice(0, 5).join('\n') } : {})
+      } : {}),
+      ...(!isProduction ? { stack: error.stack } : {}),
     },
     { status: statusCode }
   );

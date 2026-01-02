@@ -13,6 +13,12 @@ const isProduction = process.env.NODE_ENV === 'production';
 export async function GET(request: NextRequest) {
   try {
     console.log('🚀 GET /api/vehicles - Starting...');
+    console.log('🔍 Environment check:', {
+      hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
+      nodeEnv: process.env.NODE_ENV,
+      isVercel: Boolean(process.env.VERCEL),
+    });
+    
     await initializeDatabase();
     console.log('✅ Database initialized');
     const { searchParams } = new URL(request.url);
