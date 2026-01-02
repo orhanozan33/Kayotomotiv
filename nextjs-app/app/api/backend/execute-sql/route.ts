@@ -6,6 +6,10 @@ import { handleError } from '@/lib/middleware/errorHandler';
 import { sanitizeSQLQuery } from '@/lib/utils/security';
 import Joi from 'joi';
 
+// Force dynamic rendering to prevent build-time errors
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const sqlQuerySchema = Joi.object({

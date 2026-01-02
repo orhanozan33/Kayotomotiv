@@ -29,6 +29,11 @@ const dbName = process.env.DB_NAME?.trim();
 const dbUser = process.env.DB_USER?.trim();
 const dbPassword = process.env.DB_PASSWORD?.trim();
 
+// Check if we're in build time (Next.js build process)
+const isBuildTime = process.env.NEXT_PHASE === 'phase-production-build' || 
+                    process.env.NEXT_PHASE === 'phase-development-build' ||
+                    (!process.env.VERCEL && process.env.NODE_ENV === 'production');
+
 const missingDb: string[] = [];
 if (!connectionString) {
   if (!dbHost) missingDb.push('DB_HOST');
@@ -37,11 +42,18 @@ if (!connectionString) {
   if (!dbUser) missingDb.push('DB_USER');
   if (!dbPassword) missingDb.push('DB_PASSWORD');
 }
-if (missingDb.length > 0) {
+
+// Only throw error if not in build time
+if (missingDb.length > 0 && !isBuildTime) {
   throw new Error(
     `Database config missing env vars: ${missingDb.join(', ')}. ` +
       `Set either DATABASE_URL/POSTGRES_URL or the full DB_* set in your environment.`
   );
+}
+
+// During build time, create a minimal pool config that won't be used
+if (isBuildTime && missingDb.length > 0) {
+  console.warn('⚠️  Build time: Database config missing. Will be validated at runtime.');
 }
 
 // Default to SSL enabled unless explicitly disabled via DB_SSL=false.
@@ -57,26 +69,36 @@ const sslEnabled = isLocalhost
   ? false 
   : (hasSslModeInUrl || hasPgBouncer || isProduction ? true : (process.env.DB_SSL === undefined ? true : isTruthy(process.env.DB_SSL)));
 
-const poolConfig: PoolConfig = {
-  ...(connectionString
-    ? { connectionString }
-    : {
-        host: dbHost!,
-        port: dbPort!,
-        database: dbName!,
-        user: dbUser!,
-        password: dbPassword!,
-      }),
-  // In production environments, keep pool size small to avoid exhausting DB connections.
-  max: isProduction ? Number(process.env.DB_POOL_MAX || 1) : Number(process.env.DB_POOL_MAX || 20),
-  idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || (isProduction ? 10000 : 30000)),
-  connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT_MS || 15000),
-  // Avoid noisy prepared statement issues when using pgBouncer/poolers.
-  statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
-  query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
-  ssl: sslEnabled ? { rejectUnauthorized: false } : false,
-  keepAlive: true,
-};
+// Create pool config - use minimal config during build time if env vars are missing
+const poolConfig: PoolConfig = isBuildTime && missingDb.length > 0
+  ? {
+      // Minimal config for build time - won't be used
+      connectionString: connectionString || 'postgresql://localhost:5432/postgres',
+      max: 1,
+      idleTimeoutMillis: 10000,
+      connectionTimeoutMillis: 15000,
+      ssl: false,
+    }
+  : {
+      ...(connectionString
+        ? { connectionString }
+        : {
+            host: dbHost!,
+            port: dbPort!,
+            database: dbName!,
+            user: dbUser!,
+            password: dbPassword!,
+          }),
+      // In production environments, keep pool size small to avoid exhausting DB connections.
+      max: isProduction ? Number(process.env.DB_POOL_MAX || 1) : Number(process.env.DB_POOL_MAX || 20),
+      idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT_MS || (isProduction ? 10000 : 30000)),
+      connectionTimeoutMillis: Number(process.env.DB_CONN_TIMEOUT_MS || 15000),
+      // Avoid noisy prepared statement issues when using pgBouncer/poolers.
+      statement_timeout: Number(process.env.DB_STATEMENT_TIMEOUT_MS || 0),
+      query_timeout: Number(process.env.DB_QUERY_TIMEOUT_MS || 0),
+      ssl: sslEnabled ? { rejectUnauthorized: false } : false,
+      keepAlive: true,
+    };
 
 // Debug: Connection config'i logla (password hariç)
 console.log('🔍 Database Connection Config:', {
