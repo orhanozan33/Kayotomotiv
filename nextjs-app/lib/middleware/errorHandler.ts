@@ -57,6 +57,20 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
     );
   }
 
+  // SSL Certificate errors (Supabase self-signed certificates)
+  if (error.code === 'SELF_SIGNED_CERT_IN_CHAIN' || error.message?.includes('self-signed certificate')) {
+    return NextResponse.json(
+      {
+        error: 'Database SSL configuration error',
+        message: 'SSL certificate validation failed. This is usually a configuration issue with Supabase.',
+        details: 'The database connection requires SSL but the certificate cannot be verified. Check SSL settings in database configuration.',
+        code: error.code,
+        ...(isProduction ? {} : { stack: error.stack }),
+      },
+      { status: 500 }
+    );
+  }
+
   // Connection errors
   const isConnectionError =
     error.code === 'ECONNREFUSED' ||
@@ -65,7 +79,9 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
     error.code === 'ETIMEDOUT' ||
     error.code === 'ENETUNREACH' ||
     error.message?.includes('connection') ||
-    error.message?.includes('getaddrinfo');
+    error.message?.includes('getaddrinfo') ||
+    error.message?.includes('Unable to connect to database') ||
+    error.message?.includes('Database connection failed');
 
   if (isConnectionError) {
     const hasDatabaseUrl = Boolean(process.env.DATABASE_URL || process.env.POSTGRES_URL);
@@ -77,7 +93,8 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
         details: hasDatabaseUrl
           ? 'Check DATABASE_URL / POSTGRES_URL connection string (host/port/password/ssl). If using pooler, ensure pgbouncer=true and SSL is enabled.'
           : 'Check DB_* settings (DB_HOST/DB_PORT/DB_NAME/DB_USER/DB_PASSWORD) and SSL.',
-        ...(isProduction ? {} : { stack: error.stack, code: error.code }),
+        code: error.code,
+        ...(isProduction ? {} : { stack: error.stack }),
       },
       { status: 500 }
     );
@@ -100,9 +117,14 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
     error.message?.includes('Database') ||
     error.message?.includes('JWT_SECRET') ||
     error.message?.includes('connection') ||
+    error.message?.includes('SSL') ||
+    error.message?.includes('certificate') ||
     error.code === '42P01' ||
     error.code === 'ECONNREFUSED' ||
-    error.code === 'ENOTFOUND';
+    error.code === 'ENOTFOUND' ||
+    error.code === 'SELF_SIGNED_CERT_IN_CHAIN' ||
+    error.name?.includes('Database') ||
+    error.name?.includes('Connection');
 
   const message =
     isProduction && !showDetails
@@ -113,8 +135,8 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
 
   return NextResponse.json(
     {
-      error: message,
-      ...(showDetails ? { code: error.code, details: error.message } : {}),
+      error: message || 'Internal server error',
+      ...(showDetails ? { code: error.code, details: error.message, name: error.name } : {}),
       ...(isProduction ? {} : { stack: error.stack }),
     },
     { status: statusCode }

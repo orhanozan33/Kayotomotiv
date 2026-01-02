@@ -11,7 +11,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🚀 GET /api/settings/social-media - Starting...');
     await initializeDatabase();
+    console.log('✅ Database initialized');
     
     const settings = await dbApi.getSettingsByKeys([
       'facebook_url',
@@ -27,8 +29,15 @@ export async function GET(request: NextRequest) {
       phone: settings.phone_number || '',
     };
 
+    console.log('✅ Social media settings fetched:', links);
     return NextResponse.json({ links });
   } catch (error: any) {
+    console.error('❌ GET /api/settings/social-media - Error:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      stack: error.stack,
+    });
     return handleError(error, isProduction);
   }
 }

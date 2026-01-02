@@ -12,7 +12,9 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 export async function GET(request: NextRequest) {
   try {
+    console.log('🚀 GET /api/vehicles - Starting...');
     await initializeDatabase();
+    console.log('✅ Database initialized');
     const { searchParams } = new URL(request.url);
 
     const filters: VehicleFilters = {
@@ -33,7 +35,9 @@ export async function GET(request: NextRequest) {
     };
 
     // Use TypeORM repository directly
+    console.log('🔍 Fetching vehicles with filters:', filters);
     const vehicles = await VehicleRepository.findAll(filters);
+    console.log(`✅ Found ${vehicles.length} vehicles`);
 
     // Get images for each vehicle and map fields for frontend compatibility
     const vehiclesWithImages = await Promise.all(
@@ -76,8 +80,15 @@ export async function GET(request: NextRequest) {
       })
     );
 
+    console.log(`✅ Returning ${vehiclesWithImages.length} vehicles with images`);
     return NextResponse.json({ vehicles: vehiclesWithImages });
   } catch (error: any) {
+    console.error('❌ GET /api/vehicles - Error:', {
+      message: error.message,
+      code: error.code,
+      name: error.name,
+      stack: error.stack,
+    });
     return handleError(error, isProduction);
   }
 }
