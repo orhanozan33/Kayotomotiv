@@ -126,6 +126,7 @@ export default function ReservationsPage() {
   const [taxRate, setTaxRate] = useState(0);
   const [federalTaxRate, setFederalTaxRate] = useState(0);
   const [provincialTaxRate, setProvincialTaxRate] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
 
   const showError = (message: string) => {
     setError(message);
@@ -452,14 +453,34 @@ export default function ReservationsPage() {
 
   if (loading) return <div className={styles.loading}>{t('common.loading') || 'Yükleniyor...'}</div>;
 
+  // Filter data based on search term
+  const filterData = <T extends { customer_name?: string; customer_email?: string; customer_phone?: string; vehicle_brand?: string; vehicle_model?: string; brand?: string; model?: string; status?: string }>(data: T[]): T[] => {
+    if (!searchTerm.trim()) return data;
+    const search = searchTerm.toLowerCase().trim();
+    return data.filter(item => {
+      const name = (item.customer_name || '').toLowerCase();
+      const email = (item.customer_email || '').toLowerCase();
+      const phone = (item.customer_phone || '').toLowerCase();
+      const brand = ((item.vehicle_brand || item.brand) || '').toLowerCase();
+      const model = ((item.vehicle_model || item.model) || '').toLowerCase();
+      const status = (item.status || '').toLowerCase();
+      return name.includes(search) || email.includes(search) || phone.includes(search) || brand.includes(search) || model.includes(search) || status.includes(search);
+    });
+  };
+
+  const filteredReservations = filterData(reservations);
+  const filteredTestDrives = filterData(testDrives);
+  const filteredRepairQuotes = filterData(repairQuotes);
+  const filteredCarWash = filterData(carWashAppointments);
+
   const renderReservationsCards = () => {
-    if (reservations.length === 0) {
+    if (filteredReservations.length === 0) {
       return <div className={styles.noData}>{t('reservations.noReservations') || 'Rezervasyon bulunamadı'}</div>;
     }
 
     return (
       <div className={styles.reservationsCardsContainer}>
-        {reservations.map((reservation) => (
+        {filteredReservations.map((reservation) => (
           <div key={reservation.id} className={styles.reservationCard}>
             <div className={styles.reservationCardImage}>
               {reservation.vehicleImage ? (
@@ -541,13 +562,13 @@ export default function ReservationsPage() {
   };
 
   const renderTestDrivesCards = () => {
-    if (testDrives.length === 0) {
+    if (filteredTestDrives.length === 0) {
       return <div className={styles.noData}>{t('reservations.noTestDrives') || 'Test sürüşü talebi bulunamadı'}</div>;
     }
 
     return (
       <div className={styles.reservationsCardsContainer}>
-        {testDrives.map((testDrive) => (
+        {filteredTestDrives.map((testDrive) => (
           <div key={testDrive.id} className={styles.reservationCard}>
             <div className={styles.reservationCardImage}>
               {testDrive.vehicleImage ? (
@@ -629,13 +650,13 @@ export default function ReservationsPage() {
   };
 
   const renderRepairQuotesCards = () => {
-    if (repairQuotes.length === 0) {
+    if (filteredRepairQuotes.length === 0) {
       return <div className={styles.noData}>{t('reservations.noRepairQuotes') || 'Tamir teklifi bulunamadı'}</div>;
     }
 
     return (
       <div className={styles.reservationsCardsContainer}>
-        {repairQuotes.map((quote) => (
+        {filteredRepairQuotes.map((quote) => (
           <div key={quote.id} className={styles.reservationCard}>
             <div className={styles.reservationCardImage}>
               {quote.vehicleImage ? (
@@ -716,13 +737,13 @@ export default function ReservationsPage() {
   };
 
   const renderCarWashCards = () => {
-    if (carWashAppointments.length === 0) {
+    if (filteredCarWash.length === 0) {
       return <div className={styles.noData}>{t('reservations.noCarWash') || 'Oto Yıkama randevusu bulunamadı'}</div>;
     }
 
     return (
       <div className={styles.reservationsCardsContainer}>
-        {carWashAppointments.map((appointment) => (
+        {filteredCarWash.map((appointment) => (
           <div key={appointment.id} className={styles.reservationCard}>
             <div className={styles.reservationCardImage}>
               <div className={styles.vehicleImagePlaceholder}>
@@ -1214,10 +1235,25 @@ export default function ReservationsPage() {
           </div>
         </div>
       )}
-      <h1>
-        {t('reservations.title') || 'Rezervasyonlar ve Talepler'}
-        {pendingCounts.reservations > 0 && <span className={styles.notificationBadge}>{pendingCounts.reservations}</span>}
-      </h1>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h1 style={{ margin: 0 }}>
+          {t('reservations.title') || 'Rezervasyonlar ve Talepler'}
+          {pendingCounts.reservations > 0 && <span className={styles.notificationBadge}>{pendingCounts.reservations}</span>}
+        </h1>
+        <input
+          type="text"
+          placeholder={t('reservations.search') || 'Müşteri, araç veya durum ile ara...'}
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            padding: '0.5rem',
+            border: '1px solid #ddd',
+            borderRadius: '4px',
+            fontSize: '1rem',
+            minWidth: '300px',
+          }}
+        />
+      </div>
 
       <div className={styles.tabs}>
         <button

@@ -292,6 +292,7 @@
     "addVehicle": "Araç Ekle",
     "editVehicle": "Araç Düzenle",
     "edit": "Düzenle",
+    "search": "Marka, model, yıl veya fiyat ile ara...",
     "brand": "Marka",
     "model": "Model",
     "year": "Yıl",
@@ -371,6 +372,7 @@
   },
   "reservations": {
     "title": "Rezervasyonlar ve Talepler",
+    "search": "Müşteri, araç veya durum ile ara...",
     "customer": "Müşteri",
     "vehicle": "Araç",
     "email": "E-posta",
@@ -545,6 +547,8 @@
     "confirmDeletePackage": "Bu paketi silmek istediğinizden emin misiniz?",
     "confirmDeleteAddonTitle": "Ekstrayı Sil",
     "confirmDeleteAddon": "Bu ekstrayı silmek istediğinizden emin misiniz?",
+    "searchAppointments": "Müşteri, email, telefon veya paket ile ara...",
+    "filterByDate": "Tarihe göre filtrele",
     "errors": {
       "updating": "Durum güncellenirken hata oluştu",
       "savingPackage": "Paket kaydedilirken hata oluştu",
@@ -964,6 +968,7 @@
   },
   "adminMessages": {
     "title": "İletişim Mesajları",
+    "search": "Gönderen, konu veya mesaj ile ara...",
     "sender": "Gönderen",
     "subject": "Konu",
     "status": "Durum",

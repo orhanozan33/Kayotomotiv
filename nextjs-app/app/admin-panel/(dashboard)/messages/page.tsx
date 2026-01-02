@@ -28,11 +28,12 @@ export default function MessagesPage() {
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, messageId: null as string | null });
   const [statusFilter, setStatusFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
     loadMessages();
-  }, [statusFilter]);
+  }, [statusFilter, searchTerm]);
 
   const loadMessages = async () => {
     try {
@@ -40,6 +41,9 @@ export default function MessagesPage() {
       const params: any = {};
       if (statusFilter !== 'all') {
         params.status = statusFilter;
+      }
+      if (searchTerm.trim()) {
+        params.search = searchTerm.trim();
       }
       const response = await contactAPI.getMessages(params);
       setMessages(response.data.messages || []);
@@ -124,7 +128,20 @@ export default function MessagesPage() {
     <div className={styles.messagesPage}>
       <div className={styles.pageHeader}>
         <h1>{t('adminMessages.title')}</h1>
-        <div className={styles.filters}>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, maxWidth: '600px', marginLeft: '2rem' }}>
+          <input
+            type="text"
+            placeholder={t('adminMessages.search') || 'Gönderen, konu veya mesaj ile ara...'}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '0.5rem',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              flex: 1,
+            }}
+          />
           <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className={styles.filterSelect}>
             <option value="all">{t('adminMessages.all')} ({total})</option>
             <option value="unread">{t('adminMessages.unread')}</option>

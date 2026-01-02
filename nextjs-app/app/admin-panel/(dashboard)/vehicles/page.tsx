@@ -94,6 +94,7 @@ export default function VehiclesPage() {
   const [newImagePrimaryIndex, setNewImagePrimaryIndex] = useState<number | null>(null);
   const [deleteImageModal, setDeleteImageModal] = useState({ isOpen: false, imageId: null as string | null });
   const [deleteVehicleModal, setDeleteVehicleModal] = useState({ isOpen: false, vehicleId: null as string | null });
+  const [searchTerm, setSearchTerm] = useState('');
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -111,7 +112,11 @@ export default function VehiclesPage() {
   const loadVehicles = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await vehiclesAPI.getAll({ limit: 100 }).catch((err) => {
+      const params: any = { limit: 100 };
+      if (searchTerm.trim()) {
+        params.search = searchTerm.trim();
+      }
+      const response = await vehiclesAPI.getAll(params).catch((err) => {
         console.error('Error loading vehicles:', err);
         return { data: { vehicles: [] } };
       });
@@ -122,13 +127,15 @@ export default function VehiclesPage() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [searchTerm]);
 
   useEffect(() => {
-    loadVehicles();
-    // Removed auto-refresh interval to prevent deleted vehicles from reappearing
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const delay = searchTerm ? 500 : 0;
+    const timer = setTimeout(() => {
+      loadVehicles();
+    }, delay);
+    return () => clearTimeout(timer);
+  }, [searchTerm, loadVehicles]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -392,6 +399,21 @@ export default function VehiclesPage() {
     <div className={styles.vehiclesPage}>
       <div className={styles.pageHeader}>
         <h1>{t('vehicles.title') || 'Araçlar'}</h1>
+        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, maxWidth: '400px', marginLeft: '2rem' }}>
+          <input
+            type="text"
+            placeholder={t('vehicles.search') || 'Marka, model, yıl veya fiyat ile ara...'}
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            style={{
+              padding: '0.5rem',
+              border: '1px solid #ddd',
+              borderRadius: '4px',
+              fontSize: '1rem',
+              width: '100%',
+            }}
+          />
+        </div>
         <button
           onClick={() => {
             setEditingVehicle(null);

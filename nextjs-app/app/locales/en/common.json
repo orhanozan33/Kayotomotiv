@@ -354,6 +354,7 @@
     "addVehicle": "Add Vehicle",
     "editVehicle": "Edit Vehicle",
     "edit": "Edit",
+    "search": "Search by brand, model, year or price...",
     "brand": "Brand",
     "model": "Model",
     "year": "Year",
@@ -505,6 +506,7 @@
   },
   "reservations": {
     "title": "Reservations and Requests",
+    "search": "Search by customer, vehicle or status...",
     "customer": "Customer",
     "vehicle": "Vehicle",
     "email": "Email",
@@ -679,6 +681,8 @@
     "confirmDeletePackage": "Are you sure you want to delete this package?",
     "confirmDeleteAddonTitle": "Delete Add-on",
     "confirmDeleteAddon": "Are you sure you want to delete this add-on?",
+    "searchAppointments": "Search by customer, email, phone or package...",
+    "filterByDate": "Filter by date",
     "errors": {
       "updating": "Error updating status",
       "savingPackage": "Error saving package",
@@ -973,6 +977,7 @@
   },
   "adminMessages": {
     "title": "Contact Messages",
+    "search": "Search by sender, subject or message...",
     "sender": "Sender",
     "subject": "Subject",
     "status": "Status",
