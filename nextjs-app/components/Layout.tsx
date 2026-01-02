@@ -298,7 +298,7 @@ export default function Layout({ children }: LayoutProps) {
           {/* Copyright and Social Links */}
           <div className={styles.footerBottom}>
             <p className={styles.copyright}>
-              © {currentYear || 2024} KAY Oto Servis. Tüm hakları saklıdır.{' '}
+              © {currentYear || 2024} {t('footer.copyright') || 'KAY Oto Servis. Tüm hakları saklıdır.'}{' '}
               <a href="https://www.findpoint.ca" target="_blank" rel="noopener noreferrer" className={styles.findpointLink}>
                 Findpoint
               </a>
