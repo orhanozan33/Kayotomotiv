@@ -143,23 +143,11 @@ export const AppDataSource = new DataSource({
 // Initialize connection
 let isInitialized = false;
 let isInitializing = false;
-let seedExecuted = false;
 
 export async function initializeDatabase(): Promise<DataSource> {
   // If already initialized, return immediately
   if (AppDataSource.isInitialized) {
-    // Run seed if not executed yet (only in development, not during build)
-    if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
-      seedExecuted = true; // Set flag first to prevent re-entry
-      try {
-        const { seedDatabase } = await import('@/scripts/seed-data');
-        await seedDatabase();
-        console.log('✅ Seed data automatically added to database');
-      } catch (error: any) {
-        console.warn('⚠️  Seed data execution failed (non-critical):', error.message);
-        seedExecuted = false; // Reset flag on error so it can retry
-      }
-    }
+    // Seed script is disabled during build - run manually with: npm run seed
     return AppDataSource;
   }
 
@@ -179,19 +167,8 @@ export async function initializeDatabase(): Promise<DataSource> {
         await AppDataSource.initialize();
         console.log('✅ TypeORM: Database synchronized (tables auto-created/updated)');
         
-        // Run seed data after tables are created (only in development, not during build)
-        if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
-          seedExecuted = true; // Set flag first to prevent re-entry
-          try {
-            const { seedDatabase } = await import('@/scripts/seed-data');
-            // Pass a flag to seedDatabase to skip its own initialization
-            await seedDatabase();
-            console.log('✅ Seed data automatically added to database');
-          } catch (error: any) {
-            console.warn('⚠️  Seed data execution failed (non-critical):', error.message);
-            seedExecuted = false; // Reset flag on error so it can retry
-          }
-        }
+        // Seed script is disabled during build - run manually with: npm run seed
+        // This prevents build errors from seed script imports
       }
       isInitialized = true;
     } catch (error: any) {
@@ -220,18 +197,8 @@ export async function initializeDatabase(): Promise<DataSource> {
           isInitialized = true;
         }
         
-        // Run seed data even if there was a warning (only in development, not during build)
-        if (!seedExecuted && process.env.NODE_ENV !== 'production' && typeof window === 'undefined') {
-          seedExecuted = true; // Set flag first to prevent re-entry
-          try {
-            const { seedDatabase } = await import('@/scripts/seed-data');
-            await seedDatabase();
-            console.log('✅ Seed data automatically added to database');
-          } catch (seedError: any) {
-            console.warn('⚠️  Seed data execution failed (non-critical):', seedError.message);
-            seedExecuted = false; // Reset flag on error so it can retry
-          }
-        }
+        // Seed script is disabled during build - run manually with: npm run seed
+        // This prevents build errors from seed script imports
       } else {
         throw error;
       }
