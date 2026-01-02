@@ -2,7 +2,7 @@
 
 ## ✅ Supabase Hazır
 
-- **Project:** kayaotomotiv
+- **Project:** kayotomotiv
 - **URL:** https://daruylcofjhrvjhilsuf.supabase.co
 - **Database:** Hazır ve bağlantı bilgileri mevcut
 

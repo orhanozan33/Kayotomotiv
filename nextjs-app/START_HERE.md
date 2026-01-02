@@ -1,4 +1,4 @@
-# 🚀 Başlangıç Rehberi - Kayaotomotiv Deployment
+# 🚀 Başlangıç Rehberi - Kayotomotiv Deployment
 
 Bu dosya, projeyi yayına almak için yapman gereken **TÜM** adımları içerir.
 
@@ -6,7 +6,7 @@ Bu dosya, projeyi yayına almak için yapman gereken **TÜM** adımları içerir
 
 ## 📋 ÖN HAZIRLIK
 
-✅ Supabase projesi hazır: **kayaotomotiv**  
+✅ Supabase projesi hazır: **kayotomotiv**  
 ✅ GitHub repository hazır: **orhanozan33/Kayotomotiv**  
 ✅ Tüm dosyalar GitHub'a push edildi
 
@@ -85,7 +85,7 @@ Bu dosya, projeyi yayına almak için yapman gereken **TÜM** adımları içerir
 ## ✅ ADIM 3: TEST ET
 
 1. **Ana Sayfayı Aç**
-   - Deployment URL'ini aç (örn: `https://kayaotomotiv.vercel.app`)
+   - Deployment URL'ini aç (örn: `https://kayotomotiv.vercel.app`)
 
 2. **Admin Panel'i Test Et**
    - `https://[your-project].vercel.app/admin-panel/login`

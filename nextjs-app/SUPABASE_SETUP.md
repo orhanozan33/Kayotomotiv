@@ -4,7 +4,7 @@ Bu rehber, Supabase'de yapman gereken TÜM adımları içerir.
 
 ## 📋 Supabase Proje Bilgileri
 
-- **Project Name:** kayaotomotiv
+- **Project Name:** kayotomotiv
 - **Project URL:** https://daruylcofjhrvjhilsuf.supabase.co
 - **Project Reference:** daruylcofjhrvjhilsuf
 - **Database Password:** orhanozan33
@@ -15,7 +15,7 @@ Bu rehber, Supabase'de yapman gereken TÜM adımları içerir.
 
 1. https://supabase.com adresine git
 2. Giriş yap
-3. **kayaotomotiv** projesini seç
+3. **kayotomotiv** projesini seç
 4. Dashboard'a git
 
 ---
@@ -33,7 +33,7 @@ Aşağıdaki SQL kodunu kopyala ve SQL Editor'e yapıştır, sonra **RUN** buton
 
 ```sql
 -- ============================================
--- KAYAOTOMOTIV DATABASE SCHEMA
+-- KAYOTOMOTIV DATABASE SCHEMA
 -- ============================================
 
 -- Enable UUID extension
@@ -426,7 +426,7 @@ Eğer admin kullanıcısı oluşturmak istersen:
 INSERT INTO "users" ("id", "email", "password_hash", "first_name", "last_name", "role", "is_active")
 VALUES (
     uuid_generate_v4(),
-    'admin@kayaotomotiv.com',
+    'admin@kayotomotiv.com',
     '$2b$10$K6Ry0L33ZDOude/nR0haeukjokNzFim/nB.KJrzop7tF1mojN0fRu',
     'Admin',
     'User',

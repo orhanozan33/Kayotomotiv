@@ -165,7 +165,7 @@ https://[your-project].vercel.app
 ### 4.1 Deployment URL'ini Kontrol Et
 
 1. Deployment tamamlandığında bir URL göreceksin
-2. Bu URL'i kopyala (örn: `https://kayaotomotiv.vercel.app`)
+2. Bu URL'i kopyala (örn: `https://kayotomotiv.vercel.app`)
 
 ### 4.2 FRONTEND_URL'i Güncelle (Eğer eklediysen)
 

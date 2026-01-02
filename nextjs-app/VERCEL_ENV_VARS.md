@@ -1,10 +1,10 @@
-# Vercel Environment Variables - Kayaotomotiv
+# Vercel Environment Variables - Kayotomotiv
 
 Bu dosya, Vercel'de ayarlaman gereken environment variable'ları içerir.
 
 ## 📋 Supabase Proje Bilgileri
 
-- **Project Name:** kayaotomotiv
+- **Project Name:** kaaotomotiv
 - **Project URL:** https://daruylcofjhrvjhilsuf.supabase.co
 - **Project Reference:** daruylcofjhrvjhilsuf
 - **Database Password:** orhanozan33
