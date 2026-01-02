@@ -329,11 +329,12 @@ CREATE TABLE IF NOT EXISTS "settings" (
 -- ============================================
 CREATE TABLE IF NOT EXISTS "pages" (
     "id" UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    "slug" VARCHAR(255) UNIQUE NOT NULL,
-    "title" VARCHAR(255) NOT NULL,
+    "slug" VARCHAR(200) UNIQUE NOT NULL,
+    "title" VARCHAR(200) NOT NULL,
     "content" TEXT,
-    "meta_description" TEXT,
-    "is_published" BOOLEAN DEFAULT true,
+    "meta_description" VARCHAR(500),
+    "is_active" BOOLEAN DEFAULT true,
+    "created_by" UUID REFERENCES "users"("id"),
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

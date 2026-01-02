@@ -59,6 +59,15 @@ ALTER TABLE "car_wash_appointments"
   ALTER COLUMN "appointment_time" SET NOT NULL,
   ALTER COLUMN "total_price" SET NOT NULL;
 
+-- Fix pages table
+ALTER TABLE "pages"
+  DROP COLUMN IF EXISTS "is_published",
+  ADD COLUMN IF NOT EXISTS "is_active" BOOLEAN DEFAULT true,
+  ADD COLUMN IF NOT EXISTS "created_by" UUID REFERENCES "users"("id");
+
+-- Update existing records if needed
+UPDATE "pages" SET "is_active" = true WHERE "is_active" IS NULL;
+
 -- Success message
 SELECT 'Schema fixes applied successfully!' AS message;
 
