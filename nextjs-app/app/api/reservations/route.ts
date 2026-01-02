@@ -30,15 +30,39 @@ export async function POST(request: NextRequest) {
     });
 
     // Initialize database connection
-    await initializeDatabase();
+    try {
+      await initializeDatabase();
+      console.log('✅ TypeORM initialized');
+    } catch (initError: any) {
+      console.error('❌ TypeORM initialization failed:', {
+        message: initError.message,
+        code: initError.code,
+      });
+      // Continue anyway - tables might exist even if TypeORM init failed
+    }
     
-    // Test database connection
+    // Test database connection and check if table exists
     const pool = getPool();
     try {
       await pool.query('SELECT 1');
       console.log('✅ Database connection test successful');
+      
+      // Check if vehicle_reservations table exists
+      const tableCheck = await pool.query(`
+        SELECT EXISTS (
+          SELECT FROM information_schema.tables 
+          WHERE table_schema = 'public' 
+          AND table_name = 'vehicle_reservations'
+        );
+      `);
+      
+      if (!tableCheck.rows[0]?.exists) {
+        console.error('❌ Table vehicle_reservations does not exist');
+        throw new Error('Table vehicle_reservations does not exist. Please run database migrations.');
+      }
+      console.log('✅ Table vehicle_reservations exists');
     } catch (testError: any) {
-      console.error('❌ Database connection test failed:', {
+      console.error('❌ Database connection/table check failed:', {
         message: testError.message,
         code: testError.code,
       });

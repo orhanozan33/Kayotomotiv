@@ -46,12 +46,16 @@ export function handleError(error: any, isProduction: boolean = false): NextResp
   }
 
   // Table does not exist error (42P01)
-  if (error.code === '42P01' || (error.message && error.message.includes('does not exist'))) {
+  if (error.code === '42P01' || (error.message && error.message.includes('does not exist')) || error.message?.includes('Table') && error.message?.includes('does not exist')) {
     return NextResponse.json(
       {
         error: 'Database schema not initialized',
-        message: 'Please run database migrations first',
-        ...(isProduction ? {} : { details: error.message }),
+        message: 'The database table does not exist. Please ensure the database schema has been created in Supabase.',
+        ...(isProduction ? {} : { 
+          details: error.message,
+          code: error.code,
+          hint: 'Run the SQL schema from supabase-schema.sql in your Supabase SQL Editor'
+        }),
       },
       { status: 500 }
     );
