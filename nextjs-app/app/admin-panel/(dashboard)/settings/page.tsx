@@ -283,14 +283,26 @@ export default function SettingsPage() {
         console.error('Error loading company info:', error);
       }
 
-      // Also load logo from settings
-      try {
-        const settingsResponse = await settingsAPI.getSettings();
-        if (settingsResponse.data?.settings?.company_logo_url) {
-          companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
+      // Also load logo from settings - check both companyInfo and settings
+      if (!companyInfo.company_logo_url) {
+        try {
+          const settingsResponse = await settingsAPI.getSettings();
+          if (settingsResponse.data?.settings?.company_logo_url) {
+            companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
+          }
+        } catch (error) {
+          console.error('Error loading logo:', error);
         }
-      } catch (error) {
-        console.error('Error loading logo:', error);
+      }
+
+      // Ensure logo URL is absolute (if it's from Supabase Storage)
+      if (companyInfo.company_logo_url && !companyInfo.company_logo_url.startsWith('http')) {
+        // If it's a relative path, make it absolute
+        if (companyInfo.company_logo_url.startsWith('/uploads')) {
+          companyInfo.company_logo_url = `${window.location.origin}${companyInfo.company_logo_url}`;
+        } else if (companyInfo.company_logo_url.startsWith('uploads')) {
+          companyInfo.company_logo_url = `${window.location.origin}/${companyInfo.company_logo_url}`;
+        }
       }
 
       const taxRateValue = parseFloat(taxRate) || 0;
