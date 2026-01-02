@@ -39,34 +39,16 @@ export default function Layout({ children }: LayoutProps) {
     phone: '',
   });
   const [logoEditMode, setLogoEditMode] = useState(false);
-  const [logoSettings, setLogoSettings] = useState<LogoSettings>(() => {
-    if (typeof window === 'undefined') {
-      return {
-        width: '139px',
-        height: '50px',
-        top: '0',
-        left: '0',
-        transform: 'none',
-      };
-    }
-    const saved = localStorage.getItem('logoSettings');
-    const defaultSettings: LogoSettings = {
-      width: '139px',
-      height: '50px',
-      top: '0',
-      left: '0',
-      transform: 'none',
-    };
-    if (saved) {
-      const parsed = JSON.parse(saved);
-      if (parsed.width) {
-        const currentWidth = parseFloat(parsed.width) || 139;
-        parsed.width = `${Math.round(currentWidth * 0.8)}px`;
-      }
-      return parsed;
-    }
-    return defaultSettings;
+  // Initialize with default values to avoid hydration mismatch
+  const [logoSettings, setLogoSettings] = useState<LogoSettings>({
+    width: '139px',
+    height: '50px',
+    top: '0',
+    left: '0',
+    transform: 'none',
   });
+  const [isMounted, setIsMounted] = useState(false);
+  const [currentYear, setCurrentYear] = useState<number | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isResizing, setIsResizing] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -86,11 +68,43 @@ export default function Layout({ children }: LayoutProps) {
     fetchSocialLinks();
   }, []);
 
+  // Load logo settings from localStorage after mount (client-side only)
   useEffect(() => {
+    setIsMounted(true);
+    setCurrentYear(new Date().getFullYear());
     if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('logoSettings');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          const defaultSettings: LogoSettings = {
+            width: '139px',
+            height: '50px',
+            top: '0',
+            left: '0',
+            transform: 'none',
+          };
+          if (parsed) {
+            // Apply saved settings, but adjust width if needed
+            if (parsed.width) {
+              const currentWidth = parseFloat(parsed.width) || 139;
+              parsed.width = `${Math.round(currentWidth * 0.8)}px`;
+            }
+            setLogoSettings({ ...defaultSettings, ...parsed });
+          }
+        } catch (error) {
+          console.error('Error parsing logoSettings from localStorage:', error);
+        }
+      }
+    }
+  }, []);
+
+  // Save logo settings to localStorage when they change (client-side only)
+  useEffect(() => {
+    if (isMounted && typeof window !== 'undefined') {
       localStorage.setItem('logoSettings', JSON.stringify(logoSettings));
     }
-  }, [logoSettings]);
+  }, [logoSettings, isMounted]);
 
   const handleMouseDown = (e: React.MouseEvent, type: 'drag' | 'resize') => {
     if (!logoEditMode) return;
@@ -186,7 +200,7 @@ export default function Layout({ children }: LayoutProps) {
               <img
                 src="/kayauto-logo.png.png"
                 alt="KAY Auto Service Logo"
-                className={`${styles.logoImage} ${logoEditMode ? styles.draggable : ''}`}
+                className={styles.logoImage}
                 style={{
                   width: logoSettings.width,
                   height: logoSettings.height,
@@ -216,33 +230,35 @@ export default function Layout({ children }: LayoutProps) {
                 </>
               )}
             </div>
-            <h1 className={styles.logoTitle}>{String(t('header.logoTitle') || '')}</h1>
+            <h1 className={styles.logoTitle}>
+              {isMounted ? String(t('header.logoTitle') || 'KAY Auto Service') : 'KAY Auto Service'}
+            </h1>
           </Link>
           <nav className={styles.nav}>
             <Link href="/" className={pathname === '/' ? styles.active : ''}>
-              {String(t('nav.home') || '')}
+              {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
             </Link>
             <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''}>
-              {String(t('nav.autoSales') || '')}
+              {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
             </Link>
             <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''}>
-              {String(t('nav.autoRepair') || '')}
+              {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
             </Link>
             <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''}>
-              {String(t('nav.autoBodyShop') || '')}
+              {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
             </Link>
             <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''}>
-              {String(t('nav.carWash') || '')}
+              {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
             </Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.active : ''}>
-              {String(t('nav.contact') || '')}
+              {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
             </Link>
             <LanguageSwitcher />
           </nav>
-          <button
+            <button
             className={styles.mobileMenuButton}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={String(t('header.menu') || '')}
+            aria-label={isMounted ? String(t('header.menu') || 'Menu') : 'Menu'}
           >
             <span className={styles.mobileMenuIcon}></span>
             <span className={styles.mobileMenuIcon}></span>
@@ -252,22 +268,22 @@ export default function Layout({ children }: LayoutProps) {
         {mobileMenuOpen && (
           <nav className={styles.mobileNav}>
             <Link href="/" className={pathname === '/' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.home') || '')}
+              {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
             </Link>
             <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.autoSales') || '')}
+              {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
             </Link>
             <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.autoRepair') || '')}
+              {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
             </Link>
             <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.autoBodyShop') || '')}
+              {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
             </Link>
             <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.carWash') || '')}
+              {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
             </Link>
             <Link href="/contact" className={pathname === '/contact' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {String(t('nav.contact') || '')}
+              {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
             </Link>
             <div className={styles.mobileLanguageSwitcher}>
               <LanguageSwitcher />
@@ -279,16 +295,16 @@ export default function Layout({ children }: LayoutProps) {
       <main className={styles.mainContent}>{children}</main>
       <footer className={styles.footer}>
         <div className={styles.footerContainer}>
-          <div className={styles.footerGrid}>
-            {/* Company Info */}
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>{String(t('footer.company.title') || 'KAY Auto Service')}</h3>
-              <p className={styles.footerDescription}>
-                {String(t('footer.company.description') ||
-                  'Tüm otomotif ihtiyaçlarınız için güvenilir ortağınız. Profesyonel hizmet, kaliteli işçilik.')}
-              </p>
-              {(socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
-                <div className={styles.socialLinks}>
+          {/* Copyright and Social Links */}
+          <div className={styles.footerBottom}>
+            <p className={styles.copyright}>
+              © {currentYear || 2024} KAY Oto Servis. Tüm hakları saklıdır.{' '}
+              <a href="https://www.findpoint.ca" target="_blank" rel="noopener noreferrer" className={styles.findpointLink}>
+                Findpoint
+              </a>
+            </p>
+            {(socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
+              <div className={styles.socialLinks}>
                   {socialLinks.phone && (
                     <a href={`tel:${socialLinks.phone}`} className={`${styles.socialLink} ${styles.phoneLink}`} title="Telefon">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -337,41 +353,6 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                 </div>
               )}
-            </div>
-
-            {/* Contact Info */}
-            <div className={styles.footerSection}>
-              <h3 className={styles.footerTitle}>{String(t('footer.contact.title') || 'İletişim')}</h3>
-              <ul className={styles.footerContact}>
-                {socialLinks.phone && (
-                  <li>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                    </svg>
-                    <a href={`tel:${socialLinks.phone}`}>{socialLinks.phone}</a>
-                  </li>
-                )}
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                  </svg>
-                  <span>{String(t('footer.contact.address') || 'Ankara, Türkiye')}</span>
-                </li>
-                <li>
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                  </svg>
-                  <span>{String(t('footer.contact.hours') || 'Pazartesi - Cumartesi: 09:00 - 18:00')}</span>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Copyright */}
-          <div className={styles.footerBottom}>
-            <p className={styles.copyright}>
-              © {new Date().getFullYear()} {String(t('footer.copyright') || 'KAY Auto Service. Tüm hakları saklıdır.')}
-            </p>
           </div>
         </div>
       </footer>

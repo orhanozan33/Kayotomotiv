@@ -209,8 +209,11 @@ export const carBrandsAndModels: Record<string, string[]> = {
   Chrysler: ['Pacifica', '300', 'Voyager'],
 };
 
+// Use a fixed base year to avoid hydration mismatches
+// This will be consistent between server and client
+const BASE_YEAR = 2024;
 export const years = Array.from(
   { length: 25 },
-  (_, i) => new Date().getFullYear() - i
+  (_, i) => BASE_YEAR - i
 );
 
