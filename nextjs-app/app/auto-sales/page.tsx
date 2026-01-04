@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 import { vehiclesAPI } from '@/lib/services/api';
 import { carBrandsAndModels, years } from '@/lib/data/carBrands';
 import CountdownTimer from '@/components/CountdownTimer';
-import VehicleDetailModal from '@/components/VehicleDetailModal';
 import styles from './page.module.css';
 
 const getImageUrl = (imageUrl: string | null | undefined): string | null => {
@@ -34,11 +34,11 @@ interface Vehicle {
 
 export default function AutoSalesPage() {
   const { t } = useTranslation();
+  const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   const [availableModels, setAvailableModels] = useState<string[]>([]);
-  const [selectedVehicleId, setSelectedVehicleId] = useState<string | null>(null);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     brand: '',
@@ -105,6 +105,11 @@ export default function AutoSalesPage() {
 
   const toggleFilter = () => {
     setIsFilterOpen(!isFilterOpen);
+  };
+
+  const handleVehicleClick = (vehicleId: string) => {
+    // Her zaman sayfaya yönlendir
+    router.push(`/auto-sales/${vehicleId}`);
   };
 
   return (
@@ -191,7 +196,7 @@ export default function AutoSalesPage() {
                 <div
                   key={vehicle.id}
                   className={`${styles.vehicleCard} ${isReserved ? styles.reserved : ''}`}
-                  onClick={() => setSelectedVehicleId(vehicle.id)}
+                  onClick={() => handleVehicleClick(vehicle.id)}
                   style={{ cursor: 'pointer' }}
                 >
                   {isReserved && (
@@ -273,12 +278,6 @@ export default function AutoSalesPage() {
           </div>
         )}
       </div>
-      {selectedVehicleId && (
-        <VehicleDetailModal
-          vehicleId={selectedVehicleId}
-          onClose={() => setSelectedVehicleId(null)}
-        />
-      )}
     </div>
   );
 }

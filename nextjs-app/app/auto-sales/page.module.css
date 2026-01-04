@@ -423,12 +423,14 @@
   }
 
   .reservedBadge {
-    padding: 0.625rem 1.25rem;
-    min-height: 36px;
+    padding: 0.3125rem 0.625rem;
+    min-height: 18px;
+    transform: scale(0.5);
+    transform-origin: top right;
   }
 
   .reservedText {
-    font-size: 0.8rem;
+    font-size: 0.4rem;
   }
 }
 
