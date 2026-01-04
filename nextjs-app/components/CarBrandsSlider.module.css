@@ -55,10 +55,25 @@
   }
 }
 
-/* Desktop only - hide on mobile */
+/* Mobile optimizations */
 @media (max-width: 768px) {
   .carBrandsSlider {
-    display: none;
+    padding: 0.4rem 0;
+  }
+
+  .brandsTrack {
+    gap: 1.5rem;
+    animation: scroll 25s linear infinite;
+  }
+
+  .brandItem {
+    height: 28px;
+    padding: 0 0.75rem;
+  }
+
+  .brandName {
+    font-size: 0.75rem;
+    letter-spacing: 0.8px;
   }
 }
 

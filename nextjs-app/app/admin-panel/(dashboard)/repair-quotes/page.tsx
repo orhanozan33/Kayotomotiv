@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useError } from '@/contexts/ErrorContext';
-import { adminRepairAPI as repairAPI, adminCarWashAPI as carWashAPI, adminSettingsAPI as settingsAPI, adminReceiptsAPI as receiptsAPI } from '@/lib/services/adminApi';
+import { adminRepairAPI as repairAPI, adminCarWashAPI as carWashAPI, adminSettingsAPI as settingsAPI, adminReceiptsAPI as receiptsAPI, adminUsersAPI as usersAPI } from '@/lib/services/adminApi';
 import { carBrandsAndModels } from '@/lib/data/carBrands';
 import ConfirmModal from '@/components/admin/ConfirmModal';
 import styles from './repair-quotes.module.css';
@@ -73,6 +73,9 @@ export default function RepairQuotesPage() {
   const [provincialTaxRate, setProvincialTaxRate] = useState(0);
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, quoteId: null as string | null });
   const [showServiceForm, setShowServiceForm] = useState(false);
+  const [userRole, setUserRole] = useState<string | null>(null);
+  const [userPermissions, setUserPermissions] = useState<any[] | null>(null);
+  const [permissionsLoading, setPermissionsLoading] = useState(true);
   
   const [formData, setFormData] = useState({
     vehicle_brand: '',
@@ -188,6 +191,53 @@ export default function RepairQuotesPage() {
   useEffect(() => {
     loadRevenueStats();
   }, [loadRevenueStats]);
+
+  // Load user role and permissions
+  useEffect(() => {
+    const loadUserPermissions = async () => {
+      if (typeof window === 'undefined') return;
+      
+      const userStr = localStorage.getItem('user');
+      if (userStr) {
+        try {
+          const user = JSON.parse(userStr);
+          setUserRole(user.role);
+
+          if (user.role === 'admin') {
+            setUserPermissions([]);
+            setPermissionsLoading(false);
+          } else {
+            try {
+              setPermissionsLoading(true);
+              const response = await usersAPI.getPermissions(user.id);
+              const permissions = response.data?.permissions || [];
+              setUserPermissions(permissions);
+            } catch (error) {
+              console.error('Error loading permissions:', error);
+              setUserPermissions([]);
+            } finally {
+              setPermissionsLoading(false);
+            }
+          }
+        } catch (e) {
+          console.error('Error parsing user:', e);
+          setPermissionsLoading(false);
+        }
+      } else {
+        setPermissionsLoading(false);
+      }
+    };
+
+    loadUserPermissions();
+  }, []);
+
+  // Check if user can delete
+  const canDelete = () => {
+    if (userRole === 'admin') return true;
+    if (permissionsLoading || userPermissions === null) return false;
+    const permission = userPermissions.find((p) => p.page === 'repair-quotes');
+    return permission?.can_delete === true;
+  };
 
   const handleInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -733,6 +783,7 @@ export default function RepairQuotesPage() {
         />
       </div>
 
+      {/* Desktop Table View */}
       <div className={styles.tableContainer}>
         <table className={styles.dataTable}>
           <thead>
@@ -774,13 +825,15 @@ export default function RepairQuotesPage() {
                     <td onClick={(e) => e.stopPropagation()}>
                       <div className={styles.priceActionCell}>
                         <span className={styles.priceText}>${parseFloat(String(quote.total_price || 0)).toFixed(2)}</span>
-                        <button
-                          className={styles.btnDelete}
-                          onClick={(e) => handleDeleteRecord(quote.id, e)}
-                          title={t('common.delete')}
-                        >
-                          {t('common.delete')}
-                        </button>
+                        {canDelete() && (
+                          <button
+                            className={styles.btnDelete}
+                            onClick={(e) => handleDeleteRecord(quote.id, e)}
+                            title={t('common.delete')}
+                          >
+                            {t('common.delete')}
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -789,6 +842,45 @@ export default function RepairQuotesPage() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className={styles.mobileQuotesList}>
+        {quotes.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            {t('repairQuotes.noData')}
+          </div>
+        ) : (
+          quotes.map(quote => {
+            const services = quote.parsed_services || [];
+            const licensePlate = quote.license_plate || '-';
+            return (
+              <div
+                key={quote.id}
+                className={styles.quoteCard}
+                onClick={() => handleRowClick(quote)}
+                style={{ cursor: 'pointer' }}
+              >
+                <div className={styles.quoteCardHeader}>
+                  <div>
+                    <div className={styles.quoteCardDate}>
+                      {new Date(quote.created_at).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
+                    </div>
+                    <div className={styles.quoteCardVehicle}>
+                      {quote.vehicle_brand} {quote.vehicle_model}
+                    </div>
+                    <div className={styles.quoteCardPlate}>
+                      🚗 {licensePlate}
+                    </div>
+                  </div>
+                  <div className={styles.quoteCardPrice}>
+                    ${parseFloat(String(quote.total_price || 0)).toFixed(2)}
+                  </div>
+                </div>
+              </div>
+            );
+          })
+        )}
       </div>
 
       {/* Add Vehicle Modal */}
@@ -1110,7 +1202,23 @@ export default function RepairQuotesPage() {
               <button onClick={handlePrintReceipt} className={styles.btnPrimary}>
                 🖨️ {t('repairQuotes.detail.printReceipt')}
               </button>
-              <button onClick={() => setShowDetailModal(false)}>
+              {canDelete() && (
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleDeleteRecord(selectedQuote.id, e);
+                    setShowDetailModal(false);
+                    setShowServiceForm(false);
+                  }}
+                  className={styles.btnDelete}
+                >
+                  🗑️ {t('common.delete')}
+                </button>
+              )}
+              <button onClick={() => {
+                setShowDetailModal(false);
+                setShowServiceForm(false);
+              }}>
                 {t('common.close')}
               </button>
             </div>

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useError } from '@/contexts/ErrorContext';
 import { vehiclesAPI } from '@/lib/services/adminApi';
@@ -95,6 +95,7 @@ export default function VehiclesPage() {
   const [deleteImageModal, setDeleteImageModal] = useState({ isOpen: false, imageId: null as string | null });
   const [deleteVehicleModal, setDeleteVehicleModal] = useState({ isOpen: false, vehicleId: null as string | null });
   const [searchTerm, setSearchTerm] = useState('');
+  const modalContentRef = useRef<HTMLDivElement>(null);
   const [formData, setFormData] = useState({
     brand: '',
     model: '',
@@ -154,6 +155,26 @@ export default function VehiclesPage() {
         ...formData,
         [name]: checked !== undefined ? checked : value,
       });
+    }
+  };
+
+  const handleSelectFocus = (e: React.FocusEvent<HTMLSelectElement>) => {
+    // Save scroll position when select is focused
+    if (modalContentRef.current) {
+      const scrollTop = modalContentRef.current.scrollTop;
+      // Store it temporarily
+      (e.target as any).__scrollTop = scrollTop;
+    }
+  };
+
+  const handleSelectBlur = (e: React.FocusEvent<HTMLSelectElement>) => {
+    // Restore scroll position after select loses focus
+    if (modalContentRef.current && (e.target as any).__scrollTop !== undefined) {
+      setTimeout(() => {
+        if (modalContentRef.current) {
+          modalContentRef.current.scrollTop = (e.target as any).__scrollTop;
+        }
+      }, 10);
     }
   };
 
@@ -399,19 +420,13 @@ export default function VehiclesPage() {
     <div className={styles.vehiclesPage}>
       <div className={styles.pageHeader}>
         <h1>{t('vehicles.title') || 'Araçlar'}</h1>
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: 1, maxWidth: '400px', marginLeft: '2rem' }}>
+        <div className={styles.searchContainer}>
           <input
             type="text"
             placeholder={t('vehicles.search') || 'Marka, model, yıl veya fiyat ile ara...'}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            style={{
-              padding: '0.5rem',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-              fontSize: '1rem',
-              width: '100%',
-            }}
+            className={styles.searchInput}
           />
         </div>
         <button
@@ -445,7 +460,7 @@ export default function VehiclesPage() {
 
       {showForm && (
         <div className={styles.modal}>
-          <div className={styles.modalContent}>
+          <div className={styles.modalContent} ref={modalContentRef}>
             <h2>{editingVehicle ? t('vehicles.editVehicle') || 'Araç Düzenle' : t('vehicles.addVehicle') || 'Araç Ekle'}</h2>
             <button
               type="button"
@@ -477,7 +492,7 @@ export default function VehiclesPage() {
             </button>
             <form onSubmit={handleSubmit}>
               <div className={styles.formGrid}>
-                <select name="brand" value={formData.brand} onChange={handleInputChange} required>
+                <select name="brand" value={formData.brand} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur} required>
                   <option value="">{t('vehicles.brand') || 'Marka'}</option>
                   {Object.keys(carBrandsAndModels)
                     .sort()
@@ -491,6 +506,8 @@ export default function VehiclesPage() {
                   name="model"
                   value={formData.model}
                   onChange={handleInputChange}
+                  onFocus={handleSelectFocus}
+                  onBlur={handleSelectBlur}
                   required
                   disabled={!formData.brand}
                 >
@@ -501,7 +518,7 @@ export default function VehiclesPage() {
                     </option>
                   ))}
                 </select>
-                <select name="year" value={formData.year} onChange={handleInputChange} required>
+                <select name="year" value={formData.year} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur} required>
                   <option value="">{t('vehicles.year') || 'Yıl'}</option>
                   {years.map((year) => (
                     <option key={year} value={year}>
@@ -525,17 +542,17 @@ export default function VehiclesPage() {
                   value={formData.mileage}
                   onChange={handleInputChange}
                 />
-                <select name="fuel_type" value={formData.fuel_type} onChange={handleInputChange}>
+                <select name="fuel_type" value={formData.fuel_type} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur}>
                   <option value="petrol">{t('vehicles.fuelPetrol') || 'Benzin'}</option>
                   <option value="diesel">{t('vehicles.fuelDiesel') || 'Dizel'}</option>
                   <option value="electric">{t('vehicles.fuelElectric') || 'Elektrik'}</option>
                   <option value="hybrid">{t('vehicles.fuelHybrid') || 'Hibrit'}</option>
                 </select>
-                <select name="transmission" value={formData.transmission} onChange={handleInputChange}>
+                <select name="transmission" value={formData.transmission} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur}>
                   <option value="manual">{t('vehicles.transmissionManual') || 'Manuel'}</option>
                   <option value="automatic">{t('vehicles.transmissionAutomatic') || 'Otomatik'}</option>
                 </select>
-                <select name="color" value={formData.color} onChange={handleInputChange}>
+                <select name="color" value={formData.color} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur}>
                   <option value="">{t('vehicles.color') || 'Renk Seçin'}</option>
                   {CAR_COLOR_KEYS.map((colorKey) => (
                     <option key={colorKey} value={colorKey}>
@@ -543,7 +560,7 @@ export default function VehiclesPage() {
                     </option>
                   ))}
                 </select>
-                <select name="status" value={formData.status} onChange={handleInputChange}>
+                <select name="status" value={formData.status} onChange={handleInputChange} onFocus={handleSelectFocus} onBlur={handleSelectBlur}>
                   <option value="available">{t('vehicles.statusAvailable') || 'Müsait'}</option>
                   <option value="sold">{t('vehicles.statusSold') || 'Satıldı'}</option>
                   <option value="reserved">{t('vehicles.statusReserved') || 'Rezerve'}</option>
@@ -673,14 +690,14 @@ export default function VehiclesPage() {
                 )}
               </div>
 
-              <label>
+              <label className={styles.featuredCheckbox}>
                 <input
                   type="checkbox"
                   name="featured"
                   checked={formData.featured}
                   onChange={handleInputChange}
                 />
-                {t('vehicles.featured')}
+                <span>{t('vehicles.featured') || 'Öne Çıkan'}</span>
               </label>
               <div className={styles.modalActions}>
                 <button type="submit">{t('common.save') || 'Kaydet'}</button>
@@ -707,45 +724,121 @@ export default function VehiclesPage() {
       {loading ? (
         <div>{t('common.loading') || 'Yükleniyor...'}</div>
       ) : (
-        <div className={styles.vehiclesTableContainer}>
-          <table className={styles.vehiclesTable}>
-            <thead>
-              <tr>
-                <th>{t('vehicles.brand') || 'Marka'}</th>
-                <th>{t('vehicles.model') || 'Model'}</th>
-                <th>{t('vehicles.year') || 'Yıl'}</th>
-                <th>{t('vehicles.price') || 'Fiyat'}</th>
-                <th>{t('vehicles.status') || 'Durum'}</th>
-                <th>{t('vehicles.actions') || 'İşlemler'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {vehicles.map((vehicle) => (
-                <tr
-                  key={vehicle.id}
-                  className={vehicle.status === 'reserved' ? styles.reservedRow : ''}
-                >
-                  <td>{vehicle.brand}</td>
-                  <td>{vehicle.model}</td>
-                  <td>{vehicle.year}</td>
-                  <td>${vehicle.price.toLocaleString()}</td>
-                  <td>{vehicle.status}</td>
-                  <td onClick={(e) => e.stopPropagation()}>
-                    <div className={styles.actionButtons}>
-                      <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit')}</button>
-                      <button
-                        onClick={() => handleDelete(vehicle.id)}
-                        className={styles.btnDanger}
-                      >
-                        {t('vehicles.delete') || 'Sil'}
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Desktop Table View */}
+          <div className={styles.vehiclesTableContainer}>
+            <table className={styles.vehiclesTable}>
+              <thead>
+                <tr>
+                  <th>{t('vehicles.brand') || 'Marka'}</th>
+                  <th>{t('vehicles.model') || 'Model'}</th>
+                  <th>{t('vehicles.year') || 'Yıl'}</th>
+                  <th>{t('vehicles.price') || 'Fiyat'}</th>
+                  <th>{t('vehicles.status') || 'Durum'}</th>
+                  <th>{t('vehicles.actions') || 'İşlemler'}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {vehicles.map((vehicle) => (
+                  <tr
+                    key={vehicle.id}
+                    className={vehicle.status === 'reserved' ? styles.reservedRow : ''}
+                  >
+                    <td>{vehicle.brand}</td>
+                    <td>{vehicle.model}</td>
+                    <td>{vehicle.year}</td>
+                    <td>${vehicle.price.toLocaleString()}</td>
+                    <td>{vehicle.status}</td>
+                    <td onClick={(e) => e.stopPropagation()}>
+                      <div className={styles.actionButtons}>
+                        <button onClick={() => handleEdit(vehicle)}>{t('vehicles.edit')}</button>
+                        <button
+                          onClick={() => handleDelete(vehicle.id)}
+                          className={styles.btnDanger}
+                        >
+                          {t('vehicles.delete') || 'Sil'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className={styles.mobileVehiclesList}>
+            {vehicles.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                {t('vehicles.noVehicles') || 'Kayıtlı araç yok'}
+              </div>
+            ) : (
+              vehicles.map((vehicle) => {
+                const primaryImage = vehicle.images?.find((img) => img.is_primary) || vehicle.images?.[0];
+                const imageUrl = primaryImage ? getImageUrl(primaryImage.image_url) : null;
+                const statusLabels: { [key: string]: string } = {
+                  available: t('vehicles.statusAvailable') || 'Müsait',
+                  sold: t('vehicles.statusSold') || 'Satıldı',
+                  reserved: t('vehicles.statusReserved') || 'Rezerve',
+                  pending: t('vehicles.statusPending') || 'Beklemede',
+                };
+                const statusColors: { [key: string]: string } = {
+                  available: '#4CAF50',
+                  sold: '#757575',
+                  reserved: '#ff9800',
+                  pending: '#2196F3',
+                };
+                return (
+                  <div
+                    key={vehicle.id}
+                    className={`${styles.vehicleCard} ${vehicle.status === 'reserved' ? styles.reservedCard : ''}`}
+                  >
+                    {imageUrl && (
+                      <div className={styles.vehicleCardImage}>
+                        <img src={imageUrl} alt={`${vehicle.brand} ${vehicle.model}`} />
+                        {vehicle.featured && (
+                          <div className={styles.featuredBadge}>
+                            ⭐ {t('vehicles.featured') || 'Öne Çıkan'}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                    <div className={styles.vehicleCardContent}>
+                      <div className={styles.vehicleCardHeader}>
+                        <div>
+                          <h3 className={styles.vehicleCardTitle}>
+                            {vehicle.brand} {vehicle.model}
+                          </h3>
+                          <div className={styles.vehicleCardYear}>{vehicle.year}</div>
+                        </div>
+                        <div
+                          className={styles.vehicleCardStatus}
+                          style={{ backgroundColor: `${statusColors[vehicle.status]}20`, color: statusColors[vehicle.status] }}
+                        >
+                          {statusLabels[vehicle.status] || vehicle.status}
+                        </div>
+                      </div>
+                      <div className={styles.vehicleCardActions}>
+                        <button
+                          onClick={() => handleEdit(vehicle)}
+                          className={styles.btnEdit}
+                        >
+                          {t('vehicles.edit') || 'Düzenle'}
+                        </button>
+                        <button
+                          onClick={() => handleDelete(vehicle.id)}
+                          className={styles.btnDelete}
+                        >
+                          {t('vehicles.delete') || 'Sil'}
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
+        </>
       )}
 
       <ConfirmModal

@@ -106,15 +106,17 @@
 .featureCard {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 1rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(255, 107, 53, 0.2);
 }
 
 .featureIcon {
@@ -210,9 +212,33 @@
 }
 
 @media (max-width: 768px) {
+  .autoBodyShopPage {
+    padding: 1.5rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
   .pageHeader {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 2rem;
+  }
+
+  .autoBodyShopPage h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .heroSection {
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .heroContent {
@@ -220,22 +246,35 @@
     gap: 2rem;
   }
 
+  .heroText h2,
+  .servicesInfoContent h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .heroText p,
+  .servicesInfoContent p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
   .servicesInfoSection {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 2rem 1.5rem;
   }
 
   .featuresSection {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .autoBodyShopPage h1 {
-    font-size: 2rem;
+  .featureCard {
+    padding: 1.5rem;
   }
 
-  .heroText h2,
-  .servicesInfoContent h2 {
-    font-size: 1.5rem;
+  .featureCard h3 {
+    font-size: 1.15rem;
   }
 
   .heroImg,

@@ -1201,42 +1201,90 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
               )}
 
               {displayCustomer.serviceRecords && displayCustomer.serviceRecords.length > 0 ? (
-                <div className={styles.servicesList}>
-                  <div className={styles.servicesTableHeader}>
-                    <span>{t('customers.detail.date') || 'Tarih'}</span>
-                    <span>{t('customers.detail.service') || 'Hizmet'}</span>
-                    <span>{t('customers.detail.type') || 'Tip'}</span>
-                    <span>{t('customers.detail.price') || 'Fiyat'}</span>
-                    <span>{t('customers.detail.actions') || 'İşlemler'}</span>
-                  </div>
-                  {displayCustomer.serviceRecords.map((record: any) => (
-                    <div key={record.id} className={styles.serviceRecord}>
-                      <span>{new Date(record.performed_date).toLocaleDateString()}</span>
-                      <span>
-                        <strong>{record.service_name}</strong>
-                        {record.service_description && <p>{record.service_description}</p>}
-                      </span>
-                      <span>{record.service_type}</span>
-                      <span>${parseFloat(String(record.price || 0)).toFixed(2)}</span>
-                      <span>
-                        <button
-                          className={styles.btnPrintService}
-                          onClick={() => handlePrintReceipt(record)}
-                          title={t('customers.detail.printReceipt') || 'Yazdır'}
-                        >
-                          🖨️ {t('common.print')}
-                        </button>
-                        <button
-                          className={styles.btnDeleteService}
-                          onClick={() => handleDeleteService(record.id)}
-                          title={t('customers.detail.deleteService') || 'Sil'}
-                        >
-                          {t('common.delete') || 'Sil'}
-                        </button>
-                      </span>
+                <>
+                  {/* Desktop Table View */}
+                  <div className={styles.servicesList}>
+                    <div className={styles.servicesTableHeader}>
+                      <span>{t('customers.detail.date') || 'Tarih'}</span>
+                      <span>{t('customers.detail.service') || 'Hizmet'}</span>
+                      <span>{t('customers.detail.type') || 'Tip'}</span>
+                      <span>{t('customers.detail.price') || 'Fiyat'}</span>
+                      <span>{t('customers.detail.actions') || 'İşlemler'}</span>
                     </div>
-                  ))}
-                </div>
+                    {displayCustomer.serviceRecords.map((record: any) => (
+                      <div key={record.id} className={styles.serviceRecord}>
+                        <span>{new Date(record.performed_date).toLocaleDateString()}</span>
+                        <span>
+                          <strong>{record.service_name}</strong>
+                          {record.service_description && <p>{record.service_description}</p>}
+                        </span>
+                        <span>{record.service_type}</span>
+                        <span>${parseFloat(String(record.price || 0)).toFixed(2)}</span>
+                        <span>
+                          <button
+                            className={styles.btnPrintService}
+                            onClick={() => handlePrintReceipt(record)}
+                            title={t('customers.detail.printReceipt') || 'Yazdır'}
+                          >
+                            🖨️ {t('common.print')}
+                          </button>
+                          <button
+                            className={styles.btnDeleteService}
+                            onClick={() => handleDeleteService(record.id)}
+                            title={t('customers.detail.deleteService') || 'Sil'}
+                          >
+                            {t('common.delete') || 'Sil'}
+                          </button>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Mobile Card View */}
+                  <div className={styles.mobileServicesList}>
+                    {displayCustomer.serviceRecords.map((record: any) => (
+                      <div key={record.id} className={styles.serviceCard}>
+                        <div className={styles.serviceCardHeader}>
+                          <div className={styles.serviceCardTitle}>
+                            <h4>{record.service_name}</h4>
+                            <div className={styles.serviceCardDate}>
+                              {new Date(record.performed_date).toLocaleDateString()}
+                            </div>
+                          </div>
+                          <div className={styles.serviceCardPrice}>
+                            ${parseFloat(String(record.price || 0)).toFixed(2)}
+                          </div>
+                        </div>
+                        {record.service_description && (
+                          <div className={styles.serviceCardDescription}>
+                            {record.service_description}
+                          </div>
+                        )}
+                        <div className={styles.serviceCardFooter}>
+                          <div className={styles.serviceCardType}>
+                            {record.service_type === 'repair' ? '🔧 Tamir' : record.service_type === 'car_wash' ? '🚗 Oto Yıkama' : record.service_type}
+                          </div>
+                          <div className={styles.serviceCardActions}>
+                            <button
+                              className={styles.btnPrintService}
+                              onClick={() => handlePrintReceipt(record)}
+                              title={t('customers.detail.printReceipt') || 'Yazdır'}
+                            >
+                              🖨️
+                            </button>
+                            <button
+                              className={styles.btnDeleteService}
+                              onClick={() => handleDeleteService(record.id)}
+                              title={t('customers.detail.deleteService') || 'Sil'}
+                            >
+                              🗑️
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </>
               ) : (
                 <p>{t('customers.detail.noServices') || 'Hizmet bulunamadı'}</p>
               )}

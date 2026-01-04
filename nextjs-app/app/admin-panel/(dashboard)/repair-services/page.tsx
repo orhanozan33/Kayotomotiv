@@ -210,6 +210,7 @@ export default function RepairServicesPage() {
         </div>
       )}
 
+      {/* Desktop Table View */}
       <div className={styles.tableContainer}>
         <table className={styles.dataTable}>
           <thead>
@@ -246,6 +247,68 @@ export default function RepairServicesPage() {
             ))}
           </tbody>
         </table>
+      </div>
+
+      {/* Mobile Card View */}
+      <div className={styles.mobileServicesList}>
+        {services.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '2rem' }}>
+            {t('repairServices.noServices') || 'Hizmet bulunamadı'}
+          </div>
+        ) : (
+          services.map(service => (
+            <div
+              key={service.id}
+              className={`${styles.serviceCard} ${!service.is_active ? styles.inactiveCard : ''}`}
+              onClick={() => handleRowClick(service)}
+              style={{ cursor: 'pointer' }}
+            >
+              <div className={styles.serviceCardHeader}>
+                <div>
+                  <h3 className={styles.serviceCardName}>{service.name}</h3>
+                  {service.category && (
+                    <div className={styles.serviceCardCategory}>{service.category}</div>
+                  )}
+                </div>
+                <div className={styles.serviceCardPrice}>${service.base_price}</div>
+              </div>
+              {service.description && (
+                <div className={styles.serviceCardDescription}>{service.description}</div>
+              )}
+              <div className={styles.serviceCardFooter}>
+                <div className={styles.serviceCardInfo}>
+                  <span className={styles.serviceCardOrder}>Sıra: {service.display_order}</span>
+                  <span className={`${styles.serviceCardStatus} ${service.is_active ? styles.activeStatus : styles.inactiveStatus}`}>
+                    {service.is_active ? t('common.active') || 'Aktif' : t('common.inactive') || 'Pasif'}
+                  </span>
+                </div>
+                <div className={styles.serviceCardActions} onClick={(e) => e.stopPropagation()}>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleEdit(service); }}
+                    className={styles.btnEdit}
+                    title={t('common.edit') || 'Düzenle'}
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleToggleActive(service); }}
+                    className={service.is_active ? styles.btnDeactivate : styles.btnActivate}
+                    title={service.is_active ? t('common.deactivate') || 'Pasifleştir' : t('common.activate') || 'Aktifleştir'}
+                  >
+                    {service.is_active ? '⏸️' : '▶️'}
+                  </button>
+                  <button
+                    onClick={(e) => { e.stopPropagation(); handleDelete(service.id); }}
+                    className={styles.btnDelete}
+                    title={t('common.delete') || 'Sil'}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
 
       <ConfirmModal

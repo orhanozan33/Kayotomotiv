@@ -31,6 +31,7 @@ interface SocialLinks {
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation('common');
   const pathname = usePathname();
+  const isAdminPanel = pathname?.startsWith('/admin-panel');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({
     facebook: '',
@@ -255,7 +256,32 @@ export default function Layout({ children }: LayoutProps) {
             </Link>
             <LanguageSwitcher />
           </nav>
-            <button
+          <div className={styles.mobileLanguageSwitcher}>
+            <LanguageSwitcher />
+          </div>
+          {!isAdminPanel && (
+            <nav className={styles.mobileNav}>
+              <Link href="/" className={pathname === '/' ? styles.active : ''}>
+                {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
+              </Link>
+              <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''}>
+                {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
+              </Link>
+              <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''}>
+                {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
+              </Link>
+              <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''}>
+                {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
+              </Link>
+              <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''}>
+                {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
+              </Link>
+              <Link href="/contact" className={pathname === '/contact' ? styles.active : ''}>
+                {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
+              </Link>
+            </nav>
+          )}
+          <button
             className={styles.mobileMenuButton}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label={isMounted ? String(t('header.menu') || 'Menu') : 'Menu'}
@@ -265,31 +291,6 @@ export default function Layout({ children }: LayoutProps) {
             <span className={styles.mobileMenuIcon}></span>
           </button>
         </div>
-        {mobileMenuOpen && (
-          <nav className={styles.mobileNav}>
-            <Link href="/" className={pathname === '/' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
-            </Link>
-            <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
-            </Link>
-            <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
-            </Link>
-            <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
-            </Link>
-            <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
-            </Link>
-            <Link href="/contact" className={pathname === '/contact' ? styles.active : ''} onClick={() => setMobileMenuOpen(false)}>
-              {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
-            </Link>
-            <div className={styles.mobileLanguageSwitcher}>
-              <LanguageSwitcher />
-            </div>
-          </nav>
-        )}
       </header>
       <CarBrandsSlider />
       <main className={styles.mainContent}>{children}</main>
@@ -298,13 +299,15 @@ export default function Layout({ children }: LayoutProps) {
           {/* Copyright and Social Links */}
           <div className={styles.footerBottom}>
             <p className={styles.copyright}>
-              © {currentYear || 2024} {t('footer.copyright') || 'KAY Oto Servis. Tüm hakları saklıdır.'}{' '}
+              © {currentYear || 2024}{' '}
+              {isMounted ? (t('footer.copyright') || 'KAY Oto Servis. Tüm hakları saklıdır.') : 'KAY Oto Servis. Tüm hakları saklıdır.'}{' '}
               <a href="https://www.findpoint.ca" target="_blank" rel="noopener noreferrer" className={styles.findpointLink}>
                 Findpoint
               </a>
             </p>
-            {(socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
-              <div className={styles.socialLinks}>
+            <div className={styles.footerRight}>
+              {!isAdminPanel && (socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
+                <div className={styles.socialLinks}>
                   {socialLinks.phone && (
                     <a href={`tel:${socialLinks.phone}`} className={`${styles.socialLink} ${styles.phoneLink}`} title="Telefon">
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -353,6 +356,12 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                 </div>
               )}
+              {!isAdminPanel && (
+                <div className={styles.footerLanguageSwitcher}>
+                  <LanguageSwitcher />
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </footer>

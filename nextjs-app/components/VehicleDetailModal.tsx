@@ -317,7 +317,28 @@ export default function VehicleDetailModal({ vehicleId, onClose }: VehicleDetail
                     <div className={styles.specLabel}>{String(t('autoSales.details.specs.color') || '')}</div>
                     <div className={styles.specValue}>
                       {vehicle.color
-                        ? String(t(`autoSales.details.colors.${vehicle.color}`) || vehicle.color)
+                        ? (() => {
+                            const colorKey = vehicle.color.trim().toLowerCase();
+                            // Try vehicles.colors first (admin panel format)
+                            let translated = t(`vehicles.colors.${colorKey}`);
+                            if (translated === `vehicles.colors.${colorKey}`) {
+                              // Try autoSales.details.colors (frontend format)
+                              translated = t(`autoSales.details.colors.${colorKey}`);
+                              if (translated === `autoSales.details.colors.${colorKey}`) {
+                                // Try with capitalized first letter
+                                const capitalized = colorKey.charAt(0).toUpperCase() + colorKey.slice(1);
+                                translated = t(`vehicles.colors.${capitalized}`);
+                                if (translated === `vehicles.colors.${capitalized}`) {
+                                  translated = t(`autoSales.details.colors.${capitalized}`);
+                                  if (translated === `autoSales.details.colors.${capitalized}`) {
+                                    // If still not found, return the original color value
+                                    return colorKey;
+                                  }
+                                }
+                              }
+                            }
+                            return String(translated);
+                          })()
                         : 'N/A'}
                     </div>
                   </div>

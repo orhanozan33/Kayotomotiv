@@ -15,6 +15,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
   const [userPermissions, setUserPermissions] = useState<any[] | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [permissionsLoading, setPermissionsLoading] = useState(true);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   useEffect(() => {
     const loadPermissions = async () => {
@@ -73,9 +74,43 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
     return pathname === path || pathname?.startsWith(path + '/');
   };
 
+  const toggleMobileMenu = () => {
+    setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const closeMobileMenu = () => {
+    setMobileMenuOpen(false);
+  };
+
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   return (
     <div className={styles.adminLayout}>
-      <aside className={styles.sidebar}>
+      <button 
+        className={styles.mobileMenuToggle}
+        onClick={toggleMobileMenu}
+        aria-label="Menu"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      {mobileMenuOpen && (
+        <div 
+          className={`${styles.mobileOverlay} ${mobileMenuOpen ? styles.active : ''}`}
+          onClick={closeMobileMenu}
+        />
+      )}
+      <aside className={`${styles.sidebar} ${mobileMenuOpen ? styles.mobileOpen : ''}`}>
         <div className={styles.sidebarHeader}>
           <button onClick={handleLogout} className={styles.logoutBtn}>
             {t('common.logout') || 'Çıkış Yap'}
@@ -86,6 +121,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
           <Link
             href="/admin-panel/dashboard"
             className={isActive('/admin-panel/dashboard') ? styles.active : ''}
+            onClick={closeMobileMenu}
           >
             {t('adminNav.dashboard') || 'Dashboard'}
           </Link>
@@ -93,6 +129,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/reservations"
               className={isActive('/admin-panel/reservations') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.reservations') || 'Rezervasyonlar'}
             </Link>
@@ -101,6 +138,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/messages"
               className={isActive('/admin-panel/messages') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.messages') || 'Mesajlar'}
             </Link>
@@ -109,6 +147,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/vehicles"
               className={isActive('/admin-panel/vehicles') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.vehicles') || 'Araçlar'}
             </Link>
@@ -117,6 +156,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/customers"
               className={isActive('/admin-panel/customers') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.customers') || 'Müşteri Kayıt'}
             </Link>
@@ -125,6 +165,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/repair-services"
               className={isActive('/admin-panel/repair-services') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.repairServices') || 'Tamir Hizmetleri'}
             </Link>
@@ -133,6 +174,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/car-wash"
               className={isActive('/admin-panel/car-wash') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.carWash') || 'Oto Yıkama'}
             </Link>
@@ -141,6 +183,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/repair-quotes"
               className={isActive('/admin-panel/repair-quotes') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.repairQuotes') || 'Oto Yıkama Kayıt'}
             </Link>
@@ -149,6 +192,7 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
             <Link
               href="/admin-panel/settings"
               className={isActive('/admin-panel/settings') ? styles.active : ''}
+              onClick={closeMobileMenu}
             >
               {t('adminNav.settings') || 'Ayarlar'}
             </Link>

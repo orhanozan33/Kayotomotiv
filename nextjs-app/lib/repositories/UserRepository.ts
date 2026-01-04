@@ -16,6 +16,7 @@ export class UserRepository {
     lastName?: string;
     phone?: string;
     role?: string;
+    isActive?: boolean;
   }): Promise<User> {
     const user = this.userRepo.create({
       email: data.email,
@@ -23,6 +24,7 @@ export class UserRepository {
       lastName: data.lastName,
       phone: data.phone,
       role: data.role || 'customer',
+      isActive: data.isActive !== undefined ? data.isActive : true,
     });
 
     await user.setPassword(data.password);
@@ -47,12 +49,32 @@ export class UserRepository {
     });
   }
 
-  async update(id: string, data: { firstName?: string; lastName?: string; phone?: string }): Promise<User | null> {
+  async update(id: string, data: { 
+    email?: string; 
+    password?: string;
+    firstName?: string; 
+    lastName?: string; 
+    phone?: string;
+    role?: string;
+    isActive?: boolean;
+  }): Promise<User | null> {
     // Filter out undefined values to prevent SQL errors
-    const cleanData: { firstName?: string; lastName?: string; phone?: string } = {};
+    const cleanData: any = {};
+    if (data.email !== undefined) cleanData.email = data.email;
     if (data.firstName !== undefined) cleanData.firstName = data.firstName;
     if (data.lastName !== undefined) cleanData.lastName = data.lastName;
     if (data.phone !== undefined) cleanData.phone = data.phone;
+    if (data.role !== undefined) cleanData.role = data.role;
+    if (data.isActive !== undefined) cleanData.isActive = data.isActive;
+    
+    // Handle password separately
+    if (data.password !== undefined && data.password.trim()) {
+      const user = await this.findById(id);
+      if (user) {
+        await user.setPassword(data.password);
+        cleanData.passwordHash = user.passwordHash;
+      }
+    }
     
     if (Object.keys(cleanData).length === 0) {
       return this.findById(id);

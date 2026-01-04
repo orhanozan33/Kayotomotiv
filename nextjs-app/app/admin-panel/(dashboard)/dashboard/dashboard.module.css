@@ -276,22 +276,108 @@
 }
 
 @media (max-width: 768px) {
+  .dashboardPage {
+    padding: 0;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+
   .revenueControls {
     flex-direction: column;
     align-items: stretch;
+    gap: 1rem;
   }
 
   .periodSelector {
-    justify-content: center;
+    justify-content: stretch;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .periodSelector button {
+    flex: 1;
+    min-width: 0;
+    padding: 0.875rem 0.5rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+    white-space: nowrap;
   }
 
   .dateRangeSelector {
-    flex-wrap: wrap;
-    justify-content: center;
+    flex-wrap: nowrap;
+    justify-content: stretch;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .dateRangeSelector label {
+    font-size: 0.85rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .dateRangeSelector input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.875rem 0.5rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+  }
+
+  .dateRangeSelector span {
+    flex-shrink: 0;
+    font-size: 0.85rem;
+  }
+
+  .dateRangeSelector button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+    border-radius: 0.75rem;
+  }
+
+  .statCard h3 {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .statNumber {
+    font-size: 1.5rem;
   }
 
   .revenueGridSeparated {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .statCard .value {
+    font-size: 1.75rem;
   }
 }
 

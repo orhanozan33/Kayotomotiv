@@ -103,25 +103,49 @@
 }
 
 .service-btn {
-  background: #10b981;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  padding: 0.8rem 2rem;
-  font-size: 0.9rem;
+  padding: 1rem 2.5rem;
+  font-size: 0.95rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  border-radius: 4px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
   margin-top: 0.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-btn::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.service-btn:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .service-btn:hover {
-  background: #059669;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+  background: linear-gradient(135deg, #059669 0%, #047857 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.service-btn:active {
+  transform: translateY(-1px) scale(0.98);
 }
 
 .service-content {
@@ -186,19 +210,27 @@
 
   .service-overlay p,
   .service-content p {
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.7;
   }
 
   .service-btn {
-    padding: 0.8rem 2rem;
-    font-size: 1rem;
+    padding: 1rem 2.5rem;
+    font-size: 1.1rem;
+    min-height: 48px;
+    min-width: 140px;
+    touch-action: manipulation;
   }
 
   .service-overlay {
-    padding: 2rem 1.5rem 1.5rem;
+    padding: 2.5rem 1.5rem 2rem;
   }
 
   .service-content {
-    padding: 1.5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .service-panel {
+    min-height: 40vh;
   }
 }

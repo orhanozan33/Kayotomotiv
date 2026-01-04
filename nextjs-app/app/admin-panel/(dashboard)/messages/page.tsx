@@ -192,6 +192,48 @@ export default function MessagesPage() {
             )}
           </tbody>
         </table>
+        {/* Mobile Card View */}
+        <div className={styles.mobileMessagesList}>
+          {messages.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '2rem' }}>
+              {t('adminMessages.noMessages')}
+            </div>
+          ) : (
+            messages.map((message) => {
+              const badge = getStatusBadge(message.status);
+              return (
+                <div 
+                  key={message.id} 
+                  className={`${styles.messageCard} ${message.status === 'unread' ? styles.unreadRow : ''}`}
+                  onClick={() => openDetailModal(message)}
+                  style={{ cursor: 'pointer' }}
+                >
+                  <div className={styles.messageCardHeader}>
+                    <div className={styles.messageCardSender}>{message.name}</div>
+                    <div className={styles.messageCardDate}>{formatDate(message.created_at)}</div>
+                  </div>
+                  <div className={styles.messageCardSubject}>{message.subject || '-'}</div>
+                  <div className={styles.messageCardPreview}>
+                    {message.message.length > 100 ? `${message.message.substring(0, 100)}...` : message.message}
+                  </div>
+                  <div className={styles.messageCardFooter} onClick={(e) => e.stopPropagation()}>
+                    <div className={styles.messageCardStatus}>
+                      <span className={`${styles.statusBadge} ${badge.class}`}>{badge.label}</span>
+                    </div>
+                    <div className={styles.messageCardActions}>
+                      <button onClick={(e) => { e.stopPropagation(); openDetailModal(message); }} className={styles.btnView}>
+                        {t('adminMessages.view') || 'Görüntüle'}
+                      </button>
+                      <button onClick={(e) => { e.stopPropagation(); setDeleteModal({ isOpen: true, messageId: message.id }); }} className={styles.btnDelete}>
+                        {t('adminMessages.delete') || 'Sil'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
       </div>
 
       {showDetailModal && selectedMessage && (

@@ -43,6 +43,126 @@
   margin-bottom: 1.4rem;
 }
 
+/* Mobile Customers List */
+.mobileCustomersList {
+  display: none;
+}
+
+/* Customer Card Styles */
+.customerCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.customerCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #4CAF50;
+}
+
+.customerCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid #eee;
+  gap: 0.75rem;
+}
+
+.customerCardName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.customerCardEmail {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.customerCardDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border-radius: 0.5rem;
+}
+
+.customerCardDetail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.detailLabel {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.detailValue {
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: 500;
+}
+
+.customerCardActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+  justify-content: flex-end;
+  flex-shrink: 0;
+  align-items: flex-start;
+}
+
+.customerCardActions .btnView,
+.customerCardActions .btnDelete {
+  flex: 0 0 auto;
+  padding: 0.5rem 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 36px;
+  touch-action: manipulation;
+  white-space: nowrap;
+}
+
+.customerCardActions .btnView {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(102, 126, 234, 0.3);
+}
+
+.customerCardActions .btnView:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.customerCardActions .btnDelete {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.customerCardActions .btnDelete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
 .searchInput {
   width: 100%;
   max-width: 500px;
@@ -65,89 +185,182 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  backdrop-filter: blur(4px);
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modalContent {
-  background: white;
-  padding: 1.4rem;
-  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
   max-width: 600px;
-  width: 90%;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modalClose {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-  border: 3px solid #4caf50;
-  font-size: 1.225rem;
-  font-weight: 900;
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
   color: white;
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+  z-index: 10;
+  line-height: 1;
 }
 
 .modalClose:hover {
-  background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-  color: white;
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
 
 .modalClose:active {
-  transform: scale(0.95);
+  transform: scale(0.95) rotate(90deg);
 }
 
 .modalContent h2 {
-  margin: 0 0 1.5rem 0;
-  font-size: 1.05rem;
+  margin: 0 0 1.25rem 0;
+  font-size: 1.5rem;
   font-weight: 700;
   color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalContent h2::before {
+  content: '👤';
+  font-size: 1.5rem;
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.7rem;
-  margin-bottom: 0.7rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: visible;
 }
 
 .formGrid input,
-.formGrid select,
-.modalContent textarea {
-  padding: 0.525rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 0.7rem;
+.formGrid select {
+  padding: 0.625rem 0.875rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
-  transition: all 0.3s ease;
+  appearance: none;
+  background: white;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  z-index: 1;
+  overflow: visible;
 }
 
 .formGrid input:focus,
-.formGrid select:focus,
+.formGrid select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  background: #fafafa;
+}
+
+.formGrid input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.formGrid select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.1%203.2-15.1%208.5-3%205.3-2.8%2011.8.6%2016.7l134.9%20134.9c2.8%202.8%206.7%204.3%2010.6%204.3s7.8-1.5%2010.6-4.3l134.9-134.9c3.4-4.9%203.6-11.4.6-16.7z%22%2F%3E%3C%2Fsvg%3E');
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.7em auto;
+  cursor: pointer;
+}
+
+.formGrid select:hover {
+  border-color: #bdbdbd;
+}
+
+.formGrid select:focus {
+  z-index: 10;
+}
+
+.modalContent textarea {
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
+  font-family: inherit;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+  width: 100%;
+}
+
 .modalContent textarea:focus {
   outline: none;
   border-color: #4CAF50;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  background: #fafafa;
+}
+
+.modalContent textarea::placeholder {
+  color: #999;
+  font-weight: 400;
 }
 
 .formSelect:disabled {
@@ -164,40 +377,57 @@
 
 .modalActions {
   display: flex;
-  gap: 0.7rem;
+  gap: 0.75rem;
   justify-content: flex-end;
-  margin-top: 0.7rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
 }
 
 .modalActions button {
-  padding: 0.367rem 1.05rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 8px;
-  font-size: 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modalActions button[type='submit'] {
   background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
 }
 
 .modalActions button[type='submit']:hover {
   background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.modalActions button[type='submit']:active {
+  transform: translateY(0);
 }
 
 .modalActions button[type='button'] {
-  background: #f5f5f5;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
   color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .modalActions button[type='button']:hover {
-  background: #e9ecef;
+  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modalActions button[type='button']:active {
+  transform: translateY(0);
 }
 
 .customersTableContainer {
@@ -415,12 +645,170 @@
 }
 
 @media (max-width: 768px) {
+  .customersPage {
+    padding: 0;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .btnPrimary {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+  }
+
   .formGrid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
+    overflow: visible;
+  }
+
+  .formGrid input,
+  .formGrid select,
+  .formGrid textarea {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.8rem;
+    min-height: 42px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .modalContent textarea {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+    min-height: 90px;
+    margin-bottom: 0.875rem;
+  }
+
+  /* Hide desktop table on mobile */
+  .customersTableContainer {
+    display: none;
+  }
+
+  /* Show mobile card list */
+  .mobileCustomersList {
+    display: block;
+    padding: 0.5rem;
+  }
+
+  .customerCard {
+    margin-bottom: 1rem;
+  }
+
+  .customerCardName {
+    font-size: 1rem;
+  }
+
+  .customerCardEmail {
+    font-size: 0.8rem;
+  }
+
+  .customerCardDetails {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .detailLabel {
+    font-size: 0.9rem;
+  }
+
+  .detailValue {
+    font-size: 0.8rem;
+  }
+
+  .customerCardActions {
+    flex-direction: row;
+    gap: 0.4rem;
+    justify-content: flex-end;
+  }
+
+  .customerCardActions .btnView,
+  .customerCardActions .btnDelete {
+    flex: 0 0 auto;
+    padding: 0.5rem 0.625rem;
+    font-size: 0.7rem;
+    min-height: 32px;
   }
 
   .customersTable {
-    font-size: 0.612rem;
+    min-width: 800px;
+    font-size: 0.85rem;
+  }
+
+  .customersTable th,
+  .customersTable td {
+    padding: 0.75rem 0.5rem;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .customersTable td button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+  }
+
+  .modal {
+    padding: 0.5rem;
+  }
+
+  .modalContent {
+    width: 100%;
+    padding: 1rem;
+    margin: 0;
+    max-height: 90vh;
+    border-radius: 0.75rem;
+    isolation: isolate;
+    overflow-x: hidden;
+  }
+
+  .modalContent h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .modalClose {
+    width: 32px;
+    height: 32px;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modalActions button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
   }
 }
 

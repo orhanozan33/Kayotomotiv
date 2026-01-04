@@ -42,6 +42,10 @@
   overflow-y: visible;
 }
 
+.mobileMessagesList {
+  display: none;
+}
+
 .messagesTable table {
   width: 100%;
   border-collapse: collapse;
@@ -296,12 +300,172 @@
     gap: 0.7rem;
   }
 
+  .pageHeader > div {
+    display: none !important;
+  }
+
+  .pageHeader input[type="text"],
+  .pageHeader select.filterSelect {
+    display: none !important;
+  }
+
   .messagesTable {
-    overflow-x: auto;
+    overflow-x: visible;
+    background: transparent;
+    box-shadow: none;
+    padding: 0;
   }
 
   .messagesTable table {
-    min-width: 800px;
+    display: none;
+  }
+
+  .mobileMessagesList {
+    display: block;
+  }
+
+  .messageCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 1rem;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .messageCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .messageCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12), 0 4px 8px rgba(0, 0, 0, 0.08);
+  }
+
+  .messageCard:hover::before {
+    opacity: 1;
+  }
+
+  .messageCard.unreadRow {
+    background: linear-gradient(135deg, #e3f2fd 0%, #ffffff 100%);
+    border-color: #2196f3;
+    border-width: 2px;
+  }
+
+  .messageCard.unreadRow::before {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    opacity: 1;
+  }
+
+  .messageCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  .messageCardSender {
+    font-weight: 700;
+    color: #1a1a1a;
+    font-size: 1rem;
+    flex: 1;
+    text-align: right;
+    letter-spacing: 0.3px;
+  }
+
+  .messageCardDate {
+    font-size: 0.8rem;
+    color: #666;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .messageCardSubject {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.75rem;
+    word-break: break-word;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .messageCardPreview {
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    padding: 0.75rem;
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 0.5rem;
+    border-left: 3px solid #4CAF50;
+  }
+
+  .messageCardFooter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    flex-wrap: wrap;
+  }
+
+  .messageCardStatus {
+    flex-shrink: 0;
+  }
+
+  .messageCardActions {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+    justify-content: flex-end;
+  }
+
+  .messageCardActions button {
+    padding: 0.625rem 1.25rem;
+    border: none;
+    border-radius: 0.625rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    min-height: 44px;
+    touch-action: manipulation;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  .messageCardActions .btnView {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+    color: white;
+  }
+
+  .messageCardActions .btnView:hover {
+    background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+  }
+
+  .messageCardActions .btnDelete {
+    background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+    color: white;
+  }
+
+  .messageCardActions .btnDelete:hover {
+    background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
   }
 
   .detailRow {

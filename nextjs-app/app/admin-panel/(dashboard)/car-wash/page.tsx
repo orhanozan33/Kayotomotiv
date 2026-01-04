@@ -508,6 +508,11 @@ export default function CarWashPage() {
             <div className={styles.modal}>
               <div className={styles.modalContent}>
                 <h2>{editingPackage ? t('adminCarWash.editPackage') : t('adminCarWash.addPackage')}</h2>
+                <button 
+                  type="button" 
+                  className={styles.modalClose} 
+                  onClick={() => setShowPackageForm(false)}
+                >×</button>
                 <form onSubmit={handlePackageSubmit}>
                   <input name="name" placeholder={t('adminCarWash.name')} value={packageFormData.name} onChange={(e) => setPackageFormData({...packageFormData, name: e.target.value})} required />
                   <textarea name="description" placeholder={t('adminCarWash.description')} value={packageFormData.description} onChange={(e) => setPackageFormData({...packageFormData, description: e.target.value})} rows={4} />
@@ -523,6 +528,7 @@ export default function CarWashPage() {
               </div>
             </div>
           )}
+          {/* Desktop Table View */}
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
@@ -562,6 +568,68 @@ export default function CarWashPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className={styles.mobilePackagesList}>
+            {packages.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                {t('adminCarWash.noPackages') || 'Henüz paket eklenmemiş'}
+              </div>
+            ) : (
+              packages.map(pkg => (
+                <div
+                  key={pkg.id}
+                  className={`${styles.packageCard} ${!pkg.is_active ? styles.inactiveCard : ''}`}
+                >
+                  <div className={styles.packageCardHeader}>
+                    <div>
+                      <h3 className={styles.packageCardName}>{pkg.name}</h3>
+                    </div>
+                    <div className={styles.packageCardPrice}>${pkg.base_price}</div>
+                  </div>
+                  {pkg.description && (
+                    <div className={styles.packageCardDescription}>{pkg.description}</div>
+                  )}
+                  <div className={styles.packageCardFooter}>
+                    <div className={styles.packageCardInfo}>
+                      {pkg.duration_minutes && (
+                        <span className={styles.packageCardDuration}>
+                          ⏱️ {pkg.duration_minutes} {t('adminCarWash.minutes')}
+                        </span>
+                      )}
+                      <span className={`${styles.packageCardStatus} ${pkg.is_active ? styles.activeStatus : styles.inactiveStatus}`}>
+                        {pkg.is_active ? t('common.active') || 'Aktif' : t('common.inactive') || 'Pasif'}
+                      </span>
+                    </div>
+                    <div className={styles.packageCardActions}>
+                      <button
+                        onClick={() => {
+                          setEditingPackage(pkg);
+                          setPackageFormData({
+                            name: pkg.name, description: pkg.description || '', base_price: pkg.base_price.toString(),
+                            duration_minutes: pkg.duration_minutes?.toString() || '', display_order: pkg.display_order?.toString() || '0',
+                            is_active: pkg.is_active !== false
+                          });
+                          setShowPackageForm(true);
+                        }}
+                        className={styles.btnEdit}
+                        title={t('common.edit') || 'Düzenle'}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => setDeletePackageModal({ isOpen: true, packageId: pkg.id })}
+                        className={styles.btnDelete}
+                        title={t('common.delete') || 'Sil'}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </>
       )}
 
@@ -578,6 +646,11 @@ export default function CarWashPage() {
             <div className={styles.modal}>
               <div className={styles.modalContent}>
                 <h2>{editingAddon ? t('adminCarWash.editAddon') : t('adminCarWash.addAddon')}</h2>
+                <button 
+                  type="button" 
+                  className={styles.modalClose} 
+                  onClick={() => setShowAddonForm(false)}
+                >×</button>
                 <form onSubmit={handleAddonSubmit}>
                   <input name="name" placeholder={t('adminCarWash.name')} value={addonFormData.name} onChange={(e) => setAddonFormData({...addonFormData, name: e.target.value})} required />
                   <textarea name="description" placeholder={t('adminCarWash.description')} value={addonFormData.description} onChange={(e) => setAddonFormData({...addonFormData, description: e.target.value})} rows={4} />
@@ -592,6 +665,7 @@ export default function CarWashPage() {
               </div>
             </div>
           )}
+          {/* Desktop Table View */}
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
@@ -629,24 +703,80 @@ export default function CarWashPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className={styles.mobileAddonsList}>
+            {addons.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                {t('adminCarWash.noAddons') || 'Henüz ekstra hizmet eklenmemiş'}
+              </div>
+            ) : (
+              addons.map(addon => (
+                <div
+                  key={addon.id}
+                  className={`${styles.addonCard} ${!addon.is_active ? styles.inactiveCard : ''}`}
+                >
+                  <div className={styles.addonCardHeader}>
+                    <div>
+                      <h3 className={styles.addonCardName}>{addon.name}</h3>
+                    </div>
+                    <div className={styles.addonCardPrice}>${addon.price}</div>
+                  </div>
+                  {addon.description && (
+                    <div className={styles.addonCardDescription}>{addon.description}</div>
+                  )}
+                  <div className={styles.addonCardFooter}>
+                    <div className={styles.addonCardInfo}>
+                      <span className={`${styles.addonCardStatus} ${addon.is_active ? styles.activeStatus : styles.inactiveStatus}`}>
+                        {addon.is_active ? t('common.active') || 'Aktif' : t('common.inactive') || 'Pasif'}
+                      </span>
+                    </div>
+                    <div className={styles.addonCardActions}>
+                      <button
+                        onClick={() => {
+                          setEditingAddon(addon);
+                          setAddonFormData({
+                            name: addon.name, description: addon.description || '', price: addon.price.toString(),
+                            display_order: addon.display_order?.toString() || '0', is_active: addon.is_active !== false
+                          });
+                          setShowAddonForm(true);
+                        }}
+                        className={styles.btnEdit}
+                        title={t('common.edit') || 'Düzenle'}
+                      >
+                        ✏️
+                      </button>
+                      <button
+                        onClick={() => setDeleteAddonModal({ isOpen: true, addonId: addon.id })}
+                        className={styles.btnDelete}
+                        title={t('common.delete') || 'Sil'}
+                      >
+                        🗑️
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
         </>
       )}
 
       {activeTab === 'appointments' && (
         <>
           <div className={styles.pageHeader}>
-            <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', alignItems: 'center' }}>
+            <div className={styles.appointmentFilters}>
               <input
                 type="text"
                 placeholder={t('adminCarWash.searchAppointments') || 'Müşteri, email, telefon veya paket ile ara...'}
                 value={appointmentSearchTerm}
                 onChange={(e) => setAppointmentSearchTerm(e.target.value)}
-                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd', minWidth: '250px' }}
+                className={styles.searchInput}
               />
               <select
                 value={appointmentStatusFilter}
                 onChange={(e) => setAppointmentStatusFilter(e.target.value)}
-                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                className={styles.filterSelect}
               >
                 <option value="all">{t('adminCarWash.allStatuses') || 'Tüm Durumlar'}</option>
                 <option value="pending">{t('adminCarWash.statusPending')}</option>
@@ -659,30 +789,31 @@ export default function CarWashPage() {
                 type="date"
                 value={appointmentDateFilter}
                 onChange={(e) => setAppointmentDateFilter(e.target.value)}
-                style={{ padding: '0.5rem', borderRadius: '4px', border: '1px solid #ddd' }}
+                className={styles.dateInput}
                 placeholder={t('adminCarWash.filterByDate') || 'Tarihe göre filtrele'}
               />
               {appointmentDateFilter && (
                 <button
                   onClick={() => setAppointmentDateFilter('')}
-                  style={{ padding: '0.5rem 1rem', borderRadius: '4px', border: '1px solid #ddd', cursor: 'pointer' }}
+                  className={styles.clearButton}
                 >
                   {t('common.clear') || 'Temizle'}
                 </button>
               )}
             </div>
           </div>
+          {/* Desktop Table View */}
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
                 <tr>
                   <th>{t('adminCarWash.customerInfo') || 'Müşteri'}</th>
-                  <th>{t('adminCarWash.package')}</th>
-                  <th>{t('adminCarWash.date')}</th>
-                  <th>{t('adminCarWash.time')}</th>
-                  <th>{t('adminCarWash.total')}</th>
-                  <th>{t('adminCarWash.status')}</th>
-                  <th>{t('adminCarWash.actions')}</th>
+                  <th>{t('adminCarWash.package') || 'Paket'}</th>
+                  <th>{t('adminCarWash.date') || 'Tarih'}</th>
+                  <th>{t('adminCarWash.time') || 'Saat'}</th>
+                  <th>{t('adminCarWash.total') || 'Toplam'}</th>
+                  <th>{t('adminCarWash.status') || 'Durum'}</th>
+                  <th>{t('adminCarWash.actions') || 'İşlemler'}</th>
                 </tr>
               </thead>
               <tbody>
@@ -732,6 +863,103 @@ export default function CarWashPage() {
               </tbody>
             </table>
           </div>
+
+          {/* Mobile Card View */}
+          <div className={styles.mobileAppointmentsList}>
+            {filteredAppointments.length === 0 ? (
+              <div style={{ textAlign: 'center', padding: '2rem' }}>
+                {t('adminCarWash.noAppointments') || 'Randevu bulunamadı'}
+              </div>
+            ) : (
+              filteredAppointments.map(appointment => {
+                const statusLabels: { [key: string]: string } = {
+                  pending: t('adminCarWash.statusPending') || 'Beklemede',
+                  confirmed: t('adminCarWash.statusConfirmed') || 'Onaylandı',
+                  in_progress: t('adminCarWash.statusInProgress') || 'Devam Ediyor',
+                  completed: t('adminCarWash.statusCompleted') || 'Tamamlandı',
+                  cancelled: t('adminCarWash.statusCancelled') || 'İptal Edildi',
+                };
+                const statusColors: { [key: string]: string } = {
+                  pending: '#ff9800',
+                  confirmed: '#2196F3',
+                  in_progress: '#9c27b0',
+                  completed: '#4CAF50',
+                  cancelled: '#f44336',
+                };
+                return (
+                  <div
+                    key={appointment.id}
+                    className={styles.appointmentCard}
+                    onClick={() => handleAppointmentClick(appointment)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <div className={styles.appointmentCardHeader}>
+                      <div>
+                        <h3 className={styles.appointmentCardName}>{appointment.customer_name}</h3>
+                        <div className={styles.appointmentCardPackage}>{appointment.package_name}</div>
+                      </div>
+                      <div className={styles.appointmentCardPrice}>
+                        ${parseFloat(String(appointment.total_price || 0)).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className={styles.appointmentCardDetails}>
+                      <div className={styles.appointmentCardDetail}>
+                        <span className={styles.detailLabel}>📅</span>
+                        <span className={styles.detailValue}>
+                          {new Date(appointment.appointment_date).toLocaleDateString()} {appointment.appointment_time}
+                        </span>
+                      </div>
+                      {appointment.customer_phone && (
+                        <div className={styles.appointmentCardDetail}>
+                          <span className={styles.detailLabel}>📞</span>
+                          <span className={styles.detailValue}>{appointment.customer_phone}</span>
+                        </div>
+                      )}
+                      <div className={styles.appointmentCardDetail}>
+                        <span className={styles.detailLabel}>📧</span>
+                        <span className={styles.detailValue}>{appointment.customer_email}</span>
+                      </div>
+                    </div>
+                    <div className={styles.appointmentCardFooter}>
+                      <div
+                        className={styles.appointmentCardStatus}
+                        style={{
+                          backgroundColor: `${statusColors[appointment.status]}20`,
+                          color: statusColors[appointment.status],
+                        }}
+                      >
+                        {statusLabels[appointment.status] || appointment.status}
+                      </div>
+                      <div className={styles.appointmentCardActions} onClick={(e) => e.stopPropagation()}>
+                        <select
+                          value={appointment.status}
+                          onChange={(e) => handleAppointmentStatusUpdate(appointment.id, e.target.value)}
+                          className={styles.statusSelect}
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <option value="pending">{t('adminCarWash.statusPending')}</option>
+                          <option value="confirmed">{t('adminCarWash.statusConfirmed')}</option>
+                          <option value="in_progress">{t('adminCarWash.statusInProgress')}</option>
+                          <option value="completed">{t('adminCarWash.statusCompleted')}</option>
+                          <option value="cancelled">{t('adminCarWash.statusCancelled')}</option>
+                        </select>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setDeleteAppointmentModal({ isOpen: true, appointmentId: appointment.id });
+                          }}
+                          className={styles.btnDelete}
+                          title={t('common.delete') || 'Sil'}
+                        >
+                          🗑️
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })
+            )}
+          </div>
         </>
       )}
 
@@ -771,51 +999,75 @@ export default function CarWashPage() {
       {showAppointmentDetail && selectedAppointment && (
         <div className={styles.modal} onClick={() => setShowAppointmentDetail(false)}>
           <div className={styles.modalContent} onClick={(e) => e.stopPropagation()} style={{ maxWidth: '600px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <div className={styles.modalHeader}>
               <h2>{t('adminCarWash.appointmentDetails') || 'Randevu Detayları'}</h2>
               <button
                 type="button"
+                className={styles.modalClose}
                 onClick={() => setShowAppointmentDetail(false)}
-                style={{ background: 'none', border: 'none', fontSize: '1.5rem', cursor: 'pointer', padding: '0.5rem' }}
               >
                 ×
               </button>
             </div>
-            <div style={{ display: 'grid', gap: '1.5rem' }}>
-              <div>
-                <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.customerInfo') || 'Müşteri Bilgileri'}</h3>
-                <div style={{ display: 'grid', gap: '0.5rem' }}>
-                  <div><strong>{t('adminCarWash.name') || 'Ad'}:</strong> {selectedAppointment.customer_name}</div>
-                  <div><strong>{t('adminCarWash.email') || 'Email'}:</strong> {selectedAppointment.customer_email}</div>
+            <div className={styles.appointmentDetailContent}>
+              <div className={styles.detailSection}>
+                <h3>{t('adminCarWash.customerInfo') || 'Müşteri Bilgileri'}</h3>
+                <div className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.name') || 'Ad'}:</label>
+                    <span>{selectedAppointment.customer_name}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.email') || 'Email'}:</label>
+                    <span>{selectedAppointment.customer_email}</span>
+                  </div>
                   {selectedAppointment.customer_phone && (
-                    <div><strong>{t('adminCarWash.phone') || 'Telefon'}:</strong> {selectedAppointment.customer_phone}</div>
+                    <div className={styles.detailItem}>
+                      <label>{t('adminCarWash.phone') || 'Telefon'}:</label>
+                      <span>{selectedAppointment.customer_phone}</span>
+                    </div>
                   )}
                 </div>
               </div>
-              <div>
-                <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.appointmentInfo') || 'Randevu Bilgileri'}</h3>
-                <div style={{ display: 'grid', gap: '0.5rem' }}>
-                  <div><strong>{t('adminCarWash.package') || 'Paket'}:</strong> {selectedAppointment.package_name}</div>
-                  <div><strong>{t('adminCarWash.date') || 'Tarih'}:</strong> {new Date(selectedAppointment.appointment_date).toLocaleDateString()}</div>
-                  <div><strong>{t('adminCarWash.time') || 'Saat'}:</strong> {selectedAppointment.appointment_time}</div>
-                  <div><strong>{t('adminCarWash.status') || 'Durum'}:</strong> {selectedAppointment.status}</div>
-                  <div><strong>{t('adminCarWash.total') || 'Toplam'}:</strong> ${parseFloat(String(selectedAppointment.total_price || 0)).toFixed(2)}</div>
+              <div className={styles.detailSection}>
+                <h3>{t('adminCarWash.appointmentInfo') || 'Randevu Bilgileri'}</h3>
+                <div className={styles.detailGrid}>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.package') || 'Paket'}:</label>
+                    <span>{selectedAppointment.package_name}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.date') || 'Tarih'}:</label>
+                    <span>{new Date(selectedAppointment.appointment_date).toLocaleDateString()}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.time') || 'Saat'}:</label>
+                    <span>{selectedAppointment.appointment_time}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.status') || 'Durum'}:</label>
+                    <span>{selectedAppointment.status}</span>
+                  </div>
+                  <div className={styles.detailItem}>
+                    <label>{t('adminCarWash.total') || 'Toplam'}:</label>
+                    <span>${parseFloat(String(selectedAppointment.total_price || 0)).toFixed(2)}</span>
+                  </div>
                 </div>
               </div>
               {selectedAppointment.notes && (
-                <div>
-                  <h3 style={{ marginBottom: '0.5rem' }}>{t('adminCarWash.notes') || 'Notlar'}</h3>
-                  <div style={{ padding: '0.75rem', background: '#f5f5f5', borderRadius: '4px', whiteSpace: 'pre-wrap' }}>
+                <div className={styles.detailSection}>
+                  <h3>{t('adminCarWash.notes') || 'Notlar'}</h3>
+                  <div className={styles.notesContent}>
                     {selectedAppointment.notes}
                   </div>
                 </div>
               )}
             </div>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '2rem', justifyContent: 'flex-end' }}>
+            <div className={styles.modalActions}>
               <button onClick={handlePrintReceipt} className={styles.btnPrimary}>
                 🖨️ {t('adminCarWash.printReceipt') || 'Makbuz Yazdır'}
               </button>
-              <button onClick={() => setShowAppointmentDetail(false)}>
+              <button onClick={() => setShowAppointmentDetail(false)} className={styles.btnSecondary}>
                 {t('common.close') || 'Kapat'}
               </button>
             </div>

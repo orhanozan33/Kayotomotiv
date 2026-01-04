@@ -369,47 +369,101 @@ export default function CustomersPage() {
       ) : customers.length === 0 ? (
         <div className={styles.noResults}>{t('customers.noResults') || 'Sonuç bulunamadı'}</div>
       ) : (
-        <div className={styles.customersTableContainer}>
-          <table className={styles.customersTable}>
-            <thead>
-              <tr>
-                <th>{t('customers.name') || 'İsim'}</th>
-                <th>{t('customers.email') || 'E-posta'}</th>
-                <th>{t('customers.phone') || 'Telefon'}</th>
-                <th>{t('customers.vehicle') || 'Araç'}</th>
-                <th>{t('customers.totalSpent') || 'Toplam Harcama'}</th>
-                <th>{t('customers.actions') || 'İşlemler'}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {customers.map((customer) => (
-                <tr key={customer.id}>
-                  <td>
-                    {customer.first_name} {customer.last_name}
-                  </td>
-                  <td>{customer.email || '-'}</td>
-                  <td>{customer.phone || '-'}</td>
-                  <td>
-                    {customer.vehicle_brand && customer.vehicle_model
-                      ? `${customer.vehicle_brand} ${customer.vehicle_model} ${customer.vehicle_year || ''}`
-                      : '-'}
-                  </td>
-                  <td>${parseFloat((customer.total_spent || 0).toString()).toFixed(2)}</td>
-                  <td>
-                    <div className={styles.actionButtons}>
-                      <button onClick={() => handleCustomerClick(customer)} className={styles.btnView}>
-                        {t('customers.viewDetails') || 'Detaylar'}
-                      </button>
-                      <button onClick={() => handleDelete(customer.id)} className={styles.btnDanger}>
-                        {t('customers.delete') || 'Sil'}
-                      </button>
-                    </div>
-                  </td>
+        <>
+          {/* Desktop Table View */}
+          <div className={styles.customersTableContainer}>
+            <table className={styles.customersTable}>
+              <thead>
+                <tr>
+                  <th>{t('customers.name') || 'İsim'}</th>
+                  <th>{t('customers.email') || 'E-posta'}</th>
+                  <th>{t('customers.phone') || 'Telefon'}</th>
+                  <th>{t('customers.vehicle') || 'Araç'}</th>
+                  <th>{t('customers.totalSpent') || 'Toplam Harcama'}</th>
+                  <th>{t('customers.actions') || 'İşlemler'}</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {customers.map((customer) => (
+                  <tr key={customer.id}>
+                    <td>
+                      {customer.first_name} {customer.last_name}
+                    </td>
+                    <td>{customer.email || '-'}</td>
+                    <td>{customer.phone || '-'}</td>
+                    <td>
+                      {customer.vehicle_brand && customer.vehicle_model
+                        ? `${customer.vehicle_brand} ${customer.vehicle_model} ${customer.vehicle_year || ''}`
+                        : '-'}
+                    </td>
+                    <td>${parseFloat((customer.total_spent || 0).toString()).toFixed(2)}</td>
+                    <td>
+                      <div className={styles.actionButtons}>
+                        <button onClick={() => handleCustomerClick(customer)} className={styles.btnView}>
+                          {t('customers.viewDetails') || 'Detaylar'}
+                        </button>
+                        <button onClick={() => handleDelete(customer.id)} className={styles.btnDanger}>
+                          {t('customers.delete') || 'Sil'}
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Mobile Card View */}
+          <div className={styles.mobileCustomersList}>
+            {customers.map((customer) => (
+              <div key={customer.id} className={styles.customerCard}>
+                <div className={styles.customerCardHeader}>
+                  <div>
+                    <h3 className={styles.customerCardName}>
+                      {customer.first_name} {customer.last_name}
+                    </h3>
+                  </div>
+                  <div className={styles.customerCardActions}>
+                    <button
+                      onClick={() => handleCustomerClick(customer)}
+                      className={styles.btnView}
+                    >
+                      {t('customers.viewDetails') || 'Detaylar'}
+                    </button>
+                    <button
+                      onClick={() => handleDelete(customer.id)}
+                      className={styles.btnDelete}
+                    >
+                      {t('customers.delete') || 'Sil'}
+                    </button>
+                  </div>
+                </div>
+                <div className={styles.customerCardDetails}>
+                  {customer.phone && (
+                    <div className={styles.customerCardDetail}>
+                      <span className={styles.detailLabel}>📞</span>
+                      <span className={styles.detailValue}>{customer.phone}</span>
+                    </div>
+                  )}
+                  {customer.vehicle_brand && customer.vehicle_model && (
+                    <div className={styles.customerCardDetail}>
+                      <span className={styles.detailLabel}>🚗</span>
+                      <span className={styles.detailValue}>
+                        {customer.vehicle_brand} {customer.vehicle_model} {customer.vehicle_year || ''}
+                      </span>
+                    </div>
+                  )}
+                  <div className={styles.customerCardDetail}>
+                    <span className={styles.detailLabel}>💰</span>
+                    <span className={styles.detailValue}>
+                      ${parseFloat((customer.total_spent || 0).toString()).toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       <ConfirmModal

@@ -278,6 +278,12 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Hide mobile lists on desktop */
+.mobileUsersList,
+.mobileReceiptsList {
+  display: none;
+}
+
 .dataTable {
   width: 100%;
   border-collapse: collapse;
@@ -601,58 +607,368 @@
 
 @media (max-width: 768px) {
   .settingsPage {
-    padding: 0.7rem;
+    padding: 0.75rem;
   }
 
   .pageHeader {
     flex-direction: column;
     align-items: flex-start;
+    gap: 1rem;
   }
 
   .pageHeader h1 {
     font-size: 1.4rem;
+    width: 100%;
   }
 
   .headerButtons {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
   }
 
   .headerButtons button {
     flex: 1;
-    min-width: 120px;
+    min-width: 0;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .tabs {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
 
+  .tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs button {
+    min-width: 100px;
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+  }
+
+  /* Hide desktop tables on mobile */
+  .tableContainer {
+    display: none;
+  }
+
+  /* Mobile Users List */
+  .mobileUsersList {
+    display: block;
+    width: 100%;
+  }
+
+  .userCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .userCard:active {
+    transform: scale(0.98);
+  }
+
+  .userCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+  }
+
+  .userCardInfo {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .userCardName {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 0.25rem;
+  }
+
+  .userCardEmail {
+    font-size: 0.875rem;
+    color: #666;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .userCardBadges {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    align-items: flex-end;
+  }
+
+  .userCardBadge {
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .badgeAdmin {
+    background: #667eea;
+    color: white;
+  }
+
+  .badgeUser {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .badgeActive {
+    background: #4CAF50;
+    color: white;
+  }
+
+  .badgeInactive {
+    background: #999;
+    color: white;
+  }
+
+  .userCardDetail {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .userCardLabel {
+    font-weight: 600;
+    color: #666;
+  }
+
+  .userCardActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .userCardActions button {
+    flex: 1;
+    min-width: 0;
+    padding: 0.625rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  /* Admin için sadece Düzenle butonu varsa tam genişlik */
+  .userCardActions button:only-child {
+    flex: 1;
+    width: 100%;
+  }
+
+  /* Mobile Receipts List */
+  .mobileReceiptsList {
+    display: block;
+    width: 100%;
+  }
+
+  .receiptCard {
+    background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+    border-radius: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+  }
+
+  .receiptCardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  .receiptCardDate {
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .receiptCardAmount {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #4CAF50;
+  }
+
+  .receiptCardBody {
+    margin-bottom: 0.75rem;
+  }
+
+  .receiptCardDetail {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .receiptCardLabel {
+    font-weight: 600;
+    color: #666;
+    min-width: 80px;
+  }
+
+  .receiptCardActions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .receiptCardActions button {
+    flex: 1;
+    min-width: 0;
+    padding: 0.625rem 0.5rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+
+  /* Modal optimizations */
   .modalContent {
-    width: 95%;
-    padding: 1.05rem;
+    width: 100%;
+    max-width: 100%;
+    height: 100vh;
+    max-height: 100vh;
+    padding: 1rem;
+    border-radius: 0;
+    overflow-y: auto;
+  }
+
+  .modalHeader {
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    padding: 1rem 0;
+    margin-bottom: 1rem;
+  }
+
+  .modalHeader h2 {
+    font-size: 1.125rem;
+  }
+
+  .modalClose {
+    width: 36px;
+    height: 36px;
+    font-size: 1.125rem;
+    top: 0.75rem;
+    right: 0.75rem;
   }
 
   .modalActions {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 0.5rem;
+    position: sticky;
+    bottom: 0;
+    background: white;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
   }
 
   .modalActions button {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    padding: 0.875rem;
+    font-size: 0.875rem;
+    min-height: 44px;
   }
 
-  .dataTable {
-    min-width: 600px;
+  /* Form optimizations */
+  .formGroup {
+    margin-bottom: 1rem;
+  }
+
+  .formGroup label {
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .modalContent input,
+  .modalContent select,
+  .modalContent textarea {
+    padding: 0.875rem;
+    font-size: 1rem;
+    min-height: 44px;
+    border-radius: 8px;
+  }
+
+  .modalContent textarea {
+    min-height: 100px;
   }
 
   .actionButtons {
-    flex-direction: column;
+    flex-direction: row;
+    gap: 0.5rem;
+    flex-wrap: wrap;
   }
 
   .actionButtons button {
-    width: 100%;
+    flex: 1;
+    min-width: 0;
+    padding: 0.625rem 0.5rem;
+    font-size: 0.75rem;
+    min-height: 44px;
   }
 
   .detailGrid {
     grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .permissionsContainer {
+    max-height: calc(100vh - 200px);
+    padding: 0.5rem;
+  }
+
+  .permissionSection {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .permissionCheckboxes label {
+    padding: 0.5rem 0;
+    font-size: 0.875rem;
+  }
+
+  .permissionCheckboxes input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem;
+  }
+
+  .locationSection {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .searchContainer {
+    margin-bottom: 1rem;
+  }
+
+  .searchContainer input {
+    padding: 0.875rem;
+    font-size: 1rem;
+    min-height: 44px;
   }
 }
 

@@ -8,13 +8,13 @@ import ConfirmModal from '@/components/admin/ConfirmModal';
 import styles from './settings.module.css';
 
 const AVAILABLE_PAGES = [
-  { value: 'vehicles', labelKey: 'nav.vehicles', label: 'Araçlar' },
-  { value: 'customers', labelKey: 'nav.customers', label: 'Müşteriler' },
-  { value: 'repair-services', labelKey: 'nav.repairServices', label: 'Tamir Hizmetleri' },
-  { value: 'repair-quotes', labelKey: 'nav.repairQuotes', label: 'Oto Yıkama Kayıt' },
-  { value: 'car-wash', labelKey: 'nav.carWash', label: 'Oto Yıkama' },
-  { value: 'reservations', labelKey: 'nav.reservations', label: 'Rezervasyonlar' },
-  { value: 'pages', labelKey: 'nav.pages', label: 'Sayfalar' }
+  { value: 'vehicles', labelKey: 'adminNav.vehicles', label: 'Oto Galeri' },
+  { value: 'customers', labelKey: 'adminNav.customers', label: 'Müşteri Kayıt' },
+  { value: 'repair-services', labelKey: 'adminNav.repairServices', label: 'Oto Tamir Hizmetleri' },
+  { value: 'repair-quotes', labelKey: 'adminNav.repairQuotes', label: 'Oto Yıkama Kayıt' },
+  { value: 'car-wash', labelKey: 'adminNav.carWash', label: 'Oto Yıkama Hizmetleri' },
+  { value: 'reservations', labelKey: 'adminNav.reservations', label: 'Rezervasyonlar' },
+  { value: 'pages', labelKey: 'adminNav.pages', label: 'Sayfalar' }
 ];
 
 interface User {
@@ -57,6 +57,7 @@ export default function SettingsPage() {
   const { showError, showSuccess } = useError();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [showUserForm, setShowUserForm] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
@@ -115,7 +116,15 @@ export default function SettingsPage() {
         console.error('Error loading users:', err);
         return { data: { users: [] } };
       });
-      setUsers(response.data?.users || []);
+      // Transform API response to match frontend interface (camelCase to snake_case)
+      const users = (response.data?.users || []).map((user: any) => ({
+        ...user,
+        first_name: user.firstName || user.first_name || '',
+        last_name: user.lastName || user.last_name || '',
+        is_active: user.isActive !== undefined ? user.isActive : user.is_active !== undefined ? user.is_active : true,
+        created_at: user.createdAt || user.created_at || new Date().toISOString(),
+      }));
+      setUsers(users);
     } catch (error) {
       console.error('Error loading users:', error);
       setUsers([]);
@@ -661,7 +670,10 @@ export default function SettingsPage() {
           return;
         }
         
-        await usersAPI.create(submitData);
+        await usersAPI.create({
+          ...submitData,
+          is_active: true
+        });
         showSuccess(t('settings.userCreated'));
       }
       setShowUserForm(false);
@@ -683,11 +695,14 @@ export default function SettingsPage() {
 
   const handleEdit = (user: User) => {
     setEditingUser(user);
+    // Handle both camelCase and snake_case formats
+    const firstName = (user as any).firstName || user.first_name || '';
+    const lastName = (user as any).lastName || user.last_name || '';
     setFormData({
       email: user.email || '',
       password: '',
-      first_name: user.first_name || '',
-      last_name: user.last_name || '',
+      first_name: firstName,
+      last_name: lastName,
       phone: user.phone || '',
       role: user.role || 'user'
     });
@@ -695,7 +710,14 @@ export default function SettingsPage() {
   };
 
   const handleUserClick = async (user: User) => {
-    setSelectedUser(user);
+    // Ensure user data is in correct format
+    const formattedUser = {
+      ...user,
+      first_name: (user as any).firstName || user.first_name || '',
+      last_name: (user as any).lastName || user.last_name || '',
+      is_active: (user as any).isActive !== undefined ? (user as any).isActive : user.is_active !== undefined ? user.is_active : true,
+    };
+    setSelectedUser(formattedUser as User);
     await loadUserPermissions(user.id);
     setShowUserDetailModal(true);
   };
@@ -1123,38 +1145,42 @@ export default function SettingsPage() {
               />
               <input
                 name="password"
-                type="password"
+                type="text"
                 placeholder={editingUser ? t('settings.newPasswordPlaceholder') : t('settings.password')}
                 value={formData.password}
                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required={!editingUser}
               />
-              <input
-                name="first_name"
-                placeholder={t('settings.firstName')}
-                value={formData.first_name}
-                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
-              />
-              <input
-                name="last_name"
-                placeholder={t('settings.lastName')}
-                value={formData.last_name}
-                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-              />
-              <input
-                name="phone"
-                placeholder={t('settings.phone')}
-                value={formData.phone}
-                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-              />
-              <select
-                name="role"
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              >
-                <option value="user">{t('settings.user')}</option>
-                <option value="admin">{t('settings.admin')}</option>
-              </select>
+              {editingUser?.role !== 'admin' && (
+                <>
+                  <input
+                    name="first_name"
+                    placeholder={t('settings.firstName')}
+                    value={formData.first_name}
+                    onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                  />
+                  <input
+                    name="last_name"
+                    placeholder={t('settings.lastName')}
+                    value={formData.last_name}
+                    onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                  />
+                  <input
+                    name="phone"
+                    placeholder={t('settings.phone')}
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                  />
+                  <select
+                    name="role"
+                    value={formData.role}
+                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
+                  >
+                    <option value="user">{t('settings.user')}</option>
+                    <option value="admin">{t('settings.admin')}</option>
+                  </select>
+                </>
+              )}
               <div className={styles.modalActions}>
                 <button type="submit" className={styles.btnPrimary}>{t('common.save')}</button>
                 <button type="button" onClick={() => setShowUserForm(false)}>{t('common.cancel')}</button>
@@ -1238,15 +1264,19 @@ export default function SettingsPage() {
               </div>
             </div>
             <div className={styles.modalActions}>
-              <button onClick={() => {
-                setShowUserDetailModal(false);
-                handleOpenPermissions(selectedUser);
-              }} className={styles.btnPermissions}>{t('settings.editPermissions')}</button>
+              {selectedUser.role !== 'admin' && (
+                <>
+                  <button onClick={() => {
+                    setShowUserDetailModal(false);
+                    handleOpenPermissions(selectedUser);
+                  }} className={styles.btnPermissions}>{t('settings.editPermissions')}</button>
+                  <button onClick={() => {
+                    setShowUserDetailModal(false);
+                    handleDelete(selectedUser.id);
+                  }} className={styles.btnDelete}>{t('settings.deleteUser')}</button>
+                </>
+              )}
               <button onClick={() => handleEdit(selectedUser)} className={styles.btnEdit}>{t('settings.editUserBtn')}</button>
-              <button onClick={() => {
-                setShowUserDetailModal(false);
-                handleDelete(selectedUser.id);
-              }} className={styles.btnDelete}>{t('settings.deleteUser')}</button>
               <button onClick={() => {
                 setShowUserDetailModal(false);
                 setSelectedUser(null);
@@ -1372,6 +1402,7 @@ export default function SettingsPage() {
             <h2>{t('settings.userManagement')}</h2>
           </div>
 
+          {/* Desktop Table */}
           <div className={styles.tableContainer}>
             <table className={styles.dataTable}>
               <thead>
@@ -1395,14 +1426,55 @@ export default function SettingsPage() {
                     <td onClick={(e) => e.stopPropagation()}>
                       <div className={styles.actionButtons}>
                         <button onClick={() => handleEdit(user)} className={styles.btnEdit}>{t('common.edit')}</button>
-                        <button onClick={() => handleOpenPermissions(user)} className={styles.btnPermissions}>{t('settings.permissions')}</button>
-                        <button onClick={() => handleDelete(user.id)} className={styles.btnDelete}>{t('common.delete')}</button>
+                        {user.role !== 'admin' && (
+                          <>
+                            <button onClick={() => handleOpenPermissions(user)} className={styles.btnPermissions}>{t('settings.permissions')}</button>
+                            <button onClick={() => handleDelete(user.id)} className={styles.btnDelete}>{t('common.delete')}</button>
+                          </>
+                        )}
                       </div>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
+          </div>
+
+          {/* Mobile Cards */}
+          <div className={styles.mobileUsersList}>
+            {users.map(user => (
+              <div key={user.id} className={styles.userCard} onClick={() => handleUserClick(user)}>
+                <div className={styles.userCardHeader}>
+                  <div className={styles.userCardInfo}>
+                    <div className={styles.userCardName}>{user.first_name} {user.last_name}</div>
+                    <div className={styles.userCardEmail}>{user.email}</div>
+                  </div>
+                  <div className={styles.userCardBadges}>
+                    <span className={`${styles.userCardBadge} ${user.role === 'admin' ? styles.badgeAdmin : styles.badgeUser}`}>
+                      {user.role === 'admin' ? t('settings.admin') : t('settings.user')}
+                    </span>
+                    <span className={`${styles.userCardBadge} ${user.is_active ? styles.badgeActive : styles.badgeInactive}`}>
+                      {user.is_active ? t('settings.active') : t('settings.inactive')}
+                    </span>
+                  </div>
+                </div>
+                {user.phone && (
+                  <div className={styles.userCardDetail}>
+                    <span className={styles.userCardLabel}>{t('settings.phone')}:</span>
+                    <span>{user.phone}</span>
+                  </div>
+                )}
+                <div className={styles.userCardActions} onClick={(e) => e.stopPropagation()}>
+                  <button onClick={() => handleEdit(user)} className={styles.btnEdit}>{t('common.edit')}</button>
+                  {user.role !== 'admin' && (
+                    <>
+                      <button onClick={() => handleOpenPermissions(user)} className={styles.btnPermissions}>{t('settings.permissions')}</button>
+                      <button onClick={() => handleDelete(user.id)} className={styles.btnDelete}>{t('common.delete')}</button>
+                    </>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
 
           <ConfirmModal
@@ -1439,52 +1511,110 @@ export default function SettingsPage() {
           ) : receipts.length === 0 ? (
             <div className={styles.noResults}>{t('settings.noReceipts')}</div>
           ) : (
-            <div className={styles.tableContainer}>
-              <table className={styles.dataTable}>
-                <thead>
-                  <tr>
-                    <th>{t('settings.receiptDate')}</th>
-                    <th>{t('settings.receiptCustomer')}</th>
-                    <th>{t('settings.receiptPhone')}</th>
-                    <th>{t('settings.receiptPlate')}</th>
-                    <th>{t('settings.receiptService')}</th>
-                    <th>{t('settings.receiptAmount')}</th>
-                    <th>{t('settings.receiptActions')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {receipts.map(receipt => (
-                    <tr key={receipt.id}>
-                      <td>{new Date(receipt.performed_date).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}</td>
-                      <td>{receipt.customer_name}</td>
-                      <td>{receipt.customer_phone || '-'}</td>
-                      <td>{receipt.license_plate || '-'}</td>
-                      <td>{receipt.service_name}</td>
-                      <td>${parseFloat(String(receipt.price)).toFixed(2)}</td>
-                      <td>
-                        <div className={styles.actionButtons}>
-                          <button
-                            onClick={() => handlePrintReceipt(receipt)}
-                            className={styles.btnPrimary}
-                          >
-                            🖨️ {t('settings.receiptPrint') || 'Makbuz Yazdır'}
-                          </button>
-                          <button
-                            onClick={() => {
-                              setSelectedReceipt(receipt);
-                              setShowReceiptModal(true);
-                            }}
-                            className={styles.btnEdit}
-                          >
-                            {t('settings.receiptDetail') || 'Detay'}
-                          </button>
-                        </div>
-                      </td>
+            <>
+              {/* Desktop Table */}
+              <div className={styles.tableContainer}>
+                <table className={styles.dataTable}>
+                  <thead>
+                    <tr>
+                      <th>{t('settings.receiptDate')}</th>
+                      <th>{t('settings.receiptCustomer')}</th>
+                      <th>{t('settings.receiptPhone')}</th>
+                      <th>{t('settings.receiptPlate')}</th>
+                      <th>{t('settings.receiptService')}</th>
+                      <th>{t('settings.receiptAmount')}</th>
+                      <th>{t('settings.receiptActions')}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {receipts.map(receipt => (
+                      <tr key={receipt.id}>
+                        <td>{new Date(receipt.performed_date).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}</td>
+                        <td>{receipt.customer_name}</td>
+                        <td>{receipt.customer_phone || '-'}</td>
+                        <td>{receipt.license_plate || '-'}</td>
+                        <td>{receipt.service_name}</td>
+                        <td>${parseFloat(String(receipt.price)).toFixed(2)}</td>
+                        <td>
+                          <div className={styles.actionButtons}>
+                            <button
+                              onClick={() => handlePrintReceipt(receipt)}
+                              className={styles.btnPrimary}
+                            >
+                              🖨️ {t('settings.receiptPrint') || 'Makbuz Yazdır'}
+                            </button>
+                            <button
+                              onClick={() => {
+                                setSelectedReceipt(receipt);
+                                setShowReceiptModal(true);
+                              }}
+                              className={styles.btnEdit}
+                            >
+                              {t('settings.receiptDetail') || 'Detay'}
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className={styles.mobileReceiptsList}>
+                {receipts.map(receipt => (
+                  <div key={receipt.id} className={styles.receiptCard}>
+                    <div className={styles.receiptCardHeader}>
+                      <div className={styles.receiptCardDate}>
+                        {new Date(receipt.performed_date).toLocaleDateString(i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'en-US')}
+                      </div>
+                      <div className={styles.receiptCardAmount}>
+                        ${parseFloat(String(receipt.price)).toFixed(2)}
+                      </div>
+                    </div>
+                    <div className={styles.receiptCardBody}>
+                      <div className={styles.receiptCardDetail}>
+                        <span className={styles.receiptCardLabel}>{t('settings.receiptCustomer')}:</span>
+                        <span>{receipt.customer_name}</span>
+                      </div>
+                      {receipt.customer_phone && (
+                        <div className={styles.receiptCardDetail}>
+                          <span className={styles.receiptCardLabel}>{t('settings.receiptPhone')}:</span>
+                          <span>{receipt.customer_phone}</span>
+                        </div>
+                      )}
+                      {receipt.license_plate && (
+                        <div className={styles.receiptCardDetail}>
+                          <span className={styles.receiptCardLabel}>{t('settings.receiptPlate')}:</span>
+                          <span>{receipt.license_plate}</span>
+                        </div>
+                      )}
+                      <div className={styles.receiptCardDetail}>
+                        <span className={styles.receiptCardLabel}>{t('settings.receiptService')}:</span>
+                        <span>{receipt.service_name}</span>
+                      </div>
+                    </div>
+                    <div className={styles.receiptCardActions}>
+                      <button
+                        onClick={() => handlePrintReceipt(receipt)}
+                        className={styles.btnPrimary}
+                      >
+                        🖨️ {t('settings.receiptPrint') || 'Yazdır'}
+                      </button>
+                      <button
+                        onClick={() => {
+                          setSelectedReceipt(receipt);
+                          setShowReceiptModal(true);
+                        }}
+                        className={styles.btnEdit}
+                      >
+                        {t('settings.receiptDetail') || 'Detay'}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </>
           )}
         </div>
       )}

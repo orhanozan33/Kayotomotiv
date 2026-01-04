@@ -15,6 +15,7 @@ const createUserSchema = Joi.object({
   last_name: Joi.string().allow('', null).optional(),
   phone: Joi.string().allow('', null).optional(),
   role: Joi.string().valid('admin', 'user').default('user'),
+  is_active: Joi.boolean().default(true),
 });
 
 export async function GET(request: NextRequest) {
@@ -60,6 +61,7 @@ export async function POST(request: NextRequest) {
       lastName: value.last_name || null,
       phone: value.phone || null,
       role: value.role || 'user',
+      isActive: value.is_active !== undefined ? value.is_active : true,
     });
 
     return NextResponse.json({ user }, { status: 201 });

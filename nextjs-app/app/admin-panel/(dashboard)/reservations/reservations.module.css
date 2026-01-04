@@ -783,3 +783,173 @@
   transform: scale(1.2);
 }
 
+@media (max-width: 768px) {
+  .reservationsPage {
+    padding: 0;
+  }
+
+  .reservationsPage h1 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tabs {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .tabButton {
+    flex: 1;
+    min-width: calc(50% - 0.25rem);
+    padding: 0.875rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .pageHeader input[type="text"],
+  .reservationsPage input[type="text"] {
+    display: none !important;
+  }
+
+  .reservationsCardsContainer {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .reservationCard {
+    min-width: 0;
+  }
+
+  .reservationCardImage {
+    height: 100px;
+  }
+
+  .reservationCardContent {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .reservationCardHeader h3 {
+    font-size: 0.55rem;
+  }
+
+  .reservationCardDetails {
+    padding: 0.4rem;
+    gap: 0.3rem;
+  }
+
+  .detailItem {
+    padding: 0.2rem 0.3rem;
+  }
+
+  .detailLabel {
+    font-size: 0.45rem;
+  }
+
+  .detailValue {
+    font-size: 0.48rem;
+  }
+
+  .reservationCardActions {
+    gap: 0.25rem;
+    padding-top: 0.6rem;
+  }
+
+  .reservationCardActions .btnAccept,
+  .reservationCardActions .btnReject,
+  .reservationCardActions .btnDelete,
+  .reservationCardActions .btnSecondary {
+    min-width: 0;
+    padding: 0.2rem 0.4rem;
+    font-size: 0.5rem;
+  }
+
+  .filterSection {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .filterSection input,
+  .filterSection select {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+  }
+
+  .reservationsTableContainer {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem;
+  }
+
+  .reservationsTable {
+    min-width: 900px;
+  }
+
+  .reservationsTable th,
+  .reservationsTable td {
+    padding: 0.75rem 0.5rem;
+    font-size: 0.85rem;
+  }
+
+  .actionButtons {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .reservationsTable td button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 0.85rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+  }
+
+  .modalContent {
+    width: 95%;
+    padding: 1.25rem;
+    margin: 1rem;
+    max-height: 85vh;
+    border-radius: 1rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modalActions button {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+  }
+
+  .detailRow {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .detailRow label {
+    margin-bottom: 0.25rem;
+  }
+}
+

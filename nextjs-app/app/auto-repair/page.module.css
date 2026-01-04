@@ -37,23 +37,47 @@
 }
 
 .btnQuoteHeader {
-  padding: 1rem 2rem;
-  background: #4CAF50;
+  padding: 1.125rem 2.5rem;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 0.75rem;
   font-size: 1.25rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.3s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.btnQuoteHeader::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.btnQuoteHeader:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .btnQuoteHeader:hover {
-  background: #45a049;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 25px rgba(76, 175, 80, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btnQuoteHeader:active {
+  transform: translateY(-1px) scale(0.98);
 }
 
 /* Hero Section */
@@ -128,15 +152,17 @@
 .featureCard {
   background: white;
   padding: 2rem;
-  border-radius: 12px;
+  border-radius: 1rem;
   text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .featureCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15), 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-color: rgba(76, 175, 80, 0.2);
 }
 
 .featureIcon {
@@ -511,13 +537,41 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .autoRepairPage {
+    padding: 1.5rem 0;
+  }
+
+  .container {
+    padding: 0 1rem;
+  }
+
   .pageHeader {
     flex-direction: column;
     align-items: stretch;
+    margin-bottom: 2rem;
+  }
+
+  .autoRepairPage h1 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .intro {
+    font-size: 1.1rem;
+    line-height: 1.7;
   }
 
   .btnQuoteHeader {
     width: 100%;
+    padding: 1.125rem 2rem;
+    font-size: 1.1rem;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  .heroSection {
+    padding: 2rem 1.5rem;
+    margin-bottom: 2rem;
   }
 
   .heroContent {
@@ -525,26 +579,72 @@
     gap: 2rem;
   }
 
+  .heroText h2,
+  .servicesInfoContent h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .heroText p,
+  .servicesInfoContent p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
   .servicesInfoSection {
     grid-template-columns: 1fr;
     gap: 2rem;
+    padding: 2rem 1.5rem;
   }
 
   .featuresSection {
     grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
-  .autoRepairPage h1 {
-    font-size: 2rem;
+  .featureCard {
+    padding: 1.5rem;
   }
 
-  .heroText h2,
-  .servicesInfoContent h2 {
-    font-size: 1.5rem;
+  .featureCard h3 {
+    font-size: 1.15rem;
   }
 
   .modalContent {
     padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .formSection input,
+  .formSection select {
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .modalActions button {
+    width: 100%;
+    padding: 1.125rem 2rem;
+    font-size: 1.1rem;
+    min-height: 52px;
+    touch-action: manipulation;
+  }
+
+  .serviceCheckbox {
+    padding: 1.25rem;
+    min-height: 60px;
+  }
+
+  .serviceCheckbox input {
+    width: 24px;
+    height: 24px;
+    margin-top: 0.125rem;
   }
 
   .heroImg,

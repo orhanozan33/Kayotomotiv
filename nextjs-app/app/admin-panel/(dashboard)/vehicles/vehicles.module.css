@@ -35,131 +35,254 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 1rem;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 .modalContent {
-  background: white;
-  padding: 1.4rem;
-  border-radius: 8px;
-  max-width: 800px;
-  width: 90%;
+  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  max-width: 700px;
+  width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(0, 0, 0, 0.05);
+  animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overscroll-behavior: contain;
+  isolation: isolate;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 .modalContent h2 {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 1.25rem 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.modalContent h2::before {
+  content: '🚗';
+  font-size: 1.5rem;
 }
 
 .modalClose {
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background: linear-gradient(135deg, #81c784 0%, #66bb6a 100%);
-  border: 3px solid #4caf50;
-  font-size: 1.225rem;
-  font-weight: 900;
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  border: none;
+  font-size: 1.25rem;
+  font-weight: 700;
   cursor: pointer;
   color: white;
-  width: 45px;
-  height: 45px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
   z-index: 10;
+  line-height: 1;
 }
 
 .modalClose:hover {
-  background: linear-gradient(135deg, #66bb6a 0%, #4caf50 100%);
-  color: white;
-  transform: scale(1.1);
-  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.5), 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(135deg, #d32f2f 0%, #c62828 100%);
+  transform: scale(1.1) rotate(90deg);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
 }
 
 .modalClose:active {
-  transform: scale(0.95);
+  transform: scale(0.95) rotate(90deg);
 }
 
 .formGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 0.7rem;
-  margin-bottom: 0.7rem;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  position: relative;
+  overflow: visible;
 }
 
 .formGrid input,
 .formGrid select {
-  padding: 0.525rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  padding: 0.625rem 0.875rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
   appearance: none;
-  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.1%203.2-15.1%208.5-3%205.3-2.8%2011.8.6%2016.7l134.9%20134.9c2.8%202.8%206.7%204.3%2010.6%204.3s7.8-1.5%2010.6-4.3l134.9-134.9c3.4-4.9%203.6-11.4.6-16.7z%22%2F%3E%3C%2Fsvg%3E');
+  background: white;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+  position: relative;
+  z-index: 1;
+  overflow: visible;
+}
+
+.formGrid input:focus,
+.formGrid select:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  background: #fafafa;
+}
+
+.formGrid input::placeholder {
+  color: #999;
+  font-weight: 400;
+}
+
+.formGrid select {
+  background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23666%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-6.5%200-12.1%203.2-15.1%208.5-3%205.3-2.8%2011.8.6%2016.7l134.9%20134.9c2.8%202.8%206.7%204.3%2010.6%204.3s7.8-1.5%2010.6-4.3l134.9-134.9c3.4-4.9%203.6-11.4.6-16.7z%22%2F%3E%3C%2Fsvg%3E');
   background-repeat: no-repeat;
   background-position: right 0.75rem center;
-  background-size: 0.8em auto;
+  background-size: 0.7em auto;
+  cursor: pointer;
+}
+
+.formGrid select:hover {
+  border-color: #bdbdbd;
+}
+
+.formGrid select:focus {
+  z-index: 10;
+}
+
+/* Ensure select dropdown stays within modal */
+.formGrid select option {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Prevent dropdown from overflowing modal */
+.modalContent form {
+  position: relative;
+  overflow: visible;
+  width: 100%;
 }
 
 .formGrid select:disabled {
-  background-color: #f0f0f0;
+  background-color: #f5f5f5;
   cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Prevent modal scroll when dropdown is open */
+.formGrid select:focus ~ *,
+.formGrid select:active ~ * {
+  pointer-events: none;
 }
 
 .modalContent textarea {
   width: 100%;
-  padding: 0.525rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 0.7rem;
-  margin-bottom: 0.7rem;
+  padding: 0.75rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  margin-bottom: 1rem;
   font-family: inherit;
   box-sizing: border-box;
+  resize: vertical;
+  min-height: 100px;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #333;
+}
+
+.modalContent textarea:focus {
+  outline: none;
+  border-color: #4CAF50;
+  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+  background: #fafafa;
+}
+
+.modalContent textarea::placeholder {
+  color: #999;
+  font-weight: 400;
 }
 
 .formGroupImages {
-  margin-bottom: 0.7rem;
+  margin-bottom: 1rem;
 }
 
 .formGroupImages label {
   display: block;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.5rem;
   font-weight: 600;
   color: #333;
+  font-size: 0.875rem;
 }
 
 .fileInput {
   width: 100%;
-  padding: 0.525rem;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  padding: 0.875rem;
+  border: 2px dashed #bdbdbd;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
   cursor: pointer;
-  margin-bottom: 0.7rem;
-  background-color: #f9f9f9;
-  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: #666;
 }
 
 .fileInput:hover {
   border-color: #4CAF50;
-  background-color: #f0f8f0;
+  background: linear-gradient(135deg, #e8f5e9 0%, #f1f8f4 100%);
+  color: #4CAF50;
+}
+
+.fileInput:active {
+  transform: scale(0.98);
 }
 
 .formGroupImages h4 {
-  margin: 1.05rem 0 0.75rem 0;
-  font-size: 0.7rem;
+  margin: 1rem 0 0.75rem 0;
+  font-size: 0.875rem;
   font-weight: 600;
   color: #333;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .existingImagesSection,
@@ -177,17 +300,25 @@
 
 .imagePreviewContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-  gap: 0.7rem;
-  margin-top: 0.7rem;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
 }
 
 .imagePreviewItem {
   position: relative;
-  border: 2px solid #ddd;
-  border-radius: 8px;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.5rem;
   overflow: hidden;
   aspect-ratio: 1;
+  transition: all 0.2s ease;
+  background: #f5f5f5;
+}
+
+.imagePreviewItem:hover {
+  border-color: #4CAF50;
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
 }
 
 .imagePreviewItem img {
@@ -290,27 +421,90 @@
 
 .modalActions {
   display: flex;
-  gap: 0.7rem;
+  gap: 0.75rem;
   justify-content: flex-end;
-  margin-top: 0.7rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
 }
 
 .modalActions button {
-  padding: 0.525rem 1.05rem;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
-  font-size: 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .modalActions button[type='submit'] {
-  background: #4CAF50;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
   color: white;
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.modalActions button[type='submit']:hover {
+  background: linear-gradient(135deg, #45a049 0%, #3d8b40 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.4);
+}
+
+.modalActions button[type='submit']:active {
+  transform: translateY(0);
 }
 
 .modalActions button[type='button'] {
-  background: #ccc;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
   color: #333;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modalActions button[type='button']:hover {
+  background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modalActions button[type='button']:active {
+  transform: translateY(0);
+}
+
+.featuredCheckbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: linear-gradient(135deg, #fff9e6 0%, #ffffff 100%);
+  border: 2px solid #ffc107;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-bottom: 1rem;
+  font-weight: 500;
+  color: #333;
+}
+
+.featuredCheckbox:hover {
+  background: linear-gradient(135deg, #fff3cd 0%, #fff9e6 100%);
+  border-color: #ff9800;
+}
+
+.featuredCheckbox input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  accent-color: #ffc107;
+  flex-shrink: 0;
+}
+
+.featuredCheckbox span {
+  font-size: 0.875rem;
+  user-select: none;
 }
 
 .vehiclesTableContainer {
@@ -379,6 +573,393 @@
   }
   50% {
     background-color: rgba(255, 105, 135, 0.5);
+  }
+}
+
+/* Search Container */
+.searchContainer {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex: 1;
+  max-width: 400px;
+  margin-left: 2rem;
+}
+
+.searchInput {
+  padding: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 100%;
+}
+
+/* Mobile Vehicles List */
+.mobileVehiclesList {
+  display: none;
+}
+
+/* Vehicle Card Styles */
+.vehicleCard {
+  background: linear-gradient(135deg, #ffffff 0%, #f8f8f8 100%);
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e0e0;
+  margin-bottom: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.vehicleCard:hover {
+  transform: translateY(-4px) scale(1.01);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #4CAF50;
+}
+
+.vehicleCard.reservedCard {
+  background: linear-gradient(135deg, #fff3e0 0%, #ffffff 100%);
+  border-left: 5px solid #ff9800;
+}
+
+.vehicleCardImage {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  overflow: hidden;
+  background: #f5f5f5;
+}
+
+.vehicleCardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.featuredBadge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+  color: white;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.vehicleCardContent {
+  padding: 1rem;
+}
+
+.vehicleCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.vehicleCardTitle {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.25rem 0;
+}
+
+.vehicleCardYear {
+  font-size: 0.85rem;
+  color: #666;
+}
+
+.vehicleCardStatus {
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.vehicleCardDetails {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  background: #f9f9f9;
+  border-radius: 0.5rem;
+}
+
+.vehicleCardDetail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.detailLabel {
+  font-size: 0.7rem;
+  color: #666;
+  font-weight: 600;
+}
+
+.detailValue {
+  font-size: 0.85rem;
+  color: #333;
+  font-weight: 600;
+}
+
+.vehicleCardActions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #eee;
+}
+
+.btnEdit,
+.btnDelete {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+.btnEdit {
+  background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+}
+
+.btnEdit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.btnDelete {
+  background: linear-gradient(135deg, #f44336 0%, #d32f2f 100%);
+  color: white;
+  box-shadow: 0 2px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btnDelete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.4);
+}
+
+@media (max-width: 768px) {
+  .vehiclesPage {
+    padding: 0;
+  }
+
+  .pageHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+
+  .pageHeader h1 {
+    font-size: 1.5rem;
+  }
+
+  .searchContainer {
+    display: none !important; /* Hide search on mobile */
+  }
+
+  .btnPrimary {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 48px;
+    touch-action: manipulation;
+    border-radius: 0.75rem;
+  }
+
+  .modal {
+    padding: 0.5rem;
+  }
+
+  .modalContent {
+    width: 100%;
+    padding: 1rem;
+    margin: 0;
+    max-height: 90vh;
+    border-radius: 0.75rem;
+    overscroll-behavior: contain;
+    isolation: isolate;
+  }
+
+  .modalContent h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .modalClose {
+    width: 32px;
+    height: 32px;
+    top: 0.75rem;
+    right: 0.75rem;
+    font-size: 1.125rem;
+  }
+
+  .formGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.625rem;
+    margin-bottom: 0.875rem;
+    overflow: visible;
+  }
+
+  .formGrid input,
+  .formGrid select,
+  .formGrid textarea {
+    padding: 0.625rem 0.5rem;
+    font-size: 0.8rem;
+    min-height: 42px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  .modalContent textarea {
+    padding: 0.625rem;
+    font-size: 0.8rem;
+    min-height: 90px;
+    margin-bottom: 0.875rem;
+  }
+
+  .fileInput {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .featuredCheckbox {
+    padding: 0.625rem;
+    margin-bottom: 0.875rem;
+  }
+
+  .featuredCheckbox input[type='checkbox'] {
+    width: 18px;
+    height: 18px;
+  }
+
+  .featuredCheckbox span {
+    font-size: 0.85rem;
+  }
+
+  /* Hide desktop table on mobile */
+  .vehiclesTableContainer {
+    display: none;
+  }
+
+  /* Show mobile card list */
+  .mobileVehiclesList {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .vehicleCard {
+    margin-bottom: 0;
+  }
+
+  .vehicleCardImage {
+    height: 140px;
+  }
+
+  .vehicleCardContent {
+    padding: 0.75rem;
+  }
+
+  .vehicleCardTitle {
+    font-size: 0.9rem;
+  }
+
+  .vehicleCardYear {
+    font-size: 0.75rem;
+  }
+
+  .vehicleCardStatus {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.65rem;
+  }
+
+  .vehicleCardDetails {
+    grid-template-columns: 1fr; /* Single column for details in mobile cards */
+    gap: 0.4rem;
+    padding: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .vehicleCardDetail {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .detailLabel {
+    font-size: 0.6rem;
+  }
+
+  .detailValue {
+    font-size: 0.7rem;
+  }
+
+  .vehicleCardActions {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .btnEdit,
+  .btnDelete {
+    width: 100%;
+    padding: 0.6rem;
+    font-size: 0.75rem;
+    min-height: 36px;
+  }
+
+  .featuredBadge {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.65rem;
+    top: 0.5rem;
+    right: 0.5rem;
+  }
+
+  .modalActions {
+    flex-direction: column;
+    gap: 0.625rem;
+    margin-top: 1rem;
+    padding-top: 0.875rem;
+  }
+
+  .modalActions button {
+    width: 100%;
+    padding: 0.875rem;
+    font-size: 0.9rem;
+    min-height: 44px;
+    touch-action: manipulation;
+    border-radius: 0.5rem;
+  }
+
+  .imageUploadSection {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .imagePreviewGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .imagePreviewItem {
+    min-height: 120px;
   }
 }
 

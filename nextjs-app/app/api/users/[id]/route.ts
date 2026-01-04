@@ -63,10 +63,10 @@ export async function PUT(
 
     const updateData: any = {};
     if (value.email !== undefined) updateData.email = value.email.trim().toLowerCase();
-    if (value.password !== undefined) updateData.password = value.password;
-    if (value.first_name !== undefined) updateData.firstName = value.first_name;
-    if (value.last_name !== undefined) updateData.lastName = value.last_name;
-    if (value.phone !== undefined) updateData.phone = value.phone;
+    if (value.password !== undefined && value.password.trim()) updateData.password = value.password;
+    if (value.first_name !== undefined) updateData.firstName = value.first_name && value.first_name.trim() ? value.first_name.trim() : null;
+    if (value.last_name !== undefined) updateData.lastName = value.last_name && value.last_name.trim() ? value.last_name.trim() : null;
+    if (value.phone !== undefined) updateData.phone = value.phone && value.phone.trim() ? value.phone.trim() : null;
     if (value.role !== undefined) updateData.role = value.role;
     if (value.is_active !== undefined) updateData.isActive = value.is_active;
 
