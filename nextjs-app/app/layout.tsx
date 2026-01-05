@@ -5,7 +5,7 @@ import I18nProvider from '@/components/I18nProvider';
 import { ErrorProvider } from '@/contexts/ErrorContext';
 
 export const metadata: Metadata = {
-  title: 'KAY Oto Servis',
+  title: 'Kay Auto',
   description: 'Tüm otomotif ihtiyaçlarınız için güvenilir ortağınız',
 };
 

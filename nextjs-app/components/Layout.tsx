@@ -39,7 +39,6 @@ export default function Layout({ children }: LayoutProps) {
     x: '',
     phone: '',
   });
-  const [logoEditMode, setLogoEditMode] = useState(false);
   // Initialize with default values to avoid hydration mismatch
   const [logoSettings, setLogoSettings] = useState<LogoSettings>({
     width: '139px',
@@ -50,10 +49,6 @@ export default function Layout({ children }: LayoutProps) {
   });
   const [isMounted, setIsMounted] = useState(false);
   const [currentYear, setCurrentYear] = useState<number | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-  const [isResizing, setIsResizing] = useState(false);
-  const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
-  const [resizeStart, setResizeStart] = useState({ width: 0, height: 0, x: 0, y: 0 });
 
   useEffect(() => {
     const fetchSocialLinks = async () => {
@@ -107,134 +102,18 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [logoSettings, isMounted]);
 
-  const handleMouseDown = (e: React.MouseEvent, type: 'drag' | 'resize') => {
-    if (!logoEditMode) return;
 
-    if (type === 'drag') {
-      setIsDragging(true);
-      const target = e.currentTarget as HTMLElement;
-      const rect = target.getBoundingClientRect();
-      const container = target.closest('.logo') as HTMLElement;
-      if (container) {
-        const containerRect = container.getBoundingClientRect();
-        setDragStart({
-          x: e.clientX - containerRect.left - parseFloat(logoSettings.left || '0'),
-          y: e.clientY - containerRect.top - parseFloat(logoSettings.top || '0'),
-        });
-      }
-    } else if (type === 'resize') {
-      setIsResizing(true);
-      setResizeStart({
-        width: parseFloat(logoSettings.width) || 152,
-        height: parseFloat(logoSettings.height) || 50,
-        x: e.clientX,
-        y: e.clientY,
-      });
-    }
-    e.preventDefault();
-    e.stopPropagation();
-  };
-
-  const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
-      if (isDragging && logoEditMode) {
-        const logoElement = document.querySelector('.logo') as HTMLElement;
-        if (logoElement) {
-          const containerRect = logoElement.getBoundingClientRect();
-          const newLeft = e.clientX - containerRect.left - dragStart.x;
-          const newTop = e.clientY - containerRect.top - dragStart.y;
-
-          setLogoSettings((prev) => ({
-            ...prev,
-            left: `${Math.max(0, newLeft)}px`,
-            top: `${Math.max(0, newTop)}px`,
-          }));
-        }
-      } else if (isResizing && logoEditMode) {
-        const deltaX = e.clientX - resizeStart.x;
-        const deltaY = e.clientY - resizeStart.y;
-
-        const newWidth = Math.max(50, resizeStart.width + deltaX);
-        const newHeight = Math.max(30, resizeStart.height + deltaY);
-
-        setLogoSettings((prev) => ({
-          ...prev,
-          width: `${newWidth}px`,
-          height: `${newHeight}px`,
-        }));
-      }
-    },
-    [isDragging, isResizing, logoEditMode, dragStart, resizeStart]
-  );
-
-  const handleMouseUp = useCallback(() => {
-    setIsDragging(false);
-    setIsResizing(false);
-  }, []);
-
-  useEffect(() => {
-    if (isDragging || isResizing) {
-      document.addEventListener('mousemove', handleMouseMove);
-      document.addEventListener('mouseup', handleMouseUp);
-      return () => {
-        document.removeEventListener('mousemove', handleMouseMove);
-        document.removeEventListener('mouseup', handleMouseUp);
-      };
-    }
-  }, [isDragging, isResizing, handleMouseMove, handleMouseUp]);
 
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
+        <Link href="/" className={styles.logo}>
+          <div className={styles.logoTextContainer}>
+            <span className={styles.logoText}>KAY AUTO</span>
+            <div className={styles.ledLight}></div>
+          </div>
+        </Link>
         <div className={styles.headerContainer}>
-          <Link href="/" className={styles.logo}>
-            <div
-              className={`${styles.logoWrapper} ${logoEditMode ? styles.editMode : ''}`}
-              style={{
-                position:
-                  logoEditMode || logoSettings.top !== '0' || logoSettings.left !== '0'
-                    ? 'relative'
-                    : 'static',
-                display: 'inline-block',
-              }}
-            >
-              <img
-                src="/kayauto-logo.png.png"
-                alt="KAY Auto Service Logo"
-                className={styles.logoImage}
-                style={{
-                  width: logoSettings.width,
-                  height: logoSettings.height,
-                  top: logoSettings.top,
-                  left: logoSettings.left,
-                  transform:
-                    logoSettings.transform !== 'none'
-                      ? logoSettings.transform
-                      : 'translateX(-3%)',
-                  position:
-                    logoEditMode || logoSettings.top !== '0' || logoSettings.left !== '0'
-                      ? 'relative'
-                      : 'static',
-                  cursor: logoEditMode ? (isDragging ? 'grabbing' : 'grab') : 'default',
-                }}
-                onMouseDown={(e) => logoEditMode && handleMouseDown(e, 'drag')}
-              />
-              {logoEditMode && (
-                <>
-                  <div
-                    className={styles.resizeHandle}
-                    onMouseDown={(e) => handleMouseDown(e, 'resize')}
-                    style={{ cursor: 'nwse-resize' }}
-                  />
-                  <div className={styles.dragHint}>{String(t('header.dragHint') || '')}</div>
-                  <div className={styles.resizeHint}>{String(t('header.resizeHint') || '')}</div>
-                </>
-              )}
-            </div>
-            <h1 className={styles.logoTitle}>
-              {isMounted ? String(t('header.logoTitle') || 'KAY Auto Service') : 'KAY Auto Service'}
-            </h1>
-          </Link>
           <nav className={styles.nav}>
             <Link href="/" className={pathname === '/' ? styles.active : ''}>
               {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
@@ -254,7 +133,6 @@ export default function Layout({ children }: LayoutProps) {
             <Link href="/contact" className={pathname === '/contact' ? styles.active : ''}>
               {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
             </Link>
-            <LanguageSwitcher />
           </nav>
           <div className={styles.mobileLanguageSwitcher}>
             <LanguageSwitcher />
@@ -306,6 +184,9 @@ export default function Layout({ children }: LayoutProps) {
               </a>
             </p>
             <div className={styles.footerRight}>
+              <div className={styles.footerLanguageSwitcher}>
+                <LanguageSwitcher />
+              </div>
               {!isAdminPanel && (socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
                 <div className={styles.socialLinks}>
                   {socialLinks.phone && (

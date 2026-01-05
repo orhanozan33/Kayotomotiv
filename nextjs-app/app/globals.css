@@ -6,6 +6,18 @@
   box-sizing: border-box;
 }
 
+html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow-x: hidden;
+}
+
 :root {
   /* Modern Color Palette */
   --background: #f8fafc;
@@ -73,6 +85,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   scroll-behavior: smooth;
+  margin: 0;
+  padding: 0;
 }
 
 /* Modern Scrollbar */
