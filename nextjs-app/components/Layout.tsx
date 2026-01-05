@@ -237,11 +237,6 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                 </div>
               )}
-              {!isAdminPanel && (
-                <div className={styles.footerLanguageSwitcher}>
-                  <LanguageSwitcher />
-                </div>
-              )}
             </div>
           </div>
         </div>
