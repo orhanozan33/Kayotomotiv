@@ -288,7 +288,7 @@ export default function Layout({ children }: LayoutProps) {
                 <button 
                   className={styles.carouselButton}
                   onClick={() => setCurrentReviewIndex((prev) => (prev === 0 ? 29 : prev - 1))}
-                  aria-label={t('footer.googleReviews.previousReview')}
+                  aria-label={isMounted ? t('footer.googleReviews.previousReview') : 'Previous review'}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M15 18l-6-6 6-6"/>
@@ -393,7 +393,7 @@ export default function Layout({ children }: LayoutProps) {
                 <button 
                   className={styles.carouselButton}
                   onClick={() => setCurrentReviewIndex((prev) => (prev === 29 ? 0 : prev + 1))}
-                  aria-label={t('footer.googleReviews.nextReview')}
+                  aria-label={isMounted ? t('footer.googleReviews.nextReview') : 'Next review'}
                 >
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 18l6-6-6-6"/>
@@ -448,7 +448,7 @@ export default function Layout({ children }: LayoutProps) {
                 <button 
                   className={styles.mobileCarouselButton}
                   onClick={() => setCurrentReviewIndex((prev) => (prev === 0 ? 29 : prev - 1))}
-                  aria-label={t('footer.googleReviews.previousReview')}
+                  aria-label={isMounted ? t('footer.googleReviews.previousReview') : 'Previous review'}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M15 18l-6-6 6-6"/>
@@ -550,7 +550,7 @@ export default function Layout({ children }: LayoutProps) {
                 <button 
                   className={styles.mobileCarouselButton}
                   onClick={() => setCurrentReviewIndex((prev) => (prev === 29 ? 0 : prev + 1))}
-                  aria-label={t('footer.googleReviews.nextReview')}
+                  aria-label={isMounted ? t('footer.googleReviews.nextReview') : 'Next review'}
                 >
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M9 18l6-6-6-6"/>
