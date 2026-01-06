@@ -87,6 +87,7 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
   const [loadingServices, setLoadingServices] = useState(false);
   const [availableVehicleModels, setAvailableVehicleModels] = useState<string[]>([]);
   const [serviceCart, setServiceCart] = useState<ServiceCartItem[]>([]);
+  const [selectedServices, setSelectedServices] = useState<Set<string>>(new Set());
 
   const showError = (message: string) => {
     setError(message);
@@ -418,6 +419,652 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
     }
   };
 
+  const handlePrintSelectedServicesReceipt = async () => {
+    if (selectedServices.size === 0) {
+      showError('Lütfen yazdırmak için en az bir hizmet seçin');
+      return;
+    }
+
+    const selectedRecords = displayCustomer.serviceRecords.filter((record: any) => 
+      selectedServices.has(record.id.toString())
+    );
+
+    if (selectedRecords.length === 0) {
+      showError('Seçilen hizmet bulunamadı');
+      return;
+    }
+
+    try {
+      let companyInfo: any = {};
+      try {
+        const companyResponse = await adminSettingsAPI.getCompanyInfo();
+        companyInfo = companyResponse.data?.companyInfo || {};
+      } catch (error) {
+        console.error('Error loading company info:', error);
+      }
+
+      // Also load logo and tax numbers from settings
+      let tpsPercentage = 0;
+      let tpsNumber = '';
+      let tvqPercentage = 0;
+      let tvqNumber = '';
+      try {
+        const settingsResponse = await adminSettingsAPI.getSettings();
+        if (settingsResponse.data?.settings) {
+          if (settingsResponse.data.settings.company_logo_url) {
+            companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
+          }
+          companyInfo.company_federal_tax_number = settingsResponse.data.settings.company_federal_tax_number || '';
+          companyInfo.company_provincial_tax_number = settingsResponse.data.settings.company_provincial_tax_number || '';
+          tpsPercentage = parseFloat(settingsResponse.data.settings.tps_percentage || '0');
+          tpsNumber = settingsResponse.data.settings.tps_number || '';
+          tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
+          tvqNumber = settingsResponse.data.settings.tvq_number || '';
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+
+      if (companyInfo.company_logo_url && typeof window !== 'undefined') {
+        if (!companyInfo.company_logo_url.startsWith('http')) {
+          if (companyInfo.company_logo_url.startsWith('/uploads')) {
+            companyInfo.company_logo_url = `${window.location.origin}${companyInfo.company_logo_url}`;
+          } else if (companyInfo.company_logo_url.startsWith('uploads')) {
+            companyInfo.company_logo_url = `${window.location.origin}/${companyInfo.company_logo_url}`;
+          }
+        }
+      }
+
+      const effectiveFederalRate = tpsPercentage > 0 ? tpsPercentage : (federalTaxRate > 0 ? federalTaxRate : (taxRate / 2));
+      const effectiveProvincialRate = tvqPercentage > 0 ? tvqPercentage : (provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2));
+      const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
+
+      // Group selected services by vehicle and date
+      const servicesByVehicle = selectedRecords.reduce((acc: any, record: any) => {
+        const key = `${record.vehicle_id || 'no-vehicle'}_${record.performed_date || 'no-date'}`;
+        if (!acc[key]) {
+          acc[key] = {
+            vehicle_id: record.vehicle_id,
+            vehicle_brand: record.vehicle_brand,
+            vehicle_model: record.vehicle_model,
+            vehicle_year: record.vehicle_year,
+            license_plate: record.license_plate,
+            performed_date: record.performed_date,
+            services: []
+          };
+        }
+        acc[key].services.push(record);
+        return acc;
+      }, {});
+
+      // Print receipt for each vehicle/date group
+      for (const [key, group] of Object.entries(servicesByVehicle)) {
+        const vehicleGroup = group as any;
+        const services = vehicleGroup.services;
+        
+        let totalPrice = 0;
+        services.forEach((service: any) => {
+          totalPrice += parseFloat(String(service.price || 0));
+        });
+
+        let basePrice = totalPrice;
+        let federalTaxAmount = 0;
+        let provincialTaxAmount = 0;
+        
+        if (totalTaxRate > 0) {
+          basePrice = totalPrice / (1 + totalTaxRate / 100);
+          federalTaxAmount = basePrice * (effectiveFederalRate / 100);
+          provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+        }
+
+        const receiptHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reçu</title>
+  <style>
+    @page { size: 80mm auto; margin: 0; }
+    @media print {
+      body { margin: 0; padding: 5mm; }
+      .no-print { display: none !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    body {
+      font-family: 'Courier New', 'Courier', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      width: 70mm;
+      max-width: 70mm;
+      margin: 0 auto;
+      padding: 5mm;
+      color: #000;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .company-logo {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .company-logo img {
+      max-width: 120px;
+      max-height: 60px;
+      object-fit: contain;
+    }
+    .company-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .company-info {
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    .receipt-body {
+      margin: 8px 0;
+    }
+    .section-divider {
+      border-top: 1px dashed #000;
+      margin: 8px 0;
+      padding-top: 8px;
+    }
+    .info-row {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .service-title {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-align: center;
+      border-top: 1px dashed #000;
+      border-bottom: 1px dashed #000;
+      padding: 4px 0;
+    }
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      font-size: 10px;
+    }
+    .total-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+    .date-info {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 9px;
+      border-top: 1px dashed #000;
+      padding-top: 8px;
+    }
+    .no-print {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .no-print button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 5px;
+    }
+    .no-print button.close {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-header">
+    ${companyInfo.company_logo_url ? `
+    <div class="company-logo">
+      <img src="${companyInfo.company_logo_url}" alt="Company Logo" />
+    </div>
+    ` : ''}
+    <div class="company-name">${companyInfo.company_name || 'KAY Oto Servis'}</div>
+    <div class="company-info">
+      ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
+      ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="receipt-body">
+    ${vehicleGroup.vehicle_brand ? `
+    <div class="info-row">
+      <span>Véhicule:</span>
+      <span>${vehicleGroup.vehicle_brand} ${vehicleGroup.vehicle_model || ''} ${vehicleGroup.vehicle_year || ''}</span>
+    </div>
+    ` : ''}
+    ${vehicleGroup.license_plate ? `
+    <div class="info-row">
+      <span>Plaque:</span>
+      <span>${vehicleGroup.license_plate}</span>
+    </div>
+    ` : ''}
+
+    <div class="section-divider">
+      <div class="service-title">SERVICES EFFECTUÉS</div>
+      ${services.map((service: any) => {
+        const servicePrice = parseFloat(String(service.price || 0));
+        let serviceBasePrice = servicePrice;
+        if (totalTaxRate > 0) {
+          serviceBasePrice = servicePrice / (1 + totalTaxRate / 100);
+        }
+        return `
+      <div class="service-row">
+        <span>${service.service_name}</span>
+        <span>$${serviceBasePrice.toFixed(2)}</span>
+      </div>
+        `;
+      }).join('')}
+    </div>
+
+    ${totalTaxRate > 0 ? `
+    <div class="section-divider">
+      <div class="info-row">
+        <span>Sous-total:</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+      ${effectiveFederalRate > 0 ? `
+      <div class="info-row">
+        <span>TPS: ${tpsNumber || companyInfo.company_federal_tax_number || ''} (${effectiveFederalRate.toFixed(2)}%)</span>
+        <span>$${federalTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+      ${effectiveProvincialRate > 0 ? `
+      <div class="info-row">
+        <span>TVQ: ${tvqNumber || companyInfo.company_provincial_tax_number || ''} (${effectiveProvincialRate.toFixed(2)}%)</span>
+        <span>$${provincialTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+    </div>
+    ` : ''}
+
+    <div class="total-row">
+      <span>TOTAL:</span>
+      <span>$${totalPrice.toFixed(2)}</span>
+    </div>
+
+    <div class="date-info">
+      <div>${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
+      <div>Merci de votre visite!</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 10px; text-align: center; font-size: 10px;">
+      <div>www.kayauto.ca</div>
+    </div>
+  </div>
+
+  <div class="no-print">
+    <button onclick="window.print()">Imprimer</button>
+    <button class="close" onclick="window.close()">Fermer</button>
+  </div>
+</body>
+</html>
+        `;
+
+        const printWindow = window.open('', '_blank', 'width=400,height=600');
+        if (printWindow) {
+          try {
+            printWindow.document.write(receiptHTML);
+            printWindow.document.close();
+            setTimeout(() => {
+              printWindow.focus();
+              printWindow.print();
+            }, 1000);
+          } catch (error) {
+            console.error('Error writing to print window:', error);
+            showError('Makbuz yazdırılırken hata oluştu');
+            printWindow.close();
+          }
+        } else {
+          showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+        }
+      }
+
+      // Clear selection after printing
+      setSelectedServices(new Set());
+    } catch (error: unknown) {
+      console.error('Error printing receipt:', error);
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError('Makbuz yazdırılırken hata oluştu: ' + (err.response?.data?.error || err.message || 'Unknown error'));
+    }
+  };
+
+  const handlePrintAllServicesReceipt = async () => {
+    if (!displayCustomer.serviceRecords || displayCustomer.serviceRecords.length === 0) {
+      showError('Yazdırılacak hizmet bulunamadı');
+      return;
+    }
+
+    try {
+      let companyInfo: any = {};
+      try {
+        const companyResponse = await adminSettingsAPI.getCompanyInfo();
+        companyInfo = companyResponse.data?.companyInfo || {};
+      } catch (error) {
+        console.error('Error loading company info:', error);
+      }
+
+      // Also load logo and tax numbers from settings - always load from settings to get latest values
+      let tpsPercentage = 0;
+      let tpsNumber = '';
+      let tvqPercentage = 0;
+      let tvqNumber = '';
+      try {
+        const settingsResponse = await adminSettingsAPI.getSettings();
+        if (settingsResponse.data?.settings) {
+          if (settingsResponse.data.settings.company_logo_url) {
+            companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
+          }
+          companyInfo.company_federal_tax_number = settingsResponse.data.settings.company_federal_tax_number || '';
+          companyInfo.company_provincial_tax_number = settingsResponse.data.settings.company_provincial_tax_number || '';
+          // Load TPS and TVQ from new fields
+          tpsPercentage = parseFloat(settingsResponse.data.settings.tps_percentage || '0');
+          tpsNumber = settingsResponse.data.settings.tps_number || '';
+          tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
+          tvqNumber = settingsResponse.data.settings.tvq_number || '';
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+
+      // Ensure logo URL is absolute (if it's from Supabase Storage)
+      if (companyInfo.company_logo_url && typeof window !== 'undefined') {
+        if (!companyInfo.company_logo_url.startsWith('http')) {
+          if (companyInfo.company_logo_url.startsWith('/uploads')) {
+            companyInfo.company_logo_url = `${window.location.origin}${companyInfo.company_logo_url}`;
+          } else if (companyInfo.company_logo_url.startsWith('uploads')) {
+            companyInfo.company_logo_url = `${window.location.origin}/${companyInfo.company_logo_url}`;
+          }
+        }
+      }
+
+      // Use TPS/TVQ percentages from settings if available, otherwise fall back to old tax rates
+      const effectiveFederalRate = tpsPercentage > 0 ? tpsPercentage : (federalTaxRate > 0 ? federalTaxRate : (taxRate / 2));
+      const effectiveProvincialRate = tvqPercentage > 0 ? tvqPercentage : (provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2));
+      const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
+
+      // Group services by vehicle and date
+      const servicesByVehicle = displayCustomer.serviceRecords.reduce((acc: any, record: any) => {
+        const key = `${record.vehicle_id || 'no-vehicle'}_${record.performed_date || 'no-date'}`;
+        if (!acc[key]) {
+          acc[key] = {
+            vehicle_id: record.vehicle_id,
+            vehicle_brand: record.vehicle_brand,
+            vehicle_model: record.vehicle_model,
+            vehicle_year: record.vehicle_year,
+            license_plate: record.license_plate,
+            performed_date: record.performed_date,
+            services: []
+          };
+        }
+        acc[key].services.push(record);
+        return acc;
+      }, {});
+
+      // Print receipt for each vehicle/date group
+      for (const [key, group] of Object.entries(servicesByVehicle)) {
+        const vehicleGroup = group as any;
+        const services = vehicleGroup.services;
+        
+        // Calculate totals
+        let totalPrice = 0;
+        services.forEach((service: any) => {
+          totalPrice += parseFloat(String(service.price || 0));
+        });
+
+        let basePrice = totalPrice;
+        let federalTaxAmount = 0;
+        let provincialTaxAmount = 0;
+        
+        if (totalTaxRate > 0) {
+          basePrice = totalPrice / (1 + totalTaxRate / 100);
+          federalTaxAmount = basePrice * (effectiveFederalRate / 100);
+          provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+        }
+
+        const receiptHTML = `
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reçu</title>
+  <style>
+    @page { size: 80mm auto; margin: 0; }
+    @media print {
+      body { margin: 0; padding: 5mm; }
+      .no-print { display: none !important; }
+      * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    }
+    body {
+      font-family: 'Courier New', 'Courier', monospace;
+      font-size: 11px;
+      line-height: 1.3;
+      width: 70mm;
+      max-width: 70mm;
+      margin: 0 auto;
+      padding: 5mm;
+      color: #000;
+    }
+    .receipt-header {
+      text-align: center;
+      border-bottom: 1px dashed #000;
+      padding-bottom: 8px;
+      margin-bottom: 8px;
+    }
+    .company-logo {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .company-logo img {
+      max-width: 120px;
+      max-height: 60px;
+      object-fit: contain;
+    }
+    .company-name {
+      font-size: 14px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+    }
+    .company-info {
+      font-size: 9px;
+      line-height: 1.4;
+    }
+    .receipt-body {
+      margin: 8px 0;
+    }
+    .section-divider {
+      border-top: 1px dashed #000;
+      margin: 8px 0;
+      padding-top: 8px;
+    }
+    .info-row {
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .service-title {
+      font-size: 12px;
+      font-weight: bold;
+      margin-bottom: 6px;
+      text-align: center;
+      border-top: 1px dashed #000;
+      border-bottom: 1px dashed #000;
+      padding: 4px 0;
+    }
+    .service-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 3px;
+      font-size: 10px;
+    }
+    .total-row {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 2px solid #000;
+      font-size: 13px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      text-transform: uppercase;
+    }
+    .date-info {
+      text-align: center;
+      margin-top: 8px;
+      font-size: 9px;
+      border-top: 1px dashed #000;
+      padding-top: 8px;
+    }
+    .no-print {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .no-print button {
+      padding: 10px 20px;
+      font-size: 14px;
+      background: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      margin: 0 5px;
+    }
+    .no-print button.close {
+      background: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-header">
+    ${companyInfo.company_logo_url ? `
+    <div class="company-logo">
+      <img src="${companyInfo.company_logo_url}" alt="Company Logo" />
+    </div>
+    ` : ''}
+    <div class="company-name">${companyInfo.company_name || 'KAY Oto Servis'}</div>
+    <div class="company-info">
+      ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
+      ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
+    </div>
+  </div>
+
+  <div class="receipt-body">
+    ${vehicleGroup.vehicle_brand ? `
+    <div class="info-row">
+      <span>Véhicule:</span>
+      <span>${vehicleGroup.vehicle_brand} ${vehicleGroup.vehicle_model || ''} ${vehicleGroup.vehicle_year || ''}</span>
+    </div>
+    ` : ''}
+    ${vehicleGroup.license_plate ? `
+    <div class="info-row">
+      <span>Plaque:</span>
+      <span>${vehicleGroup.license_plate}</span>
+    </div>
+    ` : ''}
+
+    <div class="section-divider">
+      <div class="service-title">SERVICES EFFECTUÉS</div>
+      ${services.map((service: any) => {
+        const servicePrice = parseFloat(String(service.price || 0));
+        let serviceBasePrice = servicePrice;
+        if (totalTaxRate > 0) {
+          serviceBasePrice = servicePrice / (1 + totalTaxRate / 100);
+        }
+        return `
+      <div class="service-row">
+        <span>${service.service_name}</span>
+        <span>$${serviceBasePrice.toFixed(2)}</span>
+      </div>
+        `;
+      }).join('')}
+    </div>
+
+    ${totalTaxRate > 0 ? `
+    <div class="section-divider">
+      <div class="info-row">
+        <span>Sous-total:</span>
+        <span>$${basePrice.toFixed(2)}</span>
+      </div>
+      ${effectiveFederalRate > 0 ? `
+      <div class="info-row">
+        <span>TPS: ${tpsNumber || companyInfo.company_federal_tax_number || ''} (${effectiveFederalRate.toFixed(2)}%)</span>
+        <span>$${federalTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+      ${effectiveProvincialRate > 0 ? `
+      <div class="info-row">
+        <span>TVQ: ${tvqNumber || companyInfo.company_provincial_tax_number || ''} (${effectiveProvincialRate.toFixed(2)}%)</span>
+        <span>$${provincialTaxAmount.toFixed(2)}</span>
+      </div>
+      ` : ''}
+    </div>
+    ` : ''}
+
+    <div class="total-row">
+      <span>TOTAL:</span>
+      <span>$${totalPrice.toFixed(2)}</span>
+    </div>
+
+    <div class="date-info">
+      <div>${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
+      <div>Merci de votre visite!</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 10px; text-align: center; font-size: 10px;">
+      <div>www.kayauto.ca</div>
+    </div>
+  </div>
+
+  <div class="no-print">
+    <button onclick="window.print()">Imprimer</button>
+    <button class="close" onclick="window.close()">Fermer</button>
+  </div>
+</body>
+</html>
+        `;
+
+        const printWindow = window.open('', '_blank', 'width=400,height=600');
+        if (printWindow) {
+          try {
+            printWindow.document.write(receiptHTML);
+            printWindow.document.close();
+            setTimeout(() => {
+              printWindow.focus();
+              printWindow.print();
+            }, 1000);
+          } catch (error) {
+            console.error('Error writing to print window:', error);
+            showError('Makbuz yazdırılırken hata oluştu');
+            printWindow.close();
+          }
+        } else {
+          showError('Popup engellendi. Lütfen popup blocker\'ı kapatın.');
+        }
+      }
+    } catch (error: unknown) {
+      console.error('Error printing receipt:', error);
+      const err = error as { response?: { data?: { error?: string } }; message?: string };
+      showError('Makbuz yazdırılırken hata oluştu: ' + (err.response?.data?.error || err.message || 'Unknown error'));
+    }
+  };
+
   const handlePrintReceipt = async (serviceRecord: any) => {
     try {
       let companyInfo: any = {};
@@ -428,16 +1075,27 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
         console.error('Error loading company info:', error);
       }
 
-      // Also load logo from settings - check both companyInfo and settings
-      if (!companyInfo.company_logo_url) {
-        try {
-          const settingsResponse = await adminSettingsAPI.getSettings();
-          if (settingsResponse.data?.settings?.company_logo_url) {
+      // Also load logo and tax numbers from settings - always load from settings to get latest values
+      let tpsPercentage = 0;
+      let tpsNumber = '';
+      let tvqPercentage = 0;
+      let tvqNumber = '';
+      try {
+        const settingsResponse = await adminSettingsAPI.getSettings();
+        if (settingsResponse.data?.settings) {
+          if (settingsResponse.data.settings.company_logo_url) {
             companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
           }
-        } catch (error) {
-          console.error('Error loading logo:', error);
+          companyInfo.company_federal_tax_number = settingsResponse.data.settings.company_federal_tax_number || '';
+          companyInfo.company_provincial_tax_number = settingsResponse.data.settings.company_provincial_tax_number || '';
+          // Load TPS and TVQ from new fields
+          tpsPercentage = parseFloat(settingsResponse.data.settings.tps_percentage || '0');
+          tpsNumber = settingsResponse.data.settings.tps_number || '';
+          tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
+          tvqNumber = settingsResponse.data.settings.tvq_number || '';
         }
+      } catch (error) {
+        console.error('Error loading settings:', error);
       }
 
       // Ensure logo URL is absolute (if it's from Supabase Storage)
@@ -452,8 +1110,26 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
         }
       }
 
-      const effectiveFederalRate = federalTaxRate > 0 ? federalTaxRate : (taxRate / 2);
-      const effectiveProvincialRate = provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2);
+      // Get vehicle information from serviceRecord or from customer vehicles
+      let vehicleBrand = serviceRecord.vehicle_brand || '';
+      let vehicleModel = serviceRecord.vehicle_model || '';
+      let vehicleYear = serviceRecord.vehicle_year || '';
+      let licensePlate = serviceRecord.license_plate || '';
+      
+      // If vehicle info is not in serviceRecord, try to get it from the vehicle_id
+      if (!vehicleBrand && serviceRecord.vehicle_id && displayCustomer.vehicles) {
+        const vehicle = displayCustomer.vehicles.find((v: any) => v.id === serviceRecord.vehicle_id);
+        if (vehicle) {
+          vehicleBrand = vehicle.brand || '';
+          vehicleModel = vehicle.model || '';
+          vehicleYear = vehicle.year || '';
+          licensePlate = vehicle.license_plate || '';
+        }
+      }
+
+      // Use TPS/TVQ percentages from settings if available, otherwise fall back to old tax rates
+      const effectiveFederalRate = tpsPercentage > 0 ? tpsPercentage : (federalTaxRate > 0 ? federalTaxRate : (taxRate / 2));
+      const effectiveProvincialRate = tvqPercentage > 0 ? tvqPercentage : (provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2));
       const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
       
       const totalPrice = parseFloat(String(serviceRecord.price || 0));
@@ -593,31 +1269,20 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
     <div class="company-info">
       ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
       ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
-      ${companyInfo.company_tax_number ? `<div>No TVA: ${companyInfo.company_tax_number}</div>` : ''}
     </div>
   </div>
 
   <div class="receipt-body">
-    <div class="info-row">
-      <span>Client:</span>
-      <span>${customerData.first_name} ${customerData.last_name}</span>
-    </div>
-    ${customerData.phone ? `
-    <div class="info-row">
-      <span>Téléphone:</span>
-      <span>${customerData.phone}</span>
-    </div>
-    ` : ''}
-    ${serviceRecord.vehicle_brand ? `
+    ${vehicleBrand ? `
     <div class="info-row">
       <span>Véhicule:</span>
-      <span>${serviceRecord.vehicle_brand} ${serviceRecord.vehicle_model || ''} ${serviceRecord.vehicle_year || ''}</span>
+      <span>${vehicleBrand} ${vehicleModel || ''} ${vehicleYear || ''}</span>
     </div>
     ` : ''}
-    ${serviceRecord.license_plate ? `
+    ${licensePlate ? `
     <div class="info-row">
       <span>Plaque:</span>
-      <span>${serviceRecord.license_plate}</span>
+      <span>${licensePlate}</span>
     </div>
     ` : ''}
 
@@ -637,13 +1302,13 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
       </div>
       ${effectiveFederalRate > 0 ? `
       <div class="info-row">
-        <span>TPS (${effectiveFederalRate.toFixed(2)}%):</span>
+        <span>TPS: ${tpsNumber || companyInfo.company_federal_tax_number || ''} (${effectiveFederalRate.toFixed(2)}%)</span>
         <span>$${federalTaxAmount.toFixed(2)}</span>
       </div>
       ` : ''}
       ${effectiveProvincialRate > 0 ? `
       <div class="info-row">
-        <span>TVQ (${effectiveProvincialRate.toFixed(2)}%):</span>
+        <span>TVQ: ${tvqNumber || companyInfo.company_provincial_tax_number || ''} (${effectiveProvincialRate.toFixed(2)}%)</span>
         <span>$${provincialTaxAmount.toFixed(2)}</span>
       </div>
       ` : ''}
@@ -656,8 +1321,11 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
     </div>
 
     <div class="date-info">
-      <div>${new Date(serviceRecord.performed_date).toLocaleDateString('fr-CA')}</div>
+      <div>${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
       <div>Merci de votre visite!</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 10px; text-align: center; font-size: 10px;">
+      <div>www.kayauto.ca</div>
     </div>
   </div>
 
@@ -1202,9 +1870,43 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
 
               {displayCustomer.serviceRecords && displayCustomer.serviceRecords.length > 0 ? (
                 <>
+                  <div style={{ marginBottom: '1rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                      <button
+                        className={styles.btnPrintService}
+                        onClick={() => {
+                          if (selectedServices.size === 0) {
+                            setSelectedServices(new Set(displayCustomer.serviceRecords.map((r: any) => r.id.toString())));
+                          } else {
+                            setSelectedServices(new Set());
+                          }
+                        }}
+                        style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
+                      >
+                        {selectedServices.size === displayCustomer.serviceRecords.length ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
+                      </button>
+                      {selectedServices.size > 0 && (
+                        <button
+                          className={styles.btnPrintService}
+                          onClick={handlePrintSelectedServicesReceipt}
+                          style={{ fontSize: '0.875rem', padding: '0.5rem 1rem', background: '#10b981' }}
+                        >
+                          🖨️ {t('customers.detail.printSelectedServices') || 'Seçilenleri Yazdır'} ({selectedServices.size})
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      className={styles.btnPrintService}
+                      onClick={handlePrintAllServicesReceipt}
+                      style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
+                    >
+                      🖨️ {t('customers.detail.printAllServices') || 'Tüm Hizmetleri Yazdır'}
+                    </button>
+                  </div>
                   {/* Desktop Table View */}
                   <div className={styles.servicesList}>
                     <div className={styles.servicesTableHeader}>
+                      <span style={{ width: '30px' }}></span>
                       <span>{t('customers.detail.date') || 'Tarih'}</span>
                       <span>{t('customers.detail.service') || 'Hizmet'}</span>
                       <span>{t('customers.detail.type') || 'Tip'}</span>
@@ -1212,7 +1914,23 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                       <span>{t('customers.detail.actions') || 'İşlemler'}</span>
                     </div>
                     {displayCustomer.serviceRecords.map((record: any) => (
-                      <div key={record.id} className={styles.serviceRecord}>
+                      <div key={record.id} className={styles.serviceRecord} style={{ gridTemplateColumns: '30px 1fr 2fr 1fr 1fr auto' }}>
+                        <span>
+                          <input
+                            type="checkbox"
+                            checked={selectedServices.has(record.id.toString())}
+                            onChange={(e) => {
+                              const newSelected = new Set(selectedServices);
+                              if (e.target.checked) {
+                                newSelected.add(record.id.toString());
+                              } else {
+                                newSelected.delete(record.id.toString());
+                              }
+                              setSelectedServices(newSelected);
+                            }}
+                            style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+                          />
+                        </span>
                         <span>{new Date(record.performed_date).toLocaleDateString()}</span>
                         <span>
                           <strong>{record.service_name}</strong>
@@ -1241,44 +1959,95 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                   </div>
 
                   {/* Mobile Card View */}
+                  <div style={{ marginBottom: '1rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <button
+                        className={styles.btnPrintService}
+                        onClick={() => {
+                          if (selectedServices.size === 0 || selectedServices.size < displayCustomer.serviceRecords.length) {
+                            setSelectedServices(new Set(displayCustomer.serviceRecords.map((r: any) => r.id.toString())));
+                          } else {
+                            setSelectedServices(new Set());
+                          }
+                        }}
+                        style={{ fontSize: '0.875rem', padding: '0.5rem 1rem', flex: 1 }}
+                      >
+                        {selectedServices.size === displayCustomer.serviceRecords.length ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
+                      </button>
+                      {selectedServices.size > 0 && (
+                        <button
+                          className={styles.btnPrintService}
+                          onClick={handlePrintSelectedServicesReceipt}
+                          style={{ fontSize: '0.875rem', padding: '0.5rem 1rem', background: '#10b981', flex: 1 }}
+                        >
+                          🖨️ {t('customers.detail.printSelectedServices') || 'Seçilenleri Yazdır'} ({selectedServices.size})
+                        </button>
+                      )}
+                    </div>
+                    <button
+                      className={styles.btnPrintService}
+                      onClick={handlePrintAllServicesReceipt}
+                      style={{ fontSize: '0.875rem', padding: '0.5rem 1rem', width: '100%' }}
+                    >
+                      🖨️ {t('customers.detail.printAllServices') || 'Tüm Hizmetleri Yazdır'}
+                    </button>
+                  </div>
                   <div className={styles.mobileServicesList}>
                     {displayCustomer.serviceRecords.map((record: any) => (
                       <div key={record.id} className={styles.serviceCard}>
-                        <div className={styles.serviceCardHeader}>
-                          <div className={styles.serviceCardTitle}>
-                            <h4>{record.service_name}</h4>
-                            <div className={styles.serviceCardDate}>
-                              {new Date(record.performed_date).toLocaleDateString()}
+                        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                          <input
+                            type="checkbox"
+                            checked={selectedServices.has(record.id.toString())}
+                            onChange={(e) => {
+                              const newSelected = new Set(selectedServices);
+                              if (e.target.checked) {
+                                newSelected.add(record.id.toString());
+                              } else {
+                                newSelected.delete(record.id.toString());
+                              }
+                              setSelectedServices(newSelected);
+                            }}
+                            style={{ width: '20px', height: '20px', cursor: 'pointer', marginTop: '4px', flexShrink: 0 }}
+                          />
+                          <div style={{ flex: 1 }}>
+                            <div className={styles.serviceCardHeader}>
+                              <div className={styles.serviceCardTitle}>
+                                <h4>{record.service_name}</h4>
+                                <div className={styles.serviceCardDate}>
+                                  {new Date(record.performed_date).toLocaleDateString()}
+                                </div>
+                              </div>
+                              <div className={styles.serviceCardPrice}>
+                                ${parseFloat(String(record.price || 0)).toFixed(2)}
+                              </div>
                             </div>
-                          </div>
-                          <div className={styles.serviceCardPrice}>
-                            ${parseFloat(String(record.price || 0)).toFixed(2)}
-                          </div>
-                        </div>
-                        {record.service_description && (
-                          <div className={styles.serviceCardDescription}>
-                            {record.service_description}
-                          </div>
-                        )}
-                        <div className={styles.serviceCardFooter}>
-                          <div className={styles.serviceCardType}>
-                            {record.service_type === 'repair' ? '🔧 Tamir' : record.service_type === 'car_wash' ? '🚗 Oto Yıkama' : record.service_type}
-                          </div>
-                          <div className={styles.serviceCardActions}>
-                            <button
-                              className={styles.btnPrintService}
-                              onClick={() => handlePrintReceipt(record)}
-                              title={t('customers.detail.printReceipt') || 'Yazdır'}
-                            >
-                              🖨️
-                            </button>
-                            <button
-                              className={styles.btnDeleteService}
-                              onClick={() => handleDeleteService(record.id)}
-                              title={t('customers.detail.deleteService') || 'Sil'}
-                            >
-                              🗑️
-                            </button>
+                            {record.service_description && (
+                              <div className={styles.serviceCardDescription}>
+                                {record.service_description}
+                              </div>
+                            )}
+                            <div className={styles.serviceCardFooter}>
+                              <div className={styles.serviceCardType}>
+                                {record.service_type === 'repair' ? '🔧 Tamir' : record.service_type === 'car_wash' ? '🚗 Oto Yıkama' : record.service_type}
+                              </div>
+                              <div className={styles.serviceCardActions}>
+                                <button
+                                  className={styles.btnPrintService}
+                                  onClick={() => handlePrintReceipt(record)}
+                                  title={t('customers.detail.printReceipt') || 'Yazdır'}
+                                >
+                                  🖨️
+                                </button>
+                                <button
+                                  className={styles.btnDeleteService}
+                                  onClick={() => handleDeleteService(record.id)}
+                                  title={t('customers.detail.deleteService') || 'Sil'}
+                                >
+                                  🗑️
+                                </button>
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>

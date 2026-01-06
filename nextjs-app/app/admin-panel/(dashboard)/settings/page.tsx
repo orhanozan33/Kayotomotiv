@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useRouter } from 'next/navigation';
 import { useError } from '@/contexts/ErrorContext';
 import { adminUsersAPI as usersAPI, adminSettingsAPI as settingsAPI, adminReceiptsAPI as receiptsAPI } from '@/lib/services/adminApi';
 import ConfirmModal from '@/components/admin/ConfirmModal';
@@ -55,6 +56,7 @@ interface Receipt {
 export default function SettingsPage() {
   const { t, i18n } = useTranslation();
   const { showError, showSuccess } = useError();
+  const router = useRouter();
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
@@ -80,18 +82,6 @@ export default function SettingsPage() {
     x: '',
     phone: ''
   });
-  const [showCompanyModal, setShowCompanyModal] = useState(false);
-  const [companyInfo, setCompanyInfo] = useState({
-    company_name: '',
-    company_tax_number: '',
-    company_address: '',
-    company_phone: '',
-    company_email: '',
-    company_logo_url: ''
-  });
-  const [logoFile, setLogoFile] = useState<File | null>(null);
-  const [logoPreview, setLogoPreview] = useState<string>('');
-  const [uploadingLogo, setUploadingLogo] = useState(false);
   const [showTaxModal, setShowTaxModal] = useState(false);
   const [taxRate, setTaxRate] = useState('0');
   const [federalTaxRate, setFederalTaxRate] = useState('0');
@@ -170,7 +160,6 @@ export default function SettingsPage() {
   useEffect(() => {
     loadUsers();
     loadSocialMediaLinks();
-    loadCompanyInfo();
     loadTaxRate();
     loadContactLocations();
   }, [loadUsers]);
@@ -206,25 +195,6 @@ export default function SettingsPage() {
     }
   };
 
-  const loadCompanyInfo = async () => {
-    try {
-      const response = await settingsAPI.getSettings();
-      if (response.data?.settings) {
-        const logoUrl = response.data.settings.company_logo_url || '';
-        setCompanyInfo({
-          company_name: response.data.settings.company_name || '',
-          company_tax_number: response.data.settings.company_tax_number || '',
-          company_address: response.data.settings.company_address || '',
-          company_phone: response.data.settings.company_phone || '',
-          company_email: response.data.settings.company_email || '',
-          company_logo_url: logoUrl
-        });
-        setLogoPreview(logoUrl);
-      }
-    } catch (error) {
-      console.error('Error loading company info:', error);
-    }
-  };
 
   const loadTaxRate = async () => {
     try {
@@ -292,16 +262,31 @@ export default function SettingsPage() {
         console.error('Error loading company info:', error);
       }
 
-      // Also load logo from settings - check both companyInfo and settings
-      if (!companyInfo.company_logo_url) {
-        try {
-          const settingsResponse = await settingsAPI.getSettings();
-          if (settingsResponse.data?.settings?.company_logo_url) {
+      // Also load logo and tax numbers from settings - always load from settings to get latest values
+      let tpsPercentage = 0;
+      let tpsNumber = '';
+      let tvqPercentage = 0;
+      let tvqNumber = '';
+      try {
+        const settingsResponse = await settingsAPI.getSettings();
+        if (settingsResponse.data?.settings) {
+          if (settingsResponse.data.settings.company_logo_url) {
             companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
           }
-        } catch (error) {
-          console.error('Error loading logo:', error);
+          if (settingsResponse.data.settings.company_federal_tax_number) {
+            companyInfo.company_federal_tax_number = settingsResponse.data.settings.company_federal_tax_number;
+          }
+          if (settingsResponse.data.settings.company_provincial_tax_number) {
+            companyInfo.company_provincial_tax_number = settingsResponse.data.settings.company_provincial_tax_number;
+          }
+          // Load TPS and TVQ from new fields
+          tpsPercentage = parseFloat(settingsResponse.data.settings.tps_percentage || '0');
+          tpsNumber = settingsResponse.data.settings.tps_number || '';
+          tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
+          tvqNumber = settingsResponse.data.settings.tvq_number || '';
         }
+      } catch (error) {
+        console.error('Error loading settings:', error);
       }
 
       // Ensure logo URL is absolute (if it's from Supabase Storage)
@@ -314,12 +299,19 @@ export default function SettingsPage() {
         }
       }
 
-      const taxRateValue = parseFloat(taxRate) || 0;
+      // Use TPS/TVQ percentages from settings if available, otherwise fall back to old tax rate
+      const effectiveTpsRate = tpsPercentage > 0 ? tpsPercentage : 0;
+      const effectiveTvqRate = tvqPercentage > 0 ? tvqPercentage : 0;
+      const totalTaxRate = effectiveTpsRate + effectiveTvqRate;
+      const taxRateValue = totalTaxRate > 0 ? totalTaxRate : (parseFloat(taxRate) || 0);
+      
       const subtotal = taxRateValue > 0 ? parseFloat(String(receipt.price)) / (1 + taxRateValue / 100) : parseFloat(String(receipt.price));
-      const taxAmount = parseFloat(String(receipt.price)) - subtotal;
+      const totalTaxAmount = parseFloat(String(receipt.price)) - subtotal;
+      const tpsAmount = effectiveTpsRate > 0 ? subtotal * (effectiveTpsRate / 100) : 0;
+      const tvqAmount = effectiveTvqRate > 0 ? subtotal * (effectiveTvqRate / 100) : 0;
 
-      const locale = i18n.language === 'tr' ? 'tr-TR' : i18n.language === 'fr' ? 'fr-FR' : 'fr-FR';
-      const htmlLang = i18n.language || 'fr';
+      const locale = 'fr-CA';
+      const htmlLang = 'fr';
 
       const receiptHTML = `
 <!DOCTYPE html>
@@ -441,38 +433,10 @@ export default function SettingsPage() {
       ${companyInfo.company_address ? `<div>${companyInfo.company_address.replace(/\n/g, '<br>')}</div>` : ''}
       ${companyInfo.company_phone ? `<div>${t('settings.tel')}: ${companyInfo.company_phone}</div>` : ''}
       ${companyInfo.company_email ? `<div>${t('settings.email')}: ${companyInfo.company_email}</div>` : ''}
-      ${companyInfo.company_tax_number ? `<div>${t('settings.taxNumberShort')}: ${companyInfo.company_tax_number}</div>` : ''}
     </div>
   </div>
 
   <div class="receipt-body">
-    <div class="customer-info">
-      ${receipt.customer_name ? `
-      <div class="info-row">
-        <span class="info-label">${t('settings.receiptCustomerLabel')}</span>
-        <span>${receipt.customer_name}</span>
-      </div>
-      ` : ''}
-      ${receipt.customer_phone ? `
-      <div class="info-row">
-        <span class="info-label">${t('settings.receiptPhoneLabel')}</span>
-        <span>${receipt.customer_phone}</span>
-      </div>
-      ` : ''}
-      ${receipt.customer_email ? `
-      <div class="info-row">
-        <span class="info-label">${t('settings.receiptEmailLabel')}</span>
-        <span>${receipt.customer_email}</span>
-      </div>
-      ` : ''}
-      ${receipt.license_plate ? `
-      <div class="info-row">
-        <span class="info-label">${t('settings.receiptPlateLabel')}</span>
-        <span>${receipt.license_plate}</span>
-      </div>
-      ` : ''}
-    </div>
-
     <div class="service-details">
       <div class="service-title">${t('settings.performedOperation')}</div>
       <div class="service-row">
@@ -495,10 +459,24 @@ export default function SettingsPage() {
           <span>${t('settings.receiptSubtotal')}</span>
           <span>$${subtotal.toFixed(2)}</span>
         </div>
+        ${effectiveTpsRate > 0 ? `
+        <div class="total-row">
+          <span>TPS: ${tpsNumber || companyInfo.company_federal_tax_number || ''} (${effectiveTpsRate.toFixed(2)}%)</span>
+          <span>$${tpsAmount.toFixed(2)}</span>
+        </div>
+        ` : ''}
+        ${effectiveTvqRate > 0 ? `
+        <div class="total-row">
+          <span>TVQ: ${tvqNumber || companyInfo.company_provincial_tax_number || ''} (${effectiveTvqRate.toFixed(2)}%)</span>
+          <span>$${tvqAmount.toFixed(2)}</span>
+        </div>
+        ` : ''}
+        ${effectiveTpsRate === 0 && effectiveTvqRate === 0 ? `
         <div class="total-row">
           <span>${t('settings.receiptTax')} (%${taxRateValue}):</span>
-          <span>$${taxAmount.toFixed(2)}</span>
+          <span>$${totalTaxAmount.toFixed(2)}</span>
         </div>
+        ` : ''}
         ` : ''}
         <div class="total-row grand-total-row">
           <span>${t('settings.receiptTotal')}</span>
@@ -508,7 +486,10 @@ export default function SettingsPage() {
     </div>
 
     <div class="date-info">
-      <div>${t('settings.receiptDateLabel')}: ${new Date(receipt.performed_date).toLocaleDateString(locale)}</div>
+      <div>${t('settings.receiptDateLabel')}: ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
+    </div>
+    <div style="margin-top: 20px; padding-top: 10px; text-align: center; font-size: 12px;">
+      <div>www.kayauto.ca</div>
     </div>
   </div>
 
@@ -550,82 +531,6 @@ export default function SettingsPage() {
       setShowSocialMediaModal(false);
     } catch (error: any) {
       showError(t('settings.errors.savingSocialMedia') + ' ' + (error.response?.data?.error || error.message));
-    }
-  };
-
-  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLogoFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLogoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleUploadLogo = async () => {
-    if (!logoFile) return;
-    
-    try {
-      setUploadingLogo(true);
-      const formData = new FormData();
-      formData.append('logo', logoFile);
-
-      const response = await fetch('/api/settings/logo', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        },
-        body: formData
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Logo yüklenemedi');
-      }
-
-      const data = await response.json();
-      setCompanyInfo({ ...companyInfo, company_logo_url: data.logoUrl });
-      setLogoPreview(data.logoUrl);
-      setLogoFile(null);
-      showSuccess(t('settings.logoUploaded') || 'Logo başarıyla yüklendi');
-    } catch (error: any) {
-      showError(t('settings.errors.uploadingLogo') || 'Logo yüklenirken hata oluştu: ' + error.message);
-    } finally {
-      setUploadingLogo(false);
-    }
-  };
-
-  const handleRemoveLogo = async () => {
-    try {
-      await settingsAPI.updateSettings({
-        company_logo_url: ''
-      });
-      setCompanyInfo({ ...companyInfo, company_logo_url: '' });
-      setLogoPreview('');
-      setLogoFile(null);
-      showSuccess(t('settings.logoRemoved') || 'Logo kaldırıldı');
-    } catch (error: any) {
-      showError(t('settings.errors.removingLogo') || 'Logo kaldırılırken hata oluştu: ' + (error.response?.data?.error || error.message));
-    }
-  };
-
-  const handleSaveCompanyInfo = async () => {
-    try {
-      await settingsAPI.updateSettings({
-        company_name: companyInfo.company_name || '',
-        company_tax_number: companyInfo.company_tax_number || '',
-        company_address: companyInfo.company_address || '',
-        company_phone: companyInfo.company_phone || '',
-        company_email: companyInfo.company_email || '',
-        company_logo_url: companyInfo.company_logo_url || ''
-      });
-      showSuccess(t('settings.companyInfoSaved'));
-      setShowCompanyModal(false);
-    } catch (error: any) {
-      showError(t('settings.errors.savingCompanyInfo') + ' ' + (error.response?.data?.error || error.message));
     }
   };
 
@@ -787,7 +692,7 @@ export default function SettingsPage() {
         <h1>{t('settings.title')}</h1>
         <div className={styles.headerButtons}>
           <button onClick={() => setShowSocialMediaModal(true)} className={styles.btnPrimary}>{t('settings.socialMediaLinks')}</button>
-          <button onClick={() => setShowCompanyModal(true)} className={styles.btnPrimary}>{t('settings.companyInfo')}</button>
+          <button onClick={() => router.push('/admin-panel/settings/company-info')} className={styles.btnPrimary}>{t('settings.companyInfo')}</button>
           <button onClick={() => setShowContactLocationsModal(true)} className={styles.btnPrimary}>{t('settings.contactInfo') || 'İletişim Bilgileri'}</button>
           <button onClick={() => setShowTaxModal(true)} className={styles.btnPrimary}>{t('settings.taxRate')}</button>
           <button onClick={() => {
@@ -874,114 +779,6 @@ export default function SettingsPage() {
             <div className={styles.modalActions}>
               <button onClick={handleSaveSocialMedia} className={styles.btnPrimary}>{t('common.save')}</button>
               <button onClick={() => setShowSocialMediaModal(false)}>{t('common.cancel')}</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Company Info Modal */}
-      {showCompanyModal && (
-        <div className={styles.modal} onClick={() => setShowCompanyModal(false)}>
-          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
-            <div className={styles.modalHeader}>
-              <h2>{t('settings.companyInfoForReceipt')}</h2>
-              <button
-                type="button"
-                className={styles.modalClose}
-                onClick={() => setShowCompanyModal(false)}
-                aria-label="Close"
-              >
-                ×
-              </button>
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.companyName')}</label>
-              <input
-                type="text"
-                placeholder={t('settings.companyNamePlaceholder')}
-                value={companyInfo.company_name}
-                onChange={(e) => setCompanyInfo({ ...companyInfo, company_name: e.target.value })}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.taxNumber')}</label>
-              <input
-                type="text"
-                placeholder={t('settings.taxNumberPlaceholder')}
-                value={companyInfo.company_tax_number}
-                onChange={(e) => setCompanyInfo({ ...companyInfo, company_tax_number: e.target.value })}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.address')}</label>
-              <textarea
-                placeholder={t('settings.addressPlaceholder')}
-                value={companyInfo.company_address}
-                onChange={(e) => setCompanyInfo({ ...companyInfo, company_address: e.target.value })}
-                rows={3}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.phone')}</label>
-              <input
-                type="tel"
-                placeholder={t('settings.phonePlaceholder2')}
-                value={companyInfo.company_phone}
-                onChange={(e) => setCompanyInfo({ ...companyInfo, company_phone: e.target.value })}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.email')}</label>
-              <input
-                type="email"
-                placeholder={t('settings.emailPlaceholder')}
-                value={companyInfo.company_email}
-                onChange={(e) => setCompanyInfo({ ...companyInfo, company_email: e.target.value })}
-              />
-            </div>
-            <div className={styles.formGroup}>
-              <label>{t('settings.companyLogo') || 'Şirket Logosu'}</label>
-              {logoPreview && (
-                <div style={{ marginBottom: '10px', textAlign: 'center' }}>
-                  <img 
-                    src={logoPreview} 
-                    alt="Logo Preview" 
-                    style={{ maxWidth: '200px', maxHeight: '100px', objectFit: 'contain', border: '1px solid #ddd', padding: '10px', borderRadius: '4px' }}
-                  />
-                </div>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogoChange}
-                style={{ marginBottom: '10px' }}
-              />
-              {logoFile && (
-                <button 
-                  onClick={handleUploadLogo} 
-                  disabled={uploadingLogo}
-                  className={styles.btnPrimary}
-                  style={{ marginRight: '10px', marginBottom: '10px' }}
-                >
-                  {uploadingLogo ? (t('common.uploading') || 'Yükleniyor...') : (t('settings.uploadLogo') || 'Logoyu Yükle')}
-                </button>
-              )}
-              {logoPreview && (
-                <button 
-                  onClick={handleRemoveLogo}
-                  className={styles.btnSecondary}
-                  style={{ marginBottom: '10px' }}
-                >
-                  {t('settings.removeLogo') || 'Logoyu Kaldır'}
-                </button>
-              )}
-              <small style={{ display: 'block', color: '#666', marginTop: '5px' }}>
-                {t('settings.logoHint') || 'Logo makbuzda firma bilgilerinin altında görünecektir. (Opsiyonel)'}
-              </small>
-            </div>
-            <div className={styles.modalActions}>
-              <button onClick={handleSaveCompanyInfo} className={styles.btnPrimary}>{t('common.save')}</button>
-              <button onClick={() => setShowCompanyModal(false)}>{t('common.cancel')}</button>
             </div>
           </div>
         </div>

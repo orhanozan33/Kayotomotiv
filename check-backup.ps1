@@ -13,3 +13,8 @@ if ($files) {
     Write-Host "Henuz yedek dosyasi olusmadi. Lutfen bir kac saniye daha bekleyin." -ForegroundColor Yellow
 }
 
+
+
+
+
+

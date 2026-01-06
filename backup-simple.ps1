@@ -16,3 +16,8 @@ $size = [math]::Round((Get-Item $zipPath).Length / 1MB, 2)
 Write-Output "Yedek oluşturuldu: $zipPath"
 Write-Output "Boyut: $size MB"
 
+
+
+
+
+

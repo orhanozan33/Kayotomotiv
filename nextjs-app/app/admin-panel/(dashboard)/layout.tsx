@@ -115,7 +115,6 @@ export default function AdminDashboardLayout({ children }: { children: React.Rea
           <button onClick={handleLogout} className={styles.logoutBtn}>
             {t('common.logout') || 'Çıkış Yap'}
           </button>
-          <LanguageSwitcher />
         </div>
         <nav className={styles.sidebarNav}>
           <Link

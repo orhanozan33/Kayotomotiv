@@ -237,8 +237,29 @@ export default function CarWashPage() {
         console.error('Error loading company info:', error);
       }
 
-      const effectiveFederalRate = federalTaxRate > 0 ? federalTaxRate : (taxRate / 2);
-      const effectiveProvincialRate = provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2);
+      // Load tax numbers from settings - always load to get latest values
+      let tpsPercentage = 0;
+      let tpsNumber = '';
+      let tvqPercentage = 0;
+      let tvqNumber = '';
+      try {
+        const settingsResponse = await adminSettingsAPI.getSettings();
+        if (settingsResponse.data?.settings) {
+          companyInfo.company_federal_tax_number = settingsResponse.data.settings.company_federal_tax_number || '';
+          companyInfo.company_provincial_tax_number = settingsResponse.data.settings.company_provincial_tax_number || '';
+          // Load TPS and TVQ from new fields
+          tpsPercentage = parseFloat(settingsResponse.data.settings.tps_percentage || '0');
+          tpsNumber = settingsResponse.data.settings.tps_number || '';
+          tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
+          tvqNumber = settingsResponse.data.settings.tvq_number || '';
+        }
+      } catch (error) {
+        console.error('Error loading settings:', error);
+      }
+
+      // Use TPS/TVQ percentages from settings if available, otherwise fall back to old tax rates
+      const effectiveFederalRate = tpsPercentage > 0 ? tpsPercentage : (federalTaxRate > 0 ? federalTaxRate : (taxRate / 2));
+      const effectiveProvincialRate = tvqPercentage > 0 ? tvqPercentage : (provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2));
       const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
       
       const totalPrice = parseFloat(String(selectedAppointment.total_price || 0));
@@ -362,25 +383,10 @@ export default function CarWashPage() {
     <div class="company-info">
       ${companyInfo.company_address ? `<div>${companyInfo.company_address}</div>` : ''}
       ${companyInfo.company_phone ? `<div>Tel: ${companyInfo.company_phone}</div>` : ''}
-      ${companyInfo.company_tax_number ? `<div>No TVA: ${companyInfo.company_tax_number}</div>` : ''}
     </div>
   </div>
 
   <div class="receipt-body">
-    <div class="info-row">
-      <span>Client:</span>
-      <span>${selectedAppointment.customer_name}</span>
-    </div>
-    <div class="info-row">
-      <span>Email:</span>
-      <span>${selectedAppointment.customer_email}</span>
-    </div>
-    ${selectedAppointment.customer_phone ? `
-    <div class="info-row">
-      <span>Tél:</span>
-      <span>${selectedAppointment.customer_phone}</span>
-    </div>
-    ` : ''}
     <div class="info-row">
       <span>Date:</span>
       <span>${new Date(selectedAppointment.appointment_date).toLocaleDateString('fr-CA')}</span>
@@ -406,13 +412,13 @@ export default function CarWashPage() {
       </div>
       ${effectiveFederalRate > 0 ? `
       <div class="info-row">
-        <span>TPS (${effectiveFederalRate.toFixed(2)}%):</span>
+        <span>TPS: ${tpsNumber || companyInfo.company_federal_tax_number || ''} (${effectiveFederalRate.toFixed(2)}%)</span>
         <span>$${federalTaxAmount.toFixed(2)}</span>
       </div>
       ` : ''}
       ${effectiveProvincialRate > 0 ? `
       <div class="info-row">
-        <span>TVQ (${effectiveProvincialRate.toFixed(2)}%):</span>
+        <span>TVQ: ${tvqNumber || companyInfo.company_provincial_tax_number || ''} (${effectiveProvincialRate.toFixed(2)}%)</span>
         <span>$${provincialTaxAmount.toFixed(2)}</span>
       </div>
       ` : ''}
@@ -425,8 +431,11 @@ export default function CarWashPage() {
     </div>
 
     <div class="date-info">
-      <div>${new Date().toLocaleDateString('fr-CA')}</div>
+      <div>${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleDateString('fr-CA', { year: 'numeric', month: '2-digit', day: '2-digit' })} ${new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Montreal' })).toLocaleTimeString('fr-CA', { hour: '2-digit', minute: '2-digit', hour12: false })}</div>
       <div>Merci de votre visite!</div>
+    </div>
+    <div style="margin-top: 15px; padding-top: 10px; text-align: center; font-size: 9px;">
+      <div>www.kayauto.ca</div>
     </div>
   </div>
 

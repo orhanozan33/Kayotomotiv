@@ -102,43 +102,84 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [logoSettings, isMounted]);
 
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
 
 
   return (
     <div className={styles.layout}>
       <header className={styles.header}>
-        <Link href="/" className={styles.logo}>
-          <div className={styles.logoTextContainer}>
-            <span className={styles.logoText}>KAY AUTO</span>
-            <div className={styles.ledLight}></div>
-          </div>
-        </Link>
+        <div className={styles.logoContainer}>
+          <Link href="/" className={styles.logo}>
+            <div className={styles.logoTextContainer}>
+              <span className={styles.logoText}>KAY AUTO</span>
+              <div className={styles.ledLight}></div>
+            </div>
+          </Link>
+          {!isAdminPanel && (socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
+            <div className={styles.mobileHeaderSocialLinks}>
+              {socialLinks.phone && (
+                <a href={`tel:${socialLinks.phone}`} className={`${styles.headerSocialLink} ${styles.headerPhoneLink}`} title="Telefon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                  </svg>
+                </a>
+              )}
+              {socialLinks.facebook && (
+                <a
+                  href={socialLinks.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.headerSocialLink} ${styles.headerFacebookLink}`}
+                  title="Facebook"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                  </svg>
+                </a>
+              )}
+              {socialLinks.instagram && (
+                <a
+                  href={socialLinks.instagram}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.headerSocialLink} ${styles.headerInstagramLink}`}
+                  title="Instagram"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                  </svg>
+                </a>
+              )}
+              {socialLinks.x && (
+                <a
+                  href={socialLinks.x}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${styles.headerSocialLink} ${styles.headerXLink}`}
+                  title="X (Twitter)"
+                >
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                  </svg>
+                </a>
+              )}
+            </div>
+          )}
+        </div>
         <div className={styles.headerContainer}>
-          <nav className={styles.nav}>
-            <Link href="/" className={pathname === '/' ? styles.active : ''}>
-              {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
-            </Link>
-            <Link href="/auto-sales" className={pathname === '/auto-sales' ? styles.active : ''}>
-              {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
-            </Link>
-            <Link href="/auto-repair" className={pathname === '/auto-repair' ? styles.active : ''}>
-              {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
-            </Link>
-            <Link href="/auto-body-shop" className={pathname === '/auto-body-shop' ? styles.active : ''}>
-              {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
-            </Link>
-            <Link href="/car-wash" className={pathname === '/car-wash' ? styles.active : ''}>
-              {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
-            </Link>
-            <Link href="/contact" className={pathname === '/contact' ? styles.active : ''}>
-              {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
-            </Link>
-          </nav>
-          <div className={styles.mobileLanguageSwitcher}>
-            <LanguageSwitcher />
-          </div>
-          {!isAdminPanel && (
-            <nav className={styles.mobileNav}>
+          <div className={styles.headerBottom}>
+            <nav className={styles.nav}>
               <Link href="/" className={pathname === '/' ? styles.active : ''}>
                 {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
               </Link>
@@ -158,40 +199,12 @@ export default function Layout({ children }: LayoutProps) {
                 {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
               </Link>
             </nav>
-          )}
-          <button
-            className={styles.mobileMenuButton}
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            aria-label={isMounted ? String(t('header.menu') || 'Menu') : 'Menu'}
-          >
-            <span className={styles.mobileMenuIcon}></span>
-            <span className={styles.mobileMenuIcon}></span>
-            <span className={styles.mobileMenuIcon}></span>
-          </button>
-        </div>
-      </header>
-      <CarBrandsSlider />
-      <main className={styles.mainContent}>{children}</main>
-      <footer className={styles.footer}>
-        <div className={styles.footerContainer}>
-          {/* Copyright and Social Links */}
-          <div className={styles.footerBottom}>
-            <p className={styles.copyright}>
-              © {currentYear || 2024}{' '}
-              {isMounted ? (t('footer.copyright') || 'KAY Oto Servis. Tüm hakları saklıdır.') : 'KAY Oto Servis. Tüm hakları saklıdır.'}{' '}
-              <a href="https://www.findpoint.ca" target="_blank" rel="noopener noreferrer" className={styles.findpointLink}>
-                Findpoint
-              </a>
-            </p>
-            <div className={styles.footerRight}>
-              <div className={styles.footerLanguageSwitcher}>
-                <LanguageSwitcher />
-              </div>
+            <div className={styles.headerRightSection}>
               {!isAdminPanel && (socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
-                <div className={styles.socialLinks}>
+                <div className={styles.headerSocialLinks}>
                   {socialLinks.phone && (
-                    <a href={`tel:${socialLinks.phone}`} className={`${styles.socialLink} ${styles.phoneLink}`} title="Telefon">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                    <a href={`tel:${socialLinks.phone}`} className={`${styles.headerSocialLink} ${styles.headerPhoneLink}`} title="Telefon">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                         <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
                       </svg>
                     </a>
@@ -201,10 +214,10 @@ export default function Layout({ children }: LayoutProps) {
                       href={socialLinks.facebook}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`${styles.socialLink} ${styles.facebookLink}`}
+                      className={`${styles.headerSocialLink} ${styles.headerFacebookLink}`}
                       title="Facebook"
                     >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
                         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                       </svg>
                     </a>
@@ -214,10 +227,10 @@ export default function Layout({ children }: LayoutProps) {
                       href={socialLinks.instagram}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`${styles.socialLink} ${styles.instagramLink}`}
+                      className={`${styles.headerSocialLink} ${styles.headerInstagramLink}`}
                       title="Instagram"
                     >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
                         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                       </svg>
                     </a>
@@ -227,20 +240,163 @@ export default function Layout({ children }: LayoutProps) {
                       href={socialLinks.x}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`${styles.socialLink} ${styles.xLink}`}
+                      className={`${styles.headerSocialLink} ${styles.headerXLink}`}
                       title="X (Twitter)"
                     >
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white">
                         <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                       </svg>
                     </a>
                   )}
                 </div>
               )}
+              <div className={styles.desktopLanguageSwitcher}>
+                <LanguageSwitcher />
+              </div>
             </div>
           </div>
+          <div className={styles.mobileLanguageSwitcher}>
+            <LanguageSwitcher />
+          </div>
+          <button
+            className={`${styles.mobileMenuButton} ${mobileMenuOpen ? styles.mobileMenuButtonOpen : ''}`}
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label={isMounted ? String(t('header.menu') || 'Menu') : 'Menu'}
+          >
+            <span className={styles.mobileMenuIcon}></span>
+            <span className={styles.mobileMenuIcon}></span>
+            <span className={styles.mobileMenuIcon}></span>
+          </button>
         </div>
-      </footer>
+        {mobileMenuOpen && (
+          <div 
+            className={styles.mobileOverlay}
+            onClick={() => setMobileMenuOpen(false)}
+          />
+        )}
+        {!isAdminPanel && (
+          <nav className={`${styles.mobileNav} ${mobileMenuOpen ? styles.mobileNavOpen : ''}`}>
+            <div className={styles.mobileNavHeader}>
+              <h2 className={styles.mobileNavTitle}>KAY AUTO</h2>
+            </div>
+            <Link 
+              href="/" 
+              className={pathname === '/' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.home') || 'Home') : 'Home'}
+            </Link>
+            <Link 
+              href="/auto-sales" 
+              className={pathname === '/auto-sales' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.autoSales') || 'Auto Sales') : 'Auto Sales'}
+            </Link>
+            <Link 
+              href="/auto-repair" 
+              className={pathname === '/auto-repair' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.autoRepair') || 'Auto Repair') : 'Auto Repair'}
+            </Link>
+            <Link 
+              href="/auto-body-shop" 
+              className={pathname === '/auto-body-shop' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.autoBodyShop') || 'Auto Body Shop') : 'Auto Body Shop'}
+            </Link>
+            <Link 
+              href="/car-wash" 
+              className={pathname === '/car-wash' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.carWash') || 'Car Wash') : 'Car Wash'}
+            </Link>
+            <Link 
+              href="/contact" 
+              className={pathname === '/contact' ? styles.active : ''}
+              onClick={() => setMobileMenuOpen(false)}
+            >
+              {isMounted ? String(t('nav.contact') || 'Contact') : 'Contact'}
+            </Link>
+          </nav>
+        )}
+      </header>
+      <CarBrandsSlider />
+      <main className={styles.mainContent}>{children}</main>
+      {!isAdminPanel && (
+        <footer className={styles.footer}>
+          <div className={styles.footerContainer}>
+            {/* Copyright and Social Links */}
+            <div className={styles.footerBottom}>
+              <p className={styles.copyright}>
+                © {currentYear || 2024}{' '}
+                {isMounted ? (t('footer.copyright') || 'KAY Oto Servis. Tüm hakları saklıdır.') : 'KAY Oto Servis. Tüm hakları saklıdır.'}{' '}
+                <a href="https://www.findpoint.ca" target="_blank" rel="noopener noreferrer" className={styles.findpointLink}>
+                  Findpoint
+                </a>
+              </p>
+              <div className={styles.footerRight}>
+                <div className={styles.footerLanguageSwitcher}>
+                  <LanguageSwitcher />
+                </div>
+                {!isAdminPanel && (socialLinks.phone || socialLinks.facebook || socialLinks.instagram || socialLinks.x) && (
+                  <div className={styles.socialLinks}>
+                    {socialLinks.phone && (
+                      <a href={`tel:${socialLinks.phone}`} className={`${styles.socialLink} ${styles.phoneLink}`} title="Telefon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                          <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
+                        </svg>
+                      </a>
+                    )}
+                    {socialLinks.facebook && (
+                      <a
+                        href={socialLinks.facebook}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.socialLink} ${styles.facebookLink}`}
+                        title="Facebook"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                          <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
+                        </svg>
+                      </a>
+                    )}
+                    {socialLinks.instagram && (
+                      <a
+                        href={socialLinks.instagram}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.socialLink} ${styles.instagramLink}`}
+                        title="Instagram"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                      </a>
+                    )}
+                    {socialLinks.x && (
+                      <a
+                        href={socialLinks.x}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`${styles.socialLink} ${styles.xLink}`}
+                        title="X (Twitter)"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                        </svg>
+                      </a>
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </footer>
+      )}
     </div>
   );
 }
