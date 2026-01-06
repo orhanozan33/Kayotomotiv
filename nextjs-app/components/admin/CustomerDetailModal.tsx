@@ -425,6 +425,11 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
       return;
     }
 
+    if (!displayCustomer.serviceRecords || displayCustomer.serviceRecords.length === 0) {
+      showError('Hizmet kaydı bulunamadı');
+      return;
+    }
+
     const selectedRecords = displayCustomer.serviceRecords.filter((record: any) => 
       selectedServices.has(record.id.toString())
     );
@@ -801,7 +806,7 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
       const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
 
       // Group services by vehicle and date
-      const servicesByVehicle = displayCustomer.serviceRecords.reduce((acc: any, record: any) => {
+      const servicesByVehicle = (displayCustomer.serviceRecords || []).reduce((acc: any, record: any) => {
         const key = `${record.vehicle_id || 'no-vehicle'}_${record.performed_date || 'no-date'}`;
         if (!acc[key]) {
           acc[key] = {
@@ -1876,14 +1881,14 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                         className={styles.btnPrintService}
                         onClick={() => {
                           if (selectedServices.size === 0) {
-                            setSelectedServices(new Set(displayCustomer.serviceRecords.map((r: any) => r.id.toString())));
+                            setSelectedServices(new Set((displayCustomer.serviceRecords || []).map((r: any) => r.id.toString())));
                           } else {
                             setSelectedServices(new Set());
                           }
                         }}
                         style={{ fontSize: '0.875rem', padding: '0.5rem 1rem' }}
                       >
-                        {selectedServices.size === displayCustomer.serviceRecords.length ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
+                        {selectedServices.size === (displayCustomer.serviceRecords?.length || 0) ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
                       </button>
                       {selectedServices.size > 0 && (
                         <button
@@ -1913,7 +1918,7 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                       <span>{t('customers.detail.price') || 'Fiyat'}</span>
                       <span>{t('customers.detail.actions') || 'İşlemler'}</span>
                     </div>
-                    {displayCustomer.serviceRecords.map((record: any) => (
+                    {(displayCustomer.serviceRecords || []).map((record: any) => (
                       <div key={record.id} className={styles.serviceRecord} style={{ gridTemplateColumns: '30px 1fr 2fr 1fr 1fr auto' }}>
                         <span>
                           <input
@@ -1964,15 +1969,16 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                       <button
                         className={styles.btnPrintService}
                         onClick={() => {
-                          if (selectedServices.size === 0 || selectedServices.size < displayCustomer.serviceRecords.length) {
-                            setSelectedServices(new Set(displayCustomer.serviceRecords.map((r: any) => r.id.toString())));
+                          const recordsLength = displayCustomer.serviceRecords?.length || 0;
+                          if (selectedServices.size === 0 || selectedServices.size < recordsLength) {
+                            setSelectedServices(new Set((displayCustomer.serviceRecords || []).map((r: any) => r.id.toString())));
                           } else {
                             setSelectedServices(new Set());
                           }
                         }}
                         style={{ fontSize: '0.875rem', padding: '0.5rem 1rem', flex: 1 }}
                       >
-                        {selectedServices.size === displayCustomer.serviceRecords.length ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
+                        {selectedServices.size === (displayCustomer.serviceRecords?.length || 0) ? (t('customers.detail.deselectAll') || 'Tümünü Kaldır') : (t('customers.detail.selectAll') || 'Tümünü Seç')}
                       </button>
                       {selectedServices.size > 0 && (
                         <button
@@ -1993,7 +1999,7 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                     </button>
                   </div>
                   <div className={styles.mobileServicesList}>
-                    {displayCustomer.serviceRecords.map((record: any) => (
+                    {(displayCustomer.serviceRecords || []).map((record: any) => (
                       <div key={record.id} className={styles.serviceCard}>
                         <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', marginBottom: '0.5rem' }}>
                           <input

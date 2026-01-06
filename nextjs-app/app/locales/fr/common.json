@@ -422,6 +422,14 @@
       "address": "Ankara, Turquie",
       "hours": "Lundi - Samedi: 09:00 - 18:00"
     },
+    "googleReviews": {
+      "reviewsCount": "avis",
+      "title": "Que Disent Nos Clients?",
+      "subtitle": "Découvrez pourquoi nos clients nous font confiance",
+      "previousReview": "Avis précédent",
+      "nextReview": "Avis suivant",
+      "viewAllReviews": "Voir tous les avis sur Google"
+    },
     "copyright": "KAY Oto Servis. Tous droits réservés."
   },
   "adminNav": {

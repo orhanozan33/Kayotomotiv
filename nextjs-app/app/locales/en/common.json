@@ -422,6 +422,14 @@
       "address": "Ankara, Turkey",
       "hours": "Monday - Saturday: 09:00 - 18:00"
     },
+    "googleReviews": {
+      "reviewsCount": "reviews",
+      "title": "What Our Customers Say?",
+      "subtitle": "See why our customers trust us",
+      "previousReview": "Previous review",
+      "nextReview": "Next review",
+      "viewAllReviews": "View all reviews on Google"
+    },
     "copyright": "KAY Auto Service. All rights reserved."
   },
   "vehicles": {

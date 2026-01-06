@@ -899,6 +899,14 @@
       "address": "Ankara, Türkiye",
       "hours": "Pazartesi - Cumartesi: 09:00 - 18:00"
     },
+    "googleReviews": {
+      "reviewsCount": "yorum",
+      "title": "Müşterilerimiz Ne Diyor?",
+      "subtitle": "Müşterilerimizin bize güvenmesinin nedenlerini görün",
+      "previousReview": "Önceki yorum",
+      "nextReview": "Sonraki yorum",
+      "viewAllReviews": "Google'da tüm yorumları görüntüle"
+    },
     "copyright": "KAY Oto Servis. Tüm hakları saklıdır."
   },
   "pages": {
