@@ -430,7 +430,133 @@
       "nextReview": "Avis suivant",
       "viewAllReviews": "Voir tous les avis sur Google"
     },
-    "copyright": "KAY Oto Servis. Tous droits réservés."
+    "copyright": "KAY AUTO GROUP. Tous droits réservés.",
+    "privacy": "Confidentialité",
+    "terms": "Conditions",
+    "privacyContent": {
+      "intro": "Notre commerce respecte votre vie privée et s'engage à préserver votre confidentialité en ligne. Étant donné que nous collectons certains types de renseignements auprès des visiteurs de nos sites, nous avons développé une déclaration de confidentialité afin de vous aider à comprendre les conditions générales qui régissent la collecte et l'utilisation de ces renseignements. Cette déclaration révèle les types de renseignements que nous collectons, de quelle façon nous les utilisons, et comment vous pouvez consulter et modifier les données que nous avons collectées à votre sujet à tout moment.",
+      "principles": {
+        "title": "Principes directeurs :",
+        "content": "Notre commerce respecte la vie privée des individus qui visitent nos sites Web, nous envoient des courriels ou utilisent les fonctionnalités ou services que nous offrons en ligne. Par conséquent, notre politique relative à la confidentialité en ligne a été développée conformément aux principes directeurs suivants :",
+        "point1": "Notre commerce applique une politique « anti-pollupostage » stricte. Les abonnés à nos services de courriel (ou à tout autre service ou fonctionnalité disponible sur notre site Web) ne recevront de notre part aucun courriel non sollicité.",
+        "point2": "Notre commerce collecte principalement des renseignements en ligne pour offrir à nos visiteurs une expérience plus pertinente sur nos sites. Dans le cadre de ces collectes, nous ferons tout ce qui est raisonnablement possible pour éviter toute collecte de données abusive ou inadéquate.",
+        "point3": "Notre commerce prendra des mesures physiques, électroniques et administratives raisonnables afin de préserver et sécuriser tous les renseignements que vous nous fournirez (c.-à-d. que les données seront stockées dans des bases de données protégées sur des serveurs sécurisés avec accès restreint).",
+        "point4": "Notre commerce ne communiquera à personne les renseignements que vous nous avez fournis sans votre consentement, excepté dans le but de vous offrir le service que vous avez demandé. Lorsque vous vous inscrirez pour profiter d'un tel service, vous serez averti(e) de notre intention de communiquer vos renseignements à une tierce partie spécifique dans l'objectif de vous fournir le service demandé, et vous serez invité(e) à accepter cette communication."
+      },
+      "informationCollected": {
+        "title": "Renseignements collectés",
+        "nonIdentifiable": {
+          "title": "Données ne permettant pas votre identification :",
+          "content": "Chaque fois que vous visitez notre site Web, nous pouvons recueillir certains renseignements qui ne permettent pas de vous identifier et concernent les moyens que vous utilisez pour accéder à notre site. Ces renseignements peuvent inclure le type et la version de votre navigateur, votre fournisseur de services Internet, votre adresse IP ou encore le moteur de recherche que vous avez pu utiliser pour trouver notre site. Nous utilisons ces renseignements pour nous permettre de diagnostiquer les problèmes rencontrés avec notre serveur, administrer le site Web et recueillir des données statistiques sans caractère précis. De plus, nous collectons certaines données de navigation concernant les pages que vous visitez sur nos sites Web. Ces renseignements nous permettent de déterminer quelles rubriques des sites Web sont les plus souvent consultées et nous aident à adapter les sites aux attentes et centres d'intérêt de nos visiteurs en ligne. Ces renseignements sont collectés par nos soins sous forme groupée et ne seront pas associés à un individu en particulier sans son consentement."
+        },
+        "voluntary": {
+          "title": "Renseignements fournis volontairement :",
+          "content": "Tous les renseignements que vous nous fournissez (p. ex., nom, adresse de courriel, etc.) lorsque vous vous inscrivez à l'un de nos services de rappel par courriel, lorsque vous demandez des renseignements ou utilisez les autres rubriques interactives de nos sites Web sont stockés en sécurité sur notre serveur Web et nos systèmes internes. Ces données peuvent être utilisées pour vous fournir des renseignements que vous avez demandés au sujet de notre société, de nos produits et de nos services, ou afin de vous envoyer des messages spéciaux. Vous pouvez choisir à tout moment de ne plus recevoir de messages (reportez-vous aux procédures de désinscription ci-dessous). Ces données peuvent également être utilisées pour personnaliser votre expérience de navigation sur nos sites en nous permettant de vous proposer un contenu qui correspond à vos centres d'intérêt et à votre région géographique."
+        },
+        "otherSources": {
+          "title": "Renseignements collectés par d'autres sources :",
+          "content": "Afin de nous permettre de mieux comprendre vos attentes et centre d'intérêts et de mieux y répondre, nous pouvons recevoir à l'avenir des renseignements vous concernant transmis par d'autres sources. Nous demanderons à toutes les entités qui nous fournissent lesdits renseignements d'affirmer et de garantir que les renseignements ont été collectés et stockés conformément à toutes les lois étatiques et fédérales. Tous lesdits renseignements seront stockés par nos soins conformément aux conditions exposées dans la présente politique de confidentialité, avec les autres renseignements personnels que vous nous avez fournis."
+        }
+      },
+      "disclosure": {
+        "title": "Divulgation des renseignements personnels :",
+        "intro": "Notre commerce sait à quel point votre confidentialité est importante. Nous collectons et stockons les renseignements personnels de nos clients pour notre utilisation et nos filiales. Nous ne vendons, ne louons ni ne commercialisons les renseignements fournis par nos clients à des tiers, excepté dans les situations décrites ci-dessous, et jamais sans votre consentement.",
+        "partners": {
+          "title": "Partenaires commerciaux :",
+          "content": "Notre commerce peut parfois être amené à établir un partenariat avec certains détaillants afin d'offrir une gamme de services plus étendue aux visiteurs de notre site. Dans le cadre d'une telle collaboration, nous pouvons partager avec ces sociétés l'utilisation de certaines fonctionnalités interactives du site Web (p. ex. le service de rappel par courriel). Les renseignements fournis par les visiteurs du site via l'utilisation desdites fonctionnalités interactives peuvent être consultés par notre bureau de concessionnaire ainsi que par nos partenaires."
+        },
+        "agents": {
+          "title": "Agents :",
+          "content": "Nous pouvons avoir recours aux services d'autres sociétés et individus pour offrir certaines fonctionnalités en notre nom et pour notre compte. Par exemple, nous pouvons faire appel à des tiers pour administrer les services de courriel et diriger des promotions spéciales. Ces tierces parties auront seulement accès aux renseignements personnels dont elles ont besoin pour fournir ces fonctionnalités et ne peuvent pas utiliser ou stocker ces renseignements à d'autres fins. Les abonnés ou visiteurs du site ne recevront jamais de courriels non sollicités de la part d'agents travaillant en notre nom et pour notre compte."
+        },
+        "businessTransfer": {
+          "title": "Cession de fonds de commerce :",
+          "content": "Si notre bureau de concessionnaire était amené à vendre ou céder une partie de son fonds de commerce, les données clients pourraient faire partie des actifs cédés dans le cadre de cette transaction. Si une partie importante des actifs de notre bureau de concessionnaire était acquise, les données clients pourraient être cédées dans le cadre de cette acquisition."
+        },
+        "legal": {
+          "title": "Respect de la législation et de la sécurité :",
+          "content": "Notre commerce peut divulguer certains renseignements personnels considérant de bonne foi que ladite divulgation est nécessaire pour respecter ou se conformer à la législation ou que ladite divulgation est nécessaire pour protéger les utilisateurs de nos sites Web, les sites eux-mêmes ou le public."
+        },
+        "consent": {
+          "title": "Avec votre consentement :",
+          "content": "Outre ce qui est exposé dans la présente politique de confidentialité, vous serez averti(e) dès que des renseignements permettant votre identification pourraient être communiqués à des tiers, et vous aurez la possibilité de refuser que ces renseignements soient divulgués."
+        }
+      },
+      "cookies": {
+        "title": "Utilisation des cookies :",
+        "content": "Notre commerce peut utiliser une fonctionnalité de navigation appelée « cookie ». Les cookies sont de petits fichiers installés sur votre disque dur qui nous permettent de vous proposer une expérience de navigation personnalisée. Notre commerce utilise des cookies pour que vous n'ayez pas à saisir plusieurs fois des renseignements – tels que vos identifiants et mots de passe d'utilisateur – chaque fois que vous consultez nos sites Web. Les cookies sont également utilisés pour nous permettre de vous fournir des renseignements ciblés selon vos centres d'intérêt, en fonction des vos navigations antérieures sur nos sites Web. La rubrique « aide » de la barre d'outils de la plupart des navigateurs vous informe de la marche à suivre pour empêcher votre navigateur d'accepter de nouveaux cookies, pour être informé(e) par votre navigateur de la réception d'un nouveau cookie et pour désactiver complètement l'utilisation des cookies. Nos sites Web ont été conçus pour tirer partie de l'utilisation des cookies. Si vous configurez votre navigateur pour désactiver leur utilisation, certaines options de nos sites Web peuvent ne pas fonctionner correctement et il est possible que vous deviez saisir vos identifiants et mots de passe d'utilisateur plus fréquemment."
+      },
+      "externalLinks": {
+        "title": "Liens externes :",
+        "content": "Nos sites Web incluent des liens vers d'autres sites. Notre commerce n'est pas responsable des pratiques en matière de confidentialité ou du contenu desdits sites Web. Pour vous aider à assurer la protection de votre confidentialité, nous vous recommandons de consulter la politique de confidentialité de chacun des sites auxquels vous accédez via un lien de l'un de nos sites Web."
+      },
+      "passwords": {
+        "title": "Mots de passe :",
+        "content": "L'enregistrement de vos données personnelles suite à votre inscription sur notre site Web ne peut être accessible que grâce à un mot de passe associé à cet enregistrement. Pour protéger l'intégrité des renseignements contenus dans cet enregistrement, vous ne devez pas divulguer ni révéler de quelque façon que ce soit votre mot de passe à des tiers."
+      },
+      "publicForums": {
+        "title": "Forums publics :",
+        "content": "Nos sites Web peuvent parfois mettre à disposition de leurs utilisateurs des salons de bavardages, forums, babillards électroniques et/ou groupes de discussion. Veuillez noter que, sauf mention contraire, tout renseignement divulgué dans ces espaces devient public et vous devez agir avec prudence lorsque vous décidez de divulguer des renseignements personnels dans ces espaces."
+      },
+      "unsubscribe": {
+        "title": "Procédures de désinscription :",
+        "content": "Vous pouvez à tout moment choisir de ne plus recevoir de messages de la part de notre bureau de concessionnaire. Nos sites permettent aux utilisateurs de choisir de ne pas recevoir lesdits messages lorsqu'ils sont invités à fournir des données personnelles, ou grâce aux autres moyens identifiés."
+      },
+      "contact": {
+        "title": "Contacter les sites Web :",
+        "content": "Si vous avez des questions concernant la politique de confidentialité ou les pratiques de ces sites, vous pouvez nous contacter",
+        "company": "Kay Auto Group",
+        "website": "www.kayauto.ca"
+      }
+    },
+    "termsContent": {
+      "title": "Conditions et avis",
+      "intro": "En utilisant le présent site Web, vous acceptez d'être lié par les conditions d'utilisation énoncées ci-dessous. Veuillez lire attentivement les présentes conditions d'utilisation avant d'utiliser le présent site Web. Si vous n'êtes pas d'accord avec les présentes conditions d'utilisation, veuillez cesser immédiatement d'utiliser le présent site Web.",
+      "section1": {
+        "title": "1. Remarque générale.",
+        "content": "Le présent site Web est destiné uniquement à une utilisation personnelle et non commerciale. L'intégralité du contenu offert sur le présent site Web, notamment les textes, les informations, les dessins, les photographies, les graphismes, les images, les illustrations, les interfaces, les codes, les extraits audio, les sons, les extraits vidéo, les logiciels et les liens vers des sites externes (le « Contenu »), est fourni à titre informatif seulement."
+      },
+      "section2": {
+        "title": "2. Exclusions et limitation de responsabilité.",
+        "content": "Bien que notre entreprise s'emploie à assurer l'exactitude et la fiabilité du Contenu du présent site Web, le présent site Web et son Contenu vous sont offerts « en l'état » et « tels que disponibles », sans aucune garantie ni condition de quelque nature que ce soit, expresse ou implicite. Il vous incombe de vérifier auprès de notre entreprise si le Contenu du présent site Web est exact. Dans toute la mesure permise par le droit applicable, notre entreprise exclut toutes les garanties, expresses ou implicites, y compris, mais sans s'y limiter, les garanties ou conditions implicites de qualité marchande ou d'adéquation à un usage particulier, de non-contrefaçon, d'absence de virus informatiques, et les garanties s'inférant des pratiques commerciales établies et des modalités d'exécution. Notre entreprise ne garantit pas que les fonctions du présent site Web seront accessibles sans interruption ou exemptes d'erreurs, que les défectuosités seront corrigées ni que le présent site Web et le serveur qui y donne accès sont exempts de virus ou d'autres éléments nuisibles, et ne fait aucune déclaration en ce sens. Notre entreprise ne peut en aucun cas être tenue responsable de quelque dommage que ce soit, y compris des dommages particuliers, indirects, accessoires ou consécutifs, découlant de l'utilisation ou de la performance du présent site Web ou de tout autre site Web auquel vous accédez pendant votre utilisation du présent site Web ou de son contenu, même si elle a été informée de la possibilité que de tels dommages surviennent."
+      },
+      "section3": {
+        "title": "3. Indemnisation.",
+        "content": "Vous reconnaissez et convenez expressément que vous utilisez le présent site Web à vos risques uniquement. Vous vous engagez à défendre, à indemniser et à dégager de toute responsabilité notre entreprise, ses sociétés apparentées et ses partenaires d'affaires ainsi que leurs administrateurs, dirigeants, syndics, fiduciaires et employés respectifs relativement aux obligations, frais et dépenses, y compris les honoraires d'avocat raisonnables, se rapportant à un manquement aux présentes conditions d'utilisation par vous ou par les utilisateurs de votre compte ou découlant de quelque façon de l'utilisation du présent site Web, y compris notamment l'affichage ou la transmission d'informations ou d'éléments sur le présent site Web par vous ou par les utilisateurs de votre compte."
+      },
+      "section4": {
+        "title": "4. Récupération et extraction de données.",
+        "content": "Vous ne pouvez utiliser ou reproduire le Contenu qu'à des fins d'utilisation personnelle et non commerciale. Le cadrage, la récupération, l'exploration, l'extraction et la collecte de données du Contenu du présent site Web, sous quelque forme et par quelque moyen que ce soit, sont formellement interdits. En outre, il vous est interdit de créer un miroir des éléments contenus sur le présent site Web."
+      },
+      "section5": {
+        "title": "5. Hyperliens vers le présent site Web.",
+        "content": "Vous pouvez établir un lien (« hyperlien ») avec le présent site Web à condition: – de ne reproduire aucun élément du Contenu du présent site Web; – de ne créer aucun cadre ni aucune bordure autour du présent site Web ou de son Contenu; – que l'hyperlien ne suggère pas qu'un produit ou un service est recommandé par notre entreprise; et – que le site Web hyperlié au présent site Web ne contienne aucune information, aucun contenu ni aucun élément qui pourrait nuire au fonctionnement du présent site Web, qui est calomnieux, diffamatoire, obscène, pornographique, abusif ou menaçant, qui est destiné à un public adulte, ou qui porte atteinte à la vie privée, contrevient aux lois sur la propriété intellectuelle ou contrevient à toute autre loi. Notre entreprise peut vous retirer en tout temps et à son entière discrétion le droit d'établir un hyperlien avec le présent site Web."
+      },
+      "section6": {
+        "title": "6. Liens externes sur le présent site Web.",
+        "content": "Les liens du présent site Web vous permettent d'accéder à des sites Web qui ne sont pas gérés ou contrôlés par notre entreprise. Notre entreprise ne fournit ces liens que pour votre commodité et ne donne aucune garantie ni ne fait aucune déclaration ni recommandation de quelque nature que ce soit relativement à ces sites Web et n'assume aucune responsabilité quant au contenu des sites Web de tiers. Soyez avisé que vous accédez à ces sites Web de tiers à vos propres risques."
+      },
+      "section7": {
+        "title": "7. Droits d'auteur.",
+        "content": "Tout le Contenu publié sur le présent site Web ou accessible au moyen de celui-ci est protégé par des droits d'auteur. Le Contenu ainsi que les droits d'auteur sur le Contenu sont la propriété ou sous le contrôle de notre entreprise ou de ses fournisseurs de contenu. Vous ne pouvez utiliser ou reproduire le Contenu qu'à des fins d'utilisation personnelle et non commerciale. Il vous est interdit d'utiliser, de reproduire, de diffuser, de publier ou de retransmettre le Contenu à d'autres fins sans le consentement préalable écrit du détenteur des droits d'auteur. Vous devez vous conformer à l'ensemble des avis, des informations et des restrictions en matière de droit d'auteur que comporte le Contenu du présent site Web ou le Contenu auquel vous accédez au moyen du présent site Web, et vous ne devez pas retirer ces avis du Contenu."
+      },
+      "section8": {
+        "title": "8. Marques de commerce.",
+        "content": "Les noms associés aux produits, services, partenaires et fournisseurs mentionnés sur le présent site Web sont des marques de commerce de notre entreprise, de ses sociétés apparentées ou de ses partenaires d'affaires. Il vous est interdit d'utiliser une marque de commerce figurant sur le présent site Web sans la permission expresse et écrite du propriétaire de ladite marque de commerce."
+      },
+      "section9": {
+        "title": "9. Modifications.",
+        "content": "Notre entreprise se réserve le droit de modifier ou de supprimer tout Contenu du présent site Web, en tout ou en partie, à son entière discrétion, en tout temps et sans préavis. Notre entreprise se réserve le droit exclusif de modifier les présentes conditions d'utilisation en tout temps."
+      },
+      "section10": {
+        "title": "10. Politique de confidentialité.",
+        "content": "La politique de confidentialité de notre entreprise fait partie intégrante des présentes conditions d'utilisation et vous lie."
+      },
+      "section11": {
+        "title": "11. Dispositions diverses.",
+        "content": "Les conditions d'utilisation du présent site Web et de tous les autres documents évoqués aux présentes constituent l'entente intégrale entre notre entreprise et vous quant à l'utilisation du présent site Web. Le fait pour notre entreprise de ne pas insister sur le respect rigoureux d'une disposition de la présente entente ou de ne pas exiger ce respect ne constitue nullement une renonciation à quelque disposition ou droit que ce soit. Le fait qu'une disposition des présentes conditions d'utilisation soit déclarée nulle, invalide ou inexécutoire par un tribunal compétent n'a aucune incidence sur les autres dispositions des présentes. La présente entente et son interprétation sont régies par les lois de la province dans laquelle notre entreprise est située et par les lois fédérales du Canada qui y sont applicables."
+      }
+    }
   },
   "adminNav": {
     "adminPanel": "Panneau d'Administration",

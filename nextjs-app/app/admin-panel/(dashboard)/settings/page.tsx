@@ -267,8 +267,8 @@ export default function SettingsPage() {
       let tpsNumber = '';
       let tvqPercentage = 0;
       let tvqNumber = '';
-      try {
-        const settingsResponse = await settingsAPI.getSettings();
+        try {
+          const settingsResponse = await settingsAPI.getSettings();
         if (settingsResponse.data?.settings) {
           if (settingsResponse.data.settings.company_logo_url) {
             companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;

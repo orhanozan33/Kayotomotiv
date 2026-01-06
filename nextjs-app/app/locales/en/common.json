@@ -430,7 +430,133 @@
       "nextReview": "Next review",
       "viewAllReviews": "View all reviews on Google"
     },
-    "copyright": "KAY Auto Service. All rights reserved."
+    "copyright": "KAY AUTO GROUP. Tous droits réservés.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "privacyContent": {
+      "intro": "Our business respects your privacy and is committed to preserving your online confidentiality. Since we collect certain types of information from visitors to our sites, we have developed a privacy statement to help you understand the general terms that govern the collection and use of this information. This statement reveals the types of information we collect, how we use it, and how you can view and modify the data we have collected about you at any time.",
+      "principles": {
+        "title": "Guiding Principles:",
+        "content": "Our business respects the privacy of individuals who visit our websites, send us emails, or use the features or services we offer online. Therefore, our online privacy policy has been developed in accordance with the following guiding principles:",
+        "point1": "Our business applies a strict \"anti-spam\" policy. Subscribers to our email services (or any other service or feature available on our website) will not receive unsolicited emails from us.",
+        "point2": "Our business primarily collects information online to offer our visitors a more relevant experience on our sites. In the context of these collections, we will do everything reasonably possible to avoid any abusive or inadequate data collection.",
+        "point3": "Our business will take reasonable physical, electronic and administrative measures to preserve and secure all information you provide to us (i.e., data will be stored in protected databases on secure servers with restricted access).",
+        "point4": "Our business will not communicate to anyone the information you have provided to us without your consent, except for the purpose of providing you with the service you have requested. When you register to enjoy such a service, you will be notified of our intention to communicate your information to a specific third party for the purpose of providing you with the requested service, and you will be invited to accept this communication."
+      },
+      "informationCollected": {
+        "title": "Information Collected",
+        "nonIdentifiable": {
+          "title": "Non-identifying data:",
+          "content": "Each time you visit our website, we may collect certain information that does not identify you and relates to the means you use to access our site. This information may include the type and version of your browser, your Internet service provider, your IP address, or the search engine you may have used to find our site. We use this information to help us diagnose problems with our server, administer the website and collect imprecise statistical data. In addition, we collect certain browsing data regarding the pages you visit on our websites. This information allows us to determine which sections of the websites are most frequently consulted and helps us adapt the sites to the expectations and interests of our online visitors. This information is collected by us in aggregate form and will not be associated with a particular individual without their consent."
+        },
+        "voluntary": {
+          "title": "Voluntarily provided information:",
+          "content": "All information you provide to us (e.g., name, email address, etc.) when you register for one of our email reminder services, when you request information or use other interactive sections of our websites is stored securely on our web server and internal systems. This data may be used to provide you with information you have requested about our company, our products and our services, or to send you special messages. You can choose at any time to no longer receive messages (refer to the unsubscribe procedures below). This data may also be used to personalize your browsing experience on our sites by allowing us to offer you content that matches your interests and geographic region."
+        },
+        "otherSources": {
+          "title": "Information collected from other sources:",
+          "content": "To help us better understand and respond to your expectations and interests, we may in the future receive information about you transmitted from other sources. We will ask all entities that provide us with such information to affirm and guarantee that the information has been collected and stored in accordance with all state and federal laws. All such information will be stored by us in accordance with the conditions set forth in this privacy policy, along with other personal information you have provided to us."
+        }
+      },
+      "disclosure": {
+        "title": "Disclosure of Personal Information:",
+        "intro": "Our business knows how important your privacy is. We collect and store our customers' personal information for our use and our subsidiaries. We do not sell, rent or market the information provided by our customers to third parties, except in the situations described below, and never without your consent.",
+        "partners": {
+          "title": "Business Partners:",
+          "content": "Our business may sometimes be required to establish a partnership with certain retailers to offer a wider range of services to visitors to our site. In the context of such collaboration, we may share with these companies the use of certain interactive features of the website (e.g., the email reminder service). Information provided by site visitors through the use of such interactive features may be viewed by our dealership office as well as our partners."
+        },
+        "agents": {
+          "title": "Agents:",
+          "content": "We may use the services of other companies and individuals to provide certain features on our behalf and for our account. For example, we may use third parties to administer email services and direct special promotions. These third parties will only have access to the personal information they need to provide these features and cannot use or store this information for other purposes. Subscribers or site visitors will never receive unsolicited emails from agents working on our behalf and for our account."
+        },
+        "businessTransfer": {
+          "title": "Business Transfer:",
+          "content": "If our dealership office were to sell or transfer part of its business, customer data could be part of the assets transferred as part of this transaction. If a significant portion of our dealership office's assets were acquired, customer data could be transferred as part of this acquisition."
+        },
+        "legal": {
+          "title": "Compliance with Legislation and Security:",
+          "content": "Our business may disclose certain personal information in good faith that such disclosure is necessary to comply with or comply with legislation or that such disclosure is necessary to protect users of our websites, the sites themselves, or the public."
+        },
+        "consent": {
+          "title": "With Your Consent:",
+          "content": "In addition to what is set forth in this privacy policy, you will be notified as soon as information that identifies you could be communicated to third parties, and you will have the opportunity to refuse that such information be disclosed."
+        }
+      },
+      "cookies": {
+        "title": "Use of Cookies:",
+        "content": "Our business may use a browsing feature called a \"cookie\". Cookies are small files installed on your hard drive that allow us to offer you a personalized browsing experience. Our business uses cookies so that you don't have to enter information multiple times – such as your user IDs and passwords – each time you visit our websites. Cookies are also used to allow us to provide you with targeted information based on your interests, based on your previous browsing on our websites. The \"help\" section of the toolbar of most browsers tells you how to prevent your browser from accepting new cookies, to be notified by your browser of the receipt of a new cookie, and to completely disable the use of cookies. Our websites have been designed to take advantage of the use of cookies. If you configure your browser to disable their use, some options on our websites may not work properly and you may need to enter your user IDs and passwords more frequently."
+      },
+      "externalLinks": {
+        "title": "External Links:",
+        "content": "Our websites include links to other sites. Our business is not responsible for the privacy practices or content of such websites. To help you ensure the protection of your privacy, we recommend that you consult the privacy policy of each site you access via a link from one of our websites."
+      },
+      "passwords": {
+        "title": "Passwords:",
+        "content": "The recording of your personal data following your registration on our website can only be accessed through a password associated with this record. To protect the integrity of the information contained in this record, you must not disclose or reveal in any way your password to third parties."
+      },
+      "publicForums": {
+        "title": "Public Forums:",
+        "content": "Our websites may sometimes make chat rooms, forums, message boards and/or discussion groups available to their users. Please note that, unless otherwise stated, any information disclosed in these spaces becomes public and you must act with caution when deciding to disclose personal information in these spaces."
+      },
+      "unsubscribe": {
+        "title": "Unsubscribe Procedures:",
+        "content": "You can choose at any time to no longer receive messages from our dealership office. Our sites allow users to choose not to receive such messages when they are invited to provide personal data, or through other means identified."
+      },
+      "contact": {
+        "title": "Contact the Websites:",
+        "content": "If you have questions regarding the privacy policy or practices of these sites, you can contact us",
+        "company": "Kay Auto Group",
+        "website": "www.kayauto.ca"
+      }
+    },
+    "termsContent": {
+      "title": "Terms and Conditions",
+      "intro": "By using this website, you agree to be bound by the terms of use set forth below. Please read these terms of use carefully before using this website. If you do not agree with these terms of use, please immediately stop using this website.",
+      "section1": {
+        "title": "1. General Notice.",
+        "content": "This website is intended for personal and non-commercial use only. All content offered on this website, including texts, information, drawings, photographs, graphics, images, illustrations, interfaces, codes, audio excerpts, sounds, video excerpts, software and links to external sites (the \"Content\"), is provided for informational purposes only."
+      },
+      "section2": {
+        "title": "2. Exclusions and Limitation of Liability.",
+        "content": "Although our company strives to ensure the accuracy and reliability of the Content of this website, this website and its Content are provided to you \"as is\" and \"as available\", without any warranty or condition of any kind, express or implied. It is your responsibility to verify with our company whether the Content of this website is accurate. To the fullest extent permitted by applicable law, our company excludes all warranties, express or implied, including, but not limited to, implied warranties or conditions of merchantability or fitness for a particular purpose, non-infringement, absence of computer viruses, and warranties inferred from established commercial practices and performance modalities. Our company does not guarantee that the functions of this website will be accessible without interruption or free of errors, that defects will be corrected, or that this website and the server that provides access to it are free of viruses or other harmful elements, and makes no statement to that effect. Our company cannot in any way be held responsible for any damage whatsoever, including special, indirect, incidental or consequential damages, arising from the use or performance of this website or any other website you access during your use of this website or its content, even if it has been informed of the possibility that such damages may occur."
+      },
+      "section3": {
+        "title": "3. Indemnification.",
+        "content": "You acknowledge and expressly agree that you use this website at your own risk only. You agree to defend, indemnify and hold harmless our company, its affiliated companies and business partners and their respective directors, officers, trustees, fiduciaries and employees from any obligations, costs and expenses, including reasonable attorney fees, relating to a breach of these terms of use by you or by users of your account or arising in any way from the use of this website, including in particular the display or transmission of information or elements on this website by you or by users of your account."
+      },
+      "section4": {
+        "title": "4. Data Retrieval and Extraction.",
+        "content": "You may use or reproduce the Content only for personal and non-commercial use. Framing, retrieval, exploration, extraction and collection of data from the Content of this website, in any form and by any means, is strictly prohibited. In addition, you are prohibited from creating a mirror of the elements contained on this website."
+      },
+      "section5": {
+        "title": "5. Hyperlinks to this Website.",
+        "content": "You may establish a link (\"hyperlink\") to this website provided: – that you do not reproduce any element of the Content of this website; – that you do not create any frame or border around this website or its Content; – that the hyperlink does not suggest that a product or service is recommended by our company; and – that the website hyperlinked to this website does not contain any information, content or element that could harm the operation of this website, that is defamatory, slanderous, obscene, pornographic, abusive or threatening, that is intended for an adult audience, or that violates privacy, infringes intellectual property laws or violates any other law. Our company may withdraw at any time and at its sole discretion the right to establish a hyperlink to this website."
+      },
+      "section6": {
+        "title": "6. External Links on this Website.",
+        "content": "The links on this website allow you to access websites that are not managed or controlled by our company. Our company provides these links only for your convenience and gives no warranty or makes any statement or recommendation of any kind regarding these websites and assumes no responsibility for the content of third-party websites. Be advised that you access these third-party websites at your own risk."
+      },
+      "section7": {
+        "title": "7. Copyright.",
+        "content": "All Content published on this website or accessible through it is protected by copyright. The Content as well as the copyrights on the Content are the property of or under the control of our company or its content suppliers. You may use or reproduce the Content only for personal and non-commercial use. You are prohibited from using, reproducing, distributing, publishing or retransmitting the Content for other purposes without the prior written consent of the copyright holder. You must comply with all notices, information and copyright restrictions contained in the Content of this website or the Content you access through this website, and you must not remove these notices from the Content."
+      },
+      "section8": {
+        "title": "8. Trademarks.",
+        "content": "The names associated with the products, services, partners and suppliers mentioned on this website are trademarks of our company, its affiliated companies or its business partners. You are prohibited from using a trademark appearing on this website without the express written permission of the owner of said trademark."
+      },
+      "section9": {
+        "title": "9. Modifications.",
+        "content": "Our company reserves the right to modify or delete any Content from this website, in whole or in part, at its sole discretion, at any time and without notice. Our company reserves the exclusive right to modify these terms of use at any time."
+      },
+      "section10": {
+        "title": "10. Privacy Policy.",
+        "content": "Our company's privacy policy is an integral part of these terms of use and binds you."
+      },
+      "section11": {
+        "title": "11. Miscellaneous Provisions.",
+        "content": "The terms of use of this website and all other documents referred to herein constitute the entire agreement between our company and you regarding the use of this website. Our company's failure to insist on strict compliance with a provision of this agreement or to require such compliance does not constitute a waiver of any provision or right whatsoever. The fact that a provision of these terms of use is declared null, invalid or unenforceable by a competent court has no effect on the other provisions of these terms. This agreement and its interpretation are governed by the laws of the province in which our company is located and by the federal laws of Canada applicable thereto."
+      }
+    }
   },
   "vehicles": {
     "title": "Auto Gallery",

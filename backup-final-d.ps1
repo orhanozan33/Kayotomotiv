@@ -69,3 +69,4 @@ Write-Host "Yedekler D:\SAyfalarimiz klasorunde" -ForegroundColor White
 
 
 
+

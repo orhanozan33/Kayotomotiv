@@ -21,3 +21,4 @@ Write-Output "Boyut: $size MB"
 
 
 
+

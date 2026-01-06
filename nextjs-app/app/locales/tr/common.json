@@ -907,7 +907,133 @@
       "nextReview": "Sonraki yorum",
       "viewAllReviews": "Google'da tüm yorumları görüntüle"
     },
-    "copyright": "KAY Oto Servis. Tüm hakları saklıdır."
+    "copyright": "KAY AUTO GROUP. Tous droits réservés.",
+    "privacy": "Gizlilik",
+    "terms": "Şartlar",
+    "privacyContent": {
+      "intro": "İşletmemiz gizliliğinize saygı duyar ve çevrimiçi gizliliğinizi korumaya kararlıdır. Sitemizi ziyaret edenlerden belirli türde bilgiler topladığımız için, bu bilgilerin toplanması ve kullanılmasını yöneten genel şartları anlamanıza yardımcı olmak üzere bir gizlilik bildirimi geliştirdik. Bu bildirim, topladığımız bilgi türlerini, bunları nasıl kullandığımızı ve hakkınızda topladığımız verileri istediğiniz zaman nasıl görüntüleyip değiştirebileceğinizi açıklar.",
+      "principles": {
+        "title": "Yönlendirici İlkeler:",
+        "content": "İşletmemiz, web sitelerimizi ziyaret eden, bize e-posta gönderen veya çevrimiçi olarak sunduğumuz özellikleri veya hizmetleri kullanan bireylerin gizliliğine saygı duyar. Bu nedenle, çevrimiçi gizlilik politikamız aşağıdaki yönlendirici ilkelere uygun olarak geliştirilmiştir:",
+        "point1": "İşletmemiz katı bir \"spam karşıtı\" politika uygular. E-posta hizmetlerimize (veya web sitemizde mevcut olan diğer herhangi bir hizmet veya özelliğe) abone olanlar bizden istenmeyen e-posta almayacaktır.",
+        "point2": "İşletmemiz, ziyaretçilerimize sitelerimizde daha ilgili bir deneyim sunmak için öncelikle çevrimiçi bilgi toplar. Bu toplamalar bağlamında, kötüye kullanım veya yetersiz veri toplamayı önlemek için makul olarak mümkün olan her şeyi yapacağız.",
+        "point3": "İşletmemiz, bize sağladığınız tüm bilgileri korumak ve güvence altına almak için makul fiziksel, elektronik ve idari önlemler alacaktır (yani, veriler kısıtlı erişimli güvenli sunucularda korumalı veritabanlarında saklanacaktır).",
+        "point4": "İşletmemiz, istediğiniz hizmeti size sunma amacı dışında, sizin izniniz olmadan sağladığınız bilgileri kimseyle paylaşmayacaktır. Böyle bir hizmetten yararlanmak için kayıt olduğunuzda, istediğiniz hizmeti size sağlama amacıyla bilgilerinizi belirli bir üçüncü taraf ile paylaşma niyetimiz konusunda bilgilendirileceksiniz ve bu paylaşımı kabul etmeye davet edileceksiniz."
+      },
+      "informationCollected": {
+        "title": "Toplanan Bilgiler",
+        "nonIdentifiable": {
+          "title": "Sizi tanımlamayan veriler:",
+          "content": "Web sitemizi her ziyaret ettiğinizde, sizi tanımlamayan ve sitemize erişmek için kullandığınız araçlarla ilgili belirli bilgiler toplayabiliriz. Bu bilgiler, tarayıcınızın türü ve sürümü, İnternet servis sağlayıcınız, IP adresiniz veya sitemizi bulmak için kullanmış olabileceğiniz arama motorunu içerebilir. Bu bilgileri, sunucumuzla ilgili sorunları teşhis etmemize, web sitesini yönetmemize ve kesin olmayan istatistiksel veriler toplamamıza yardımcı olmak için kullanıyoruz. Ayrıca, web sitelerimizde ziyaret ettiğiniz sayfalarla ilgili belirli tarama verileri topluyoruz. Bu bilgiler, web sitelerinin hangi bölümlerinin en sık ziyaret edildiğini belirlememize ve siteleri çevrimiçi ziyaretçilerimizin beklentilerine ve ilgi alanlarına uyarlamamıza yardımcı olur. Bu bilgiler bizim tarafımızdan toplu formda toplanır ve kişinin rızası olmadan belirli bir bireyle ilişkilendirilmeyecektir."
+        },
+        "voluntary": {
+          "title": "Gönüllü olarak sağlanan bilgiler:",
+          "content": "E-posta hatırlatma hizmetlerimizden birine kaydolduğunuzda, bilgi talep ettiğinizde veya web sitelerimizin diğer etkileşimli bölümlerini kullandığınızda bize sağladığınız tüm bilgiler (ör. ad, e-posta adresi vb.) web sunucumuzda ve dahili sistemlerimizde güvenli bir şekilde saklanır. Bu veriler, şirketimiz, ürünlerimiz ve hizmetlerimiz hakkında talep ettiğiniz bilgileri size sağlamak veya size özel mesajlar göndermek için kullanılabilir. İstediğiniz zaman artık mesaj almamayı seçebilirsiniz (aşağıdaki abonelikten çıkma prosedürlerine bakın). Bu veriler ayrıca, ilgi alanlarınıza ve coğrafi bölgenize uygun içerik sunmamıza olanak tanıyarak sitelerimizdeki tarama deneyiminizi kişiselleştirmek için de kullanılabilir."
+        },
+        "otherSources": {
+          "title": "Diğer kaynaklardan toplanan bilgiler:",
+          "content": "Beklentilerinizi ve ilgi alanlarınızı daha iyi anlamamıza ve bunlara yanıt vermemize yardımcı olmak için, gelecekte diğer kaynaklardan iletilen sizinle ilgili bilgiler alabiliriz. Bize bu tür bilgileri sağlayan tüm kuruluşlardan, bilgilerin tüm eyalet ve federal yasalara uygun olarak toplandığını ve saklandığını onaylamalarını ve garanti etmelerini isteyeceğiz. Bu tür tüm bilgiler, bize sağladığınız diğer kişisel bilgilerle birlikte, bu gizlilik politikasında belirtilen koşullara uygun olarak bizim tarafımızdan saklanacaktır."
+        }
+      },
+      "disclosure": {
+        "title": "Kişisel Bilgilerin Açıklanması:",
+        "intro": "İşletmemiz gizliliğinizin ne kadar önemli olduğunu bilir. Müşterilerimizin kişisel bilgilerini kendi kullanımımız ve yan kuruluşlarımız için topluyor ve saklıyoruz. Müşterilerimiz tarafından sağlanan bilgileri, aşağıda açıklanan durumlar dışında ve asla sizin izniniz olmadan üçüncü taraflara satmıyor, kiralamıyor veya pazarlamıyoruz.",
+        "partners": {
+          "title": "İş Ortakları:",
+          "content": "İşletmemiz, sitemizi ziyaret edenlere daha geniş bir hizmet yelpazesi sunmak için bazen belirli perakendecilerle ortaklık kurmak zorunda kalabilir. Böyle bir işbirliği bağlamında, bu şirketlerle web sitesinin belirli etkileşimli özelliklerinin (ör. e-posta hatırlatma hizmeti) kullanımını paylaşabiliriz. Sitenin ziyaretçileri tarafından bu tür etkileşimli özelliklerin kullanımı yoluyla sağlanan bilgiler, bayilik ofisimiz ve ortaklarımız tarafından görüntülenebilir."
+        },
+        "agents": {
+          "title": "Ajanlar:",
+          "content": "Adımıza ve hesabımıza belirli özellikler sağlamak için diğer şirketlerin ve bireylerin hizmetlerini kullanabiliriz. Örneğin, e-posta hizmetlerini yönetmek ve özel promosyonlar yapmak için üçüncü tarafları kullanabiliriz. Bu üçüncü taraflar yalnızca bu özellikleri sağlamak için ihtiyaç duydukları kişisel bilgilere erişebilecek ve bu bilgileri başka amaçlarla kullanamaz veya saklayamaz. Sitenin aboneleri veya ziyaretçileri, adımıza ve hesabımıza çalışan ajanlardan asla istenmeyen e-posta almayacaktır."
+        },
+        "businessTransfer": {
+          "title": "İş Devri:",
+          "content": "Bayilik ofisimiz işinin bir kısmını satmak veya devretmek zorunda kalırsa, müşteri verileri bu işlemin bir parçası olarak devredilen varlıkların bir parçası olabilir. Bayilik ofisimizin varlıklarının önemli bir kısmı satın alınırsa, müşteri verileri bu satın almanın bir parçası olarak devredilebilir."
+        },
+        "legal": {
+          "title": "Mevzuata ve Güvenliğe Uyum:",
+          "content": "İşletmemiz, böyle bir açıklamanın mevzuata uymak veya uyum sağlamak için gerekli olduğuna veya böyle bir açıklamanın web sitelerimizin kullanıcılarını, sitelerin kendisini veya halkı korumak için gerekli olduğuna iyi niyetle inanarak belirli kişisel bilgileri açıklayabilir."
+        },
+        "consent": {
+          "title": "İzninizle:",
+          "content": "Bu gizlilik politikasında belirtilenlerin yanı sıra, sizi tanımlayan bilgilerin üçüncü taraflara iletilmesi söz konusu olduğunda derhal bilgilendirileceksiniz ve bu bilgilerin açıklanmasını reddetme fırsatına sahip olacaksınız."
+        }
+      },
+      "cookies": {
+        "title": "Çerezlerin Kullanımı:",
+        "content": "İşletmemiz \"çerez\" adı verilen bir tarama özelliği kullanabilir. Çerezler, size kişiselleştirilmiş bir tarama deneyimi sunmamıza olanak tanıyan sabit diskinize yüklenen küçük dosyalardır. İşletmemiz, web sitelerimizi her ziyaret ettiğinizde bilgileri (kullanıcı kimlikleriniz ve şifreleriniz gibi) birden fazla kez girmek zorunda kalmamanız için çerezleri kullanır. Çerezler ayrıca, web sitelerimizdeki önceki taramalarınıza dayalı olarak ilgi alanlarınıza göre hedeflenmiş bilgiler sağlamamıza olanak tanır. Çoğu tarayıcının araç çubuğundaki \"yardım\" bölümü, tarayıcınızın yeni çerezleri kabul etmesini önleme, tarayıcınız tarafından yeni bir çerez alındığında bilgilendirilme ve çerez kullanımını tamamen devre dışı bırakma konusunda size bilgi verir. Web sitelerimiz çerez kullanımından yararlanmak için tasarlanmıştır. Tarayıcınızı kullanımlarını devre dışı bırakacak şekilde yapılandırırsanız, web sitelerimizdeki bazı seçenekler düzgün çalışmayabilir ve kullanıcı kimliklerinizi ve şifrelerinizi daha sık girmeniz gerekebilir."
+      },
+      "externalLinks": {
+        "title": "Harici Bağlantılar:",
+        "content": "Web sitelerimiz diğer sitelere bağlantılar içerir. İşletmemiz, bu web sitelerinin gizlilik uygulamalarından veya içeriğinden sorumlu değildir. Gizliliğinizin korunmasını sağlamanıza yardımcı olmak için, web sitelerimizden birinden bir bağlantı aracılığıyla eriştiğiniz her sitenin gizlilik politikasını incelemenizi öneririz."
+      },
+      "passwords": {
+        "title": "Şifreler:",
+        "content": "Web sitemize kayıt olduktan sonra kişisel verilerinizin kaydı, yalnızca bu kayıtla ilişkili bir şifre aracılığıyla erişilebilir. Bu kayıtta bulunan bilgilerin bütünlüğünü korumak için, şifrenizi hiçbir şekilde üçüncü taraflara açıklamamalı veya ifşa etmemelisiniz."
+      },
+      "publicForums": {
+        "title": "Halka Açık Forumlar:",
+        "content": "Web sitelerimiz bazen kullanıcılarına sohbet odaları, forumlar, mesaj panoları ve/veya tartışma grupları sağlayabilir. Aksi belirtilmedikçe, bu alanlarda açıklanan herhangi bir bilginin halka açık hale geldiğini ve bu alanlarda kişisel bilgileri açıklamaya karar verirken dikkatli davranmanız gerektiğini lütfen unutmayın."
+      },
+      "unsubscribe": {
+        "title": "Abonelikten Çıkma Prosedürleri:",
+        "content": "İstediğiniz zaman bayilik ofisimizden artık mesaj almamayı seçebilirsiniz. Sitemizlerimiz, kullanıcıların kişisel veri sağlamaya davet edildiklerinde veya belirlenen diğer yollarla bu tür mesajları almamayı seçmelerine olanak tanır."
+      },
+      "contact": {
+        "title": "Web Siteleriyle İletişim:",
+        "content": "Gizlilik politikası veya bu sitelerin uygulamaları hakkında sorularınız varsa, bizimle iletişime geçebilirsiniz",
+        "company": "Kay Auto Group",
+        "website": "www.kayauto.ca"
+      }
+    },
+    "termsContent": {
+      "title": "Kullanım Şartları ve Koşulları",
+      "intro": "Bu web sitesini kullanarak, aşağıda belirtilen kullanım şartlarına bağlı kalmayı kabul edersiniz. Bu web sitesini kullanmadan önce lütfen bu kullanım şartlarını dikkatlice okuyun. Bu kullanım şartlarına katılmıyorsanız, lütfen bu web sitesini kullanmayı derhal durdurun.",
+      "section1": {
+        "title": "1. Genel Uyarı.",
+        "content": "Bu web sitesi yalnızca kişisel ve ticari olmayan kullanım içindir. Bu web sitesinde sunulan tüm içerik, metinler, bilgiler, çizimler, fotoğraflar, grafikler, görüntüler, illüstrasyonlar, arayüzler, kodlar, ses klipleri, sesler, video klipleri, yazılımlar ve harici sitelere bağlantılar (\"İçerik\") dahil olmak üzere, yalnızca bilgilendirme amaçlıdır."
+      },
+      "section2": {
+        "title": "2. Hariç Tutmalar ve Sorumluluk Sınırlaması.",
+        "content": "Şirketimiz bu web sitesinin İçeriğinin doğruluğunu ve güvenilirliğini sağlamaya çalışsa da, bu web sitesi ve İçeriği size \"olduğu gibi\" ve \"mevcut olduğu şekliyle\", açık veya örtülü herhangi bir garanti veya koşul olmaksızın sunulmaktadır. Bu web sitesinin İçeriğinin doğru olup olmadığını şirketimizle doğrulamak sizin sorumluluğunuzdadır. Geçerli yasaların izin verdiği ölçüde, şirketimiz, ticari kalite veya belirli bir kullanıma uygunluk, ihlal etmeme, bilgisayar virüsü bulunmaması ve yerleşik ticari uygulamalardan ve performans biçimlerinden çıkarılan garantiler dahil olmak üzere, ancak bunlarla sınırlı olmamak üzere, açık veya örtülü tüm garantileri hariç tutar. Şirketimiz, bu web sitesinin işlevlerinin kesintisiz veya hatasız erişilebilir olacağını, kusurların düzeltileceğini veya bu web sitesinin ve ona erişim sağlayan sunucunun virüs veya diğer zararlı öğelerden arınmış olacağını garanti etmez ve bu konuda herhangi bir beyanda bulunmaz. Şirketimiz, bu web sitesinin veya içeriğinin kullanımından veya performansından kaynaklanan veya bu web sitesini veya içeriğini kullanımınız sırasında eriştiğiniz herhangi bir diğer web sitesinden kaynaklanan, özel, dolaylı, tesadüfi veya sonuç olarak ortaya çıkan her türlü zarar dahil olmak üzere, bu tür zararların meydana gelebileceği olasılığından haberdar edilmiş olsa bile, hiçbir şekilde sorumlu tutulamaz."
+      },
+      "section3": {
+        "title": "3. Tazminat.",
+        "content": "Bu web sitesini yalnızca kendi riskiniz altında kullandığınızı kabul ve açıkça taahhüt edersiniz. Siz veya hesabınızın kullanıcıları tarafından bu kullanım şartlarının ihlaliyle ilgili veya bu web sitesinin kullanımından herhangi bir şekilde kaynaklanan, sizin veya hesabınızın kullanıcıları tarafından bu web sitesinde bilgi veya öğelerin görüntülenmesi veya iletilmesi dahil olmak üzere, makul avukat ücretleri dahil olmak üzere yükümlülükler, maliyetler ve giderlerle ilgili olarak şirketimizi, bağlı şirketlerini ve iş ortaklarını ve bunların yöneticilerini, memurlarını, vekillerini, güvenilir kişilerini ve çalışanlarını savunmayı, tazmin etmeyi ve sorumluluktan muaf tutmayı kabul edersiniz."
+      },
+      "section4": {
+        "title": "4. Veri Geri Alma ve Çıkarma.",
+        "content": "İçeriği yalnızca kişisel ve ticari olmayan kullanım için kullanabilir veya çoğaltabilirsiniz. Bu web sitesinin İçeriğinden verilerin çerçeveleme, geri alma, keşfetme, çıkarma ve toplanması, herhangi bir biçimde ve herhangi bir araçla kesinlikle yasaktır. Ayrıca, bu web sitesinde bulunan öğelerin bir aynasını oluşturmanız yasaktır."
+      },
+      "section5": {
+        "title": "5. Bu Web Sitesine Köprüler.",
+        "content": "Şu koşullarla bu web sitesine bir bağlantı (\"köprü\") oluşturabilirsiniz: – Bu web sitesinin İçeriğinin herhangi bir öğesini çoğaltmamanız; – Bu web sitesinin veya İçeriğinin etrafında herhangi bir çerçeve veya kenarlık oluşturmamanız; – Köprünün bir ürün veya hizmetin şirketimiz tarafından önerildiğini ima etmemesi; ve – Bu web sitesine köprülenen web sitesinin, bu web sitesinin işleyişine zarar verebilecek, iftira niteliğinde, karalayıcı, müstehcen, pornografik, saldırgan veya tehditkar, yetişkin bir kitleye yönelik veya gizliliği ihlal eden, fikri mülkiyet yasalarını ihlal eden veya başka herhangi bir yasayı ihlal eden herhangi bir bilgi, içerik veya öğe içermemesi. Şirketimiz, her zaman ve tamamen kendi takdirine bağlı olarak bu web sitesine bir köprü oluşturma hakkını geri çekebilir."
+      },
+      "section6": {
+        "title": "6. Bu Web Sitesindeki Harici Bağlantılar.",
+        "content": "Bu web sitesindeki bağlantılar, şirketimiz tarafından yönetilmeyen veya kontrol edilmeyen web sitelerine erişmenize olanak tanır. Şirketimiz bu bağlantıları yalnızca sizin kolaylığınız için sağlar ve bu web siteleri hakkında herhangi bir garanti vermez veya herhangi bir beyanda bulunmaz veya öneride bulunmaz ve üçüncü taraf web sitelerinin içeriğinden sorumlu değildir. Bu üçüncü taraf web sitelerine kendi riskiniz altında eriştiğinizi bilin."
+      },
+      "section7": {
+        "title": "7. Telif Hakkı.",
+        "content": "Bu web sitesinde yayınlanan veya bunun aracılığıyla erişilebilen tüm İçerik telif hakkı ile korunmaktadır. İçerik ve İçerik üzerindeki telif hakları, şirketimizin veya içerik tedarikçilerinin mülkiyetindedir veya kontrolü altındadır. İçeriği yalnızca kişisel ve ticari olmayan kullanım için kullanabilir veya çoğaltabilirsiniz. Telif hakkı sahibinin önceden yazılı izni olmadan İçeriği başka amaçlarla kullanmanız, çoğaltmanız, dağıtmanız, yayınlamanız veya yeniden iletmeniz yasaktır. Bu web sitesinin İçeriğinde veya bu web sitesi aracılığıyla eriştiğiniz İçerikte bulunan tüm uyarılar, bilgiler ve telif hakkı kısıtlamalarına uymalı ve bu uyarıları İçerikten kaldırmamalısınız."
+      },
+      "section8": {
+        "title": "8. Ticari Markalar.",
+        "content": "Bu web sitesinde bahsedilen ürünler, hizmetler, ortaklar ve tedarikçilerle ilişkili isimler, şirketimizin, bağlı şirketlerinin veya iş ortaklarının ticari markalarıdır. Bu web sitesinde görünen bir ticari markayı, söz konusu ticari markanın sahibinin açık yazılı izni olmadan kullanmanız yasaktır."
+      },
+      "section9": {
+        "title": "9. Değişiklikler.",
+        "content": "Şirketimiz, bu web sitesindeki herhangi bir İçeriği, tamamen veya kısmen, tamamen kendi takdirine bağlı olarak, her zaman ve önceden haber vermeksizin değiştirme veya silme hakkını saklı tutar. Şirketimiz, bu kullanım şartlarını her zaman değiştirme hakkını münhasıran saklı tutar."
+      },
+      "section10": {
+        "title": "10. Gizlilik Politikası.",
+        "content": "Şirketimizin gizlilik politikası, bu kullanım şartlarının ayrılmaz bir parçasıdır ve sizi bağlar."
+      },
+      "section11": {
+        "title": "11. Çeşitli Hükümler.",
+        "content": "Bu web sitesinin kullanım şartları ve burada atıfta bulunulan diğer tüm belgeler, bu web sitesinin kullanımına ilişkin şirketimiz ile sizin aranızdaki tam anlaşmayı oluşturur. Şirketimizin bu anlaşmanın bir hükmünün katı bir şekilde uygulanmasında ısrar etmemesi veya böyle bir uygulama talep etmemesi, hiçbir hüküm veya haktan feragat anlamına gelmez. Bu kullanım şartlarının bir hükmünün yetkili bir mahkeme tarafından geçersiz, hükümsüz veya uygulanamaz ilan edilmesi, bu şartların diğer hükümleri üzerinde hiçbir etkisi yoktur. Bu anlaşma ve yorumu, şirketimizin bulunduğu eyaletin yasaları ve buna uygulanan Kanada federal yasaları tarafından yönetilir."
+      }
+    }
   },
   "pages": {
     "title": "Sayfa Yönetimi",

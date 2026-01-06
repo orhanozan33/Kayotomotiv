@@ -59,6 +59,7 @@
 @media (max-width: 768px) {
   .carBrandsSlider {
     padding: 0.4rem 0;
+    transform: translateY(10%);
   }
 
   .brandsTrack {

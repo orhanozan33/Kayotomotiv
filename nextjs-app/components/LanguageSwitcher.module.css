@@ -72,8 +72,8 @@
   width: 28px !important;
   height: 28px !important;
   padding: 0 !important;
-  border: 2px solid #e0e0e0 !important;
-  background: white !important;
+  border: 2px solid #FFD700 !important;
+  background: #FFD700 !important;
   color: #1a1a1a !important;
   cursor: pointer;
   font-size: 0.6rem !important;
@@ -93,20 +93,21 @@
 }
 
 .dropdownItem:hover {
-  background: #f0f0f0;
-  border-color: #ccc;
+  background: #FFC107 !important;
+  border-color: #FFC107 !important;
   transform: scale(1.05);
 }
 
 .dropdownItem.active {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border-color: #667eea;
+  background: #FFD700 !important;
+  color: #1a1a1a !important;
+  border-color: #FFC107 !important;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
 
 .dropdownItem.active:hover {
-  background: linear-gradient(135deg, #5568d3 0%, #6a3f91 100%);
-  border-color: #5568d3;
+  background: #FFC107 !important;
+  border-color: #FFC107 !important;
 }
 
 .languageName {

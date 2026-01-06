@@ -453,8 +453,8 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
       let tpsNumber = '';
       let tvqPercentage = 0;
       let tvqNumber = '';
-      try {
-        const settingsResponse = await adminSettingsAPI.getSettings();
+        try {
+          const settingsResponse = await adminSettingsAPI.getSettings();
         if (settingsResponse.data?.settings) {
           if (settingsResponse.data.settings.company_logo_url) {
             companyInfo.company_logo_url = settingsResponse.data.settings.company_logo_url;
@@ -465,8 +465,8 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
           tpsNumber = settingsResponse.data.settings.tps_number || '';
           tvqPercentage = parseFloat(settingsResponse.data.settings.tvq_percentage || '0');
           tvqNumber = settingsResponse.data.settings.tvq_number || '';
-        }
-      } catch (error) {
+          }
+        } catch (error) {
         console.error('Error loading settings:', error);
       }
 
@@ -804,7 +804,7 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
       const effectiveFederalRate = tpsPercentage > 0 ? tpsPercentage : (federalTaxRate > 0 ? federalTaxRate : (taxRate / 2));
       const effectiveProvincialRate = tvqPercentage > 0 ? tvqPercentage : (provincialTaxRate > 0 ? provincialTaxRate : (taxRate / 2));
       const totalTaxRate = effectiveFederalRate + effectiveProvincialRate;
-
+      
       // Group services by vehicle and date
       const servicesByVehicle = (displayCustomer.serviceRecords || []).reduce((acc: any, record: any) => {
         const key = `${record.vehicle_id || 'no-vehicle'}_${record.performed_date || 'no-date'}`;
@@ -834,17 +834,17 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
           totalPrice += parseFloat(String(service.price || 0));
         });
 
-        let basePrice = totalPrice;
-        let federalTaxAmount = 0;
-        let provincialTaxAmount = 0;
-        
-        if (totalTaxRate > 0) {
-          basePrice = totalPrice / (1 + totalTaxRate / 100);
-          federalTaxAmount = basePrice * (effectiveFederalRate / 100);
-          provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
-        }
+      let basePrice = totalPrice;
+      let federalTaxAmount = 0;
+      let provincialTaxAmount = 0;
+      
+      if (totalTaxRate > 0) {
+        basePrice = totalPrice / (1 + totalTaxRate / 100);
+        federalTaxAmount = basePrice * (effectiveFederalRate / 100);
+        provincialTaxAmount = basePrice * (effectiveProvincialRate / 100);
+      }
 
-        const receiptHTML = `
+      const receiptHTML = `
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -2017,41 +2017,41 @@ export default function CustomerDetailModal({ customer, onClose, onUpdate }: Cus
                             style={{ width: '20px', height: '20px', cursor: 'pointer', marginTop: '4px', flexShrink: 0 }}
                           />
                           <div style={{ flex: 1 }}>
-                            <div className={styles.serviceCardHeader}>
-                              <div className={styles.serviceCardTitle}>
-                                <h4>{record.service_name}</h4>
-                                <div className={styles.serviceCardDate}>
-                                  {new Date(record.performed_date).toLocaleDateString()}
-                                </div>
-                              </div>
-                              <div className={styles.serviceCardPrice}>
-                                ${parseFloat(String(record.price || 0)).toFixed(2)}
-                              </div>
+                        <div className={styles.serviceCardHeader}>
+                          <div className={styles.serviceCardTitle}>
+                            <h4>{record.service_name}</h4>
+                            <div className={styles.serviceCardDate}>
+                              {new Date(record.performed_date).toLocaleDateString()}
                             </div>
-                            {record.service_description && (
-                              <div className={styles.serviceCardDescription}>
-                                {record.service_description}
-                              </div>
-                            )}
-                            <div className={styles.serviceCardFooter}>
-                              <div className={styles.serviceCardType}>
-                                {record.service_type === 'repair' ? '🔧 Tamir' : record.service_type === 'car_wash' ? '🚗 Oto Yıkama' : record.service_type}
-                              </div>
-                              <div className={styles.serviceCardActions}>
-                                <button
-                                  className={styles.btnPrintService}
-                                  onClick={() => handlePrintReceipt(record)}
-                                  title={t('customers.detail.printReceipt') || 'Yazdır'}
-                                >
-                                  🖨️
-                                </button>
-                                <button
-                                  className={styles.btnDeleteService}
-                                  onClick={() => handleDeleteService(record.id)}
-                                  title={t('customers.detail.deleteService') || 'Sil'}
-                                >
-                                  🗑️
-                                </button>
+                          </div>
+                          <div className={styles.serviceCardPrice}>
+                            ${parseFloat(String(record.price || 0)).toFixed(2)}
+                          </div>
+                        </div>
+                        {record.service_description && (
+                          <div className={styles.serviceCardDescription}>
+                            {record.service_description}
+                          </div>
+                        )}
+                        <div className={styles.serviceCardFooter}>
+                          <div className={styles.serviceCardType}>
+                            {record.service_type === 'repair' ? '🔧 Tamir' : record.service_type === 'car_wash' ? '🚗 Oto Yıkama' : record.service_type}
+                          </div>
+                          <div className={styles.serviceCardActions}>
+                            <button
+                              className={styles.btnPrintService}
+                              onClick={() => handlePrintReceipt(record)}
+                              title={t('customers.detail.printReceipt') || 'Yazdır'}
+                            >
+                              🖨️
+                            </button>
+                            <button
+                              className={styles.btnDeleteService}
+                              onClick={() => handleDeleteService(record.id)}
+                              title={t('customers.detail.deleteService') || 'Sil'}
+                            >
+                              🗑️
+                            </button>
                               </div>
                             </div>
                           </div>
