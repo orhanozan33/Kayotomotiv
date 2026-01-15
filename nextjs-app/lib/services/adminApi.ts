@@ -237,6 +237,14 @@ export const contactAPI = {
 // Admin Contact API (alias)
 export const adminContactAPI = contactAPI;
 
+// Sell Car API
+export const sellCarAPI = {
+  getSubmissions: (params?: any) => api.get('/sell-car', { params }),
+  getSubmission: (id: string) => api.get(`/sell-car/${id}`),
+  updateStatus: (id: string, status: string) => api.put(`/sell-car/${id}/status`, { status }),
+  deleteSubmission: (id: string) => api.delete(`/sell-car/${id}`),
+};
+
 // Pages API
 export const pagesAPI = {
   getAll: (params?: any) => api.get('/pages/admin/all', { params }),

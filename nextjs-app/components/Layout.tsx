@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useCallback, useRef } from 'react';
 import LanguageSwitcher from './LanguageSwitcher';
 import CarBrandsSlider from './CarBrandsSlider';
+import SellCarModal from './SellCarModal';
 import { settingsAPI } from '@/lib/services/api';
 import styles from './Layout.module.css';
 
@@ -35,6 +36,7 @@ export default function Layout({ children }: LayoutProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
+  const [showSellCarModal, setShowSellCarModal] = useState(false);
   const [socialLinks, setSocialLinks] = useState<SocialLinks>({
     facebook: '',
     instagram: '',
@@ -177,9 +179,12 @@ export default function Layout({ children }: LayoutProps) {
           </Link>
           {/* Sell Your Car Button - Next to Logo */}
           {!isAdminPanel && (
-            <Link href="/auto-sales" className={styles.sellYourCarButton}>
+            <button 
+              onClick={() => setShowSellCarModal(true)}
+              className={styles.sellYourCarButton}
+            >
               {isMounted ? String(t('nav.sellYourCar') || 'Sell Your Car') : 'Sell Your Car'}
-            </Link>
+            </button>
           )}
         </div>
         <div className={styles.headerContainer}>
@@ -900,6 +905,7 @@ export default function Layout({ children }: LayoutProps) {
           </div>
         </div>
       )}
+      <SellCarModal isOpen={showSellCarModal} onClose={() => setShowSellCarModal(false)} />
     </div>
   );
 }

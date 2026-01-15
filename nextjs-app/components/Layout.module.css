@@ -17,6 +17,8 @@
   padding: 10px 20px;
   border-radius: 8px;
   text-decoration: none;
+  border: none;
+  cursor: pointer;
   box-shadow: 0 4px 15px rgba(255, 107, 53, 0.4),
               0 0 20px rgba(255, 215, 0, 0.6),
               inset 0 0 10px rgba(255, 255, 255, 0.3);
@@ -27,11 +29,11 @@
   letter-spacing: 1px;
   white-space: nowrap;
   margin-left: 1rem;
-  transform: translateX(70%);
+  transform: translateX(150%);
 }
 
 .sellYourCarButton:hover {
-  transform: translateX(70%) scale(1.05);
+  transform: translateX(150%) scale(1.05);
   box-shadow: 0 6px 20px rgba(255, 107, 53, 0.6),
               0 0 30px rgba(255, 215, 0, 0.8),
               inset 0 0 15px rgba(255, 255, 255, 0.4);
@@ -1812,7 +1814,7 @@
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    transform: translateY(10%) translateX(23%) !important;
+    transform: translateY(10%) translateX(17%) !important;
     width: 100%;
     left: auto !important;
     top: auto !important;
