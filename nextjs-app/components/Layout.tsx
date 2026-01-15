@@ -109,15 +109,32 @@ export default function Layout({ children }: LayoutProps) {
     }
   }, [logoSettings, isMounted]);
 
-  // Allow body scroll when mobile menu is open (so header moves with page)
+  // Close mobile menu when page is scrolled (allow scroll, close menu on scroll)
   useEffect(() => {
-    if (mobileMenuOpen) {
-      // Don't prevent scroll, allow it so header moves with page
+    if (!mobileMenuOpen) {
       document.body.style.overflow = '';
-    } else {
-      document.body.style.overflow = '';
+      return;
     }
+
+    let lastScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    const handleScroll = () => {
+      const currentScrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      
+      // If scrolled, close the menu
+      if (Math.abs(currentScrollTop - lastScrollTop) > 5) {
+        setMobileMenuOpen(false);
+      }
+      
+      lastScrollTop = currentScrollTop <= 0 ? 0 : currentScrollTop;
+    };
+
+    // Allow scroll and close menu on scroll
+    document.body.style.overflow = '';
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     return () => {
+      window.removeEventListener('scroll', handleScroll);
       document.body.style.overflow = '';
     };
   }, [mobileMenuOpen]);
