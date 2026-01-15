@@ -41,6 +41,7 @@ export default function SellCarModal({ isOpen, onClose }: SellCarModalProps) {
     year: '',
     transmission: '',
     fuelType: '',
+    mileage: '',
     images: [],
     customerName: '',
     customerEmail: '',
