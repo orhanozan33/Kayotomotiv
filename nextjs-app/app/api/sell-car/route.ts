@@ -3,11 +3,13 @@ import { initializeDatabase } from '@/lib/config/typeorm';
 import { getPool } from '@/lib/config/database';
 import { authenticate, requireAdmin } from '@/lib/middleware/auth';
 import { handleError } from '@/lib/middleware/errorHandler';
+import { uploadImageToSupabase } from '@/lib/services/supabaseStorage';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import { existsSync } from 'fs';
 
 const isProduction = process.env.NODE_ENV === 'production';
+const useSupabaseStorage = isProduction || !!process.env.NEXT_PUBLIC_SUPABASE_URL;
 
 // POST - Public endpoint for form submission
 export async function POST(request: NextRequest) {
@@ -35,24 +37,52 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'İletişim bilgileri zorunludur' }, { status: 400 });
     }
 
-    // Save images to public/uploads/sell-car
+    // Save images - Use Supabase Storage in production/Vercel, local file system in development
     const imageUrls: string[] = [];
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'sell-car');
-
-    // Create directory if it doesn't exist
-    if (!existsSync(uploadDir)) {
-      await mkdir(uploadDir, { recursive: true });
-    }
 
     for (const image of images) {
       if (image && image.size > 0) {
-        const bytes = await image.arrayBuffer();
-        const buffer = Buffer.from(bytes);
-        const timestamp = Date.now();
-        const filename = `${timestamp}-${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
-        const filepath = join(uploadDir, filename);
-        await writeFile(filepath, buffer);
-        imageUrls.push(`/uploads/sell-car/${filename}`);
+        let imageUrl: string;
+
+        if (useSupabaseStorage) {
+          try {
+            const { url } = await uploadImageToSupabase(image, 'vehicle-images', 'sell-car');
+            imageUrl = url;
+          } catch (uploadError: any) {
+            console.error('Supabase upload error:', uploadError);
+            // Fallback to local storage if Supabase upload fails (development only)
+            if (!isProduction) {
+              const uploadDir = join(process.cwd(), 'public', 'uploads', 'sell-car');
+              if (!existsSync(uploadDir)) {
+                await mkdir(uploadDir, { recursive: true });
+              }
+              const timestamp = Date.now();
+              const filename = `${timestamp}-${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+              const filepath = join(uploadDir, filename);
+              const bytes = await image.arrayBuffer();
+              const buffer = Buffer.from(bytes);
+              await writeFile(filepath, buffer);
+              imageUrl = `/uploads/sell-car/${filename}`;
+            } else {
+              throw new Error(`Failed to upload image: ${uploadError.message}`);
+            }
+          }
+        } else {
+          // Local file system storage (development)
+          const uploadDir = join(process.cwd(), 'public', 'uploads', 'sell-car');
+          if (!existsSync(uploadDir)) {
+            await mkdir(uploadDir, { recursive: true });
+          }
+          const timestamp = Date.now();
+          const filename = `${timestamp}-${image.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+          const filepath = join(uploadDir, filename);
+          const bytes = await image.arrayBuffer();
+          const buffer = Buffer.from(bytes);
+          await writeFile(filepath, buffer);
+          imageUrl = `/uploads/sell-car/${filename}`;
+        }
+
+        imageUrls.push(imageUrl);
       }
     }
 
