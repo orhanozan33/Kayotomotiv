@@ -26,6 +26,7 @@ interface SellCarSubmission {
   year: number;
   transmission: string;
   fuel_type: string;
+  mileage?: number;
   customer_name: string;
   customer_email: string;
   customer_phone: string;
@@ -421,6 +422,12 @@ export default function MessagesPage() {
                     <label>{t('adminMessages.fuelType') || 'Yakıt Türü'}:</label>
                     <span>{selectedSubmission.fuel_type}</span>
                   </div>
+                  {selectedSubmission.mileage && (
+                    <div className={styles.detailRow}>
+                      <label>{t('adminMessages.mileage') || 'Kilometre'}:</label>
+                      <span>{selectedSubmission.mileage.toLocaleString()} km</span>
+                    </div>
+                  )}
                   {selectedSubmission.notes && (
                     <div className={`${styles.detailRow} ${styles.fullWidth}`}>
                       <label>{t('adminMessages.notes') || 'Notlar'}:</label>

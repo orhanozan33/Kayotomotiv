@@ -34,6 +34,7 @@ export default function Layout({ children }: LayoutProps) {
   const pathname = usePathname();
   const isAdminPanel = pathname?.startsWith('/admin-panel');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuScrollTop, setMenuScrollTop] = useState(0);
   const [privacyModalOpen, setPrivacyModalOpen] = useState(false);
   const [termsModalOpen, setTermsModalOpen] = useState(false);
   const [showSellCarModal, setShowSellCarModal] = useState(false);
@@ -176,7 +177,13 @@ export default function Layout({ children }: LayoutProps) {
       <button
         ref={mobileMenuButtonRef}
         className={`${styles.mobileMenuButton} ${mobileMenuOpen ? styles.mobileMenuButtonOpen : ''}`}
-        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        onClick={() => {
+          if (!mobileMenuOpen) {
+            // Menü açılırken mevcut scroll pozisyonunu kaydet
+            setMenuScrollTop(window.pageYOffset || document.documentElement.scrollTop);
+          }
+          setMobileMenuOpen(!mobileMenuOpen);
+        }}
         aria-label={isMounted ? String(t('header.menu') || 'Menu') : 'Menu'}
       >
         <span className={styles.mobileMenuIcon}></span>
@@ -287,7 +294,11 @@ export default function Layout({ children }: LayoutProps) {
           />
         )}
         {!isAdminPanel && (
-          <nav ref={mobileNavRef} className={`${styles.mobileNav} ${mobileMenuOpen ? styles.mobileNavOpen : ''}`}>
+          <nav 
+            ref={mobileNavRef} 
+            className={`${styles.mobileNav} ${mobileMenuOpen ? styles.mobileNavOpen : ''}`}
+            style={mobileMenuOpen ? { top: `${menuScrollTop}px` } : undefined}
+          >
             <div className={styles.mobileNavHeader}>
               <h2 className={styles.mobileNavTitle}>KAY AUTO</h2>
             </div>

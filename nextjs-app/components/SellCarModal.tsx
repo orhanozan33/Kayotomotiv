@@ -17,6 +17,7 @@ interface FormData {
   year: string;
   transmission: string;
   fuelType: string;
+  mileage: string;
   images: File[];
   customerName: string;
   customerEmail: string;
@@ -104,6 +105,7 @@ export default function SellCarModal({ isOpen, onClose }: SellCarModalProps) {
       formDataToSend.append('year', formData.year);
       formDataToSend.append('transmission', formData.transmission);
       formDataToSend.append('fuelType', formData.fuelType);
+      formDataToSend.append('mileage', formData.mileage || '');
       formDataToSend.append('customerName', formData.customerName);
       formDataToSend.append('customerEmail', formData.customerEmail);
       formDataToSend.append('customerPhone', formData.customerPhone);
@@ -140,6 +142,7 @@ export default function SellCarModal({ isOpen, onClose }: SellCarModalProps) {
       year: '',
       transmission: '',
       fuelType: '',
+      mileage: '',
       images: [],
       customerName: '',
       customerEmail: '',
@@ -247,6 +250,21 @@ export default function SellCarModal({ isOpen, onClose }: SellCarModalProps) {
                   <option key={type} value={type}>{type}</option>
                 ))}
               </select>
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>
+                {t('sellCar.mileage') || 'Kilometre (km)'}
+              </label>
+              <input
+                type="number"
+                name="mileage"
+                value={formData.mileage}
+                onChange={handleInputChange}
+                placeholder={t('sellCar.mileagePlaceholder') || 'Örn: 50000'}
+                min="0"
+                step="1"
+              />
             </div>
           </div>
 

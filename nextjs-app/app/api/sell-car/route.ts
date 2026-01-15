@@ -22,6 +22,7 @@ export async function POST(request: NextRequest) {
     const year = formData.get('year') as string;
     const transmission = formData.get('transmission') as string;
     const fuelType = formData.get('fuelType') as string;
+    const mileage = formData.get('mileage') as string || null;
     const customerName = formData.get('customerName') as string;
     const customerEmail = formData.get('customerEmail') as string;
     const customerPhone = formData.get('customerPhone') as string;
@@ -89,8 +90,8 @@ export async function POST(request: NextRequest) {
     // Insert into database
     const result = await getPool().query(
       `INSERT INTO sell_car_submissions 
-       (brand, model, year, transmission, fuel_type, customer_name, customer_email, customer_phone, notes, images, status, created_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'unread', CURRENT_TIMESTAMP)
+       (brand, model, year, transmission, fuel_type, mileage, customer_name, customer_email, customer_phone, notes, images, status, created_at)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, 'unread', CURRENT_TIMESTAMP)
        RETURNING *`,
       [
         brand,
@@ -98,6 +99,7 @@ export async function POST(request: NextRequest) {
         parseInt(year),
         transmission,
         fuelType,
+        mileage ? parseInt(mileage) : null,
         customerName,
         customerEmail,
         customerPhone,

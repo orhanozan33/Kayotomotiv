@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS "sell_car_submissions" (
     "year" INTEGER NOT NULL,
     "transmission" VARCHAR(50) NOT NULL,
     "fuel_type" VARCHAR(50) NOT NULL,
+    "mileage" INTEGER,
     "customer_name" VARCHAR(255) NOT NULL,
     "customer_email" VARCHAR(255) NOT NULL,
     "customer_phone" VARCHAR(50) NOT NULL,
