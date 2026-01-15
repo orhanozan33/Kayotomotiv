@@ -6,7 +6,7 @@ import { handleError } from '@/lib/middleware/errorHandler';
 
 const isProduction = process.env.NODE_ENV === 'production';
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await initializeDatabase();
     const authResult = await authenticate(request);
@@ -15,9 +15,10 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const adminError = requireAdmin(authResult.user);
     if (adminError) return adminError;
 
+    const { id } = await params;
     const result = await getPool().query(
       'SELECT * FROM sell_car_submissions WHERE id = $1',
-      [params.id]
+      [id]
     );
 
     if (result.rows.length === 0) {
@@ -30,7 +31,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await initializeDatabase();
     const authResult = await authenticate(request);
@@ -39,6 +40,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     const adminError = requireAdmin(authResult.user);
     if (adminError) return adminError;
 
+    const { id } = await params;
     const body = await request.json();
     const { status } = body;
 
@@ -47,7 +49,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
        SET status = $1, updated_at = CURRENT_TIMESTAMP
        WHERE id = $2
        RETURNING *`,
-      [status, params.id]
+      [status, id]
     );
 
     if (result.rows.length === 0) {
@@ -60,7 +62,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
   }
 }
 
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     await initializeDatabase();
     const authResult = await authenticate(request);
@@ -69,9 +71,10 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     const adminError = requireAdmin(authResult.user);
     if (adminError) return adminError;
 
+    const { id } = await params;
     const result = await getPool().query(
       'DELETE FROM sell_car_submissions WHERE id = $1 RETURNING *',
-      [params.id]
+      [id]
     );
 
     if (result.rows.length === 0) {
